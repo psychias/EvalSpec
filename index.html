@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Evaluation Discrepancies And How To Prevent Them</title>
+<meta name="description" content="An interactive article. The same model on the same benchmark is published at 34.10 by a leaderboard and 68.20 by its developers. We explain what goes into a benchmark score, audit 46,559 published records for what they keep, and propose EvalSpec, a minimum set of fields to publish with a score.">
+<meta name="citation_author" content="Psychias, Stylianos">
+<meta name="citation_author_institution" content="University of Zurich">
+<meta name="citation_author" content="Hubarava, Hanna">
+<meta name="citation_author_institution" content="University of Bern">
+<meta name="citation_author" content="Opitz, Juri">
+<meta name="citation_author_institution" content="University of Zurich">
+<meta name="citation_author" content="von Däniken, Pius">
+<meta name="citation_author_institution" content="University of Zurich">
+<meta name="citation_author" content="Michail, Andrianos">
+<meta name="citation_author_institution" content="University of Zurich">
+<meta name="citation_title" content="LLM Evaluation Discrepancies And How To Prevent Them">
+<meta name="citation_conference_title" content="Findings of the Association for Computational Linguistics: EACL 2027">
+<meta name="citation_publication_date" content="2027">
+<!-- EDIT (links): <meta name="citation_pdf_url" content="https://arxiv.org/pdf/XXXX.XXXXX"> -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM Evaluation Discrepancies And How To Prevent Them">
+<meta property="og:description" content="One model, one benchmark, 34.10 on a leaderboard and 68.20 in its developers' report. What goes into a benchmark score, and what a published record would need to carry.">
+<!-- EDIT (links): og:image must be an absolute URL once the site has an address. -->
+<meta property="og:image" content="https://psychias.github.io/eee-eval/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/article.css">
+</head>
+<body id="top">
+<a class="skip" href="#article">Skip to the article</a>
+
+<header class="topbar">
+  <div class="content">
+    <a class="name" href="#top">LLM Evaluation Discrepancies</a>
+    <!-- EDIT (links): a pending link is a <span class="pending">. Replace it with <a href="https://...">Paper</a>. -->
+    <nav aria-label="Paper resources">
+      <span class="pending" title="Link to be added">Paper</span>
+      <a href="https://github.com/psychias/eee-eval">Code</a>
+      <a href="https://huggingface.co/datasets/evaleval/EEE_datastore">Data</a>
+      <a href="#citation">Cite</a>
+    </nav>
+  </div>
+</header>
+
+<div class="d-title">
+  <h1>LLM Evaluation Discrepancies And How To Prevent Them</h1>
+  <p>One model on one benchmark is published at 34.10 by a leaderboard and at 68.20 by its developers. We look at what goes into a benchmark score, how much of it survives publication, and which fields a published result would need to carry.</p>
+  <figure class="teaser fig" id="fig-paths">
+    <div class="scroll" tabindex="0" role="region" aria-label="Opening figure, scrolls sideways on small screens">
+<div class="paths-wide"><svg viewBox="0 0 884 306" role="group" aria-labelledby="paths-title paths-desc">
+<title id="paths-title">One cell, two protocols: three published scores for Gemma-2-9B on BBH</title>
+<desc id="paths-desc">The Open LLM Leaderboard v2 publishes 34.10: log-likelihood scoring, a fork of lm-eval, 3-shot, leaderboard-normalised. The Gemma 2 report publishes 68.20 and the Gemma 3 report 69.00: chain-of-thought generation, the model's own pipeline, 3-shot and 0-shot, raw scale. No source records scoring mode, harness, shot count or score scale as a field; a reader sees only the published number.</desc>
+<text class="hdr" x="71.7" y="26.5" text-anchor="middle">Model × benchmark</text>
+<text class="hdr" x="239.7" y="26.5" text-anchor="middle">Scoring mode</text>
+<text class="hdr" x="407.7" y="26.5" text-anchor="middle">Harness</text>
+<text class="hdr" x="542.1" y="26.5" text-anchor="middle">n-shot</text>
+<text class="hdr" x="676.5" y="26.5" text-anchor="middle">Score shown</text>
+<text class="hdr" x="822.1" y="26.5" text-anchor="middle">Published</text>
+<path class="rib" data-paths="1" d="M127.7,77.5 C155.7,77.5 155.7,77.5 183.7,77.5"/>
+<path class="rib" data-paths="2 3" d="M127.7,77.5 C155.7,77.5 155.7,142.5 183.7,142.5"/>
+<path class="rib" data-paths="1" d="M295.7,77.5 C320.9,77.5 320.9,77.5 346.1,77.5"/>
+<path class="rib" data-paths="2 3" d="M295.7,142.5 C320.9,142.5 320.9,142.5 346.1,142.5"/>
+<path class="rib" data-paths="1" d="M469.3,77.5 C490.3,77.5 490.3,77.5 511.3,77.5"/>
+<path class="rib" data-paths="2" d="M469.3,142.5 C490.3,142.5 490.3,142.5 511.3,142.5"/>
+<path class="rib" data-paths="3" d="M469.3,142.5 C490.3,142.5 490.3,202.5 511.3,202.5"/>
+<path class="rib" data-paths="1" d="M572.9,77.5 C596.7,77.5 596.7,77.5 620.5,77.5"/>
+<path class="rib" data-paths="2" d="M572.9,142.5 C596.7,142.5 596.7,142.5 620.5,142.5"/>
+<path class="rib" data-paths="3" d="M572.9,202.5 C596.7,202.5 596.7,142.5 620.5,142.5"/>
+<path class="rib" data-paths="1" d="M732.5,77.5 C760.5,77.5 760.5,77.5 788.5,77.5"/>
+<path class="rib" data-paths="2" d="M732.5,142.5 C760.5,142.5 760.5,142.5 788.5,142.5"/>
+<path class="rib" data-paths="3" d="M732.5,142.5 C760.5,142.5 760.5,202.5 788.5,202.5"/>
+<text class="mlab" x="239.7" y="59.5" text-anchor="middle">OLv2</text>
+<text class="mlab" x="239.7" y="124.5" text-anchor="middle">the model's reports</text>
+<g class="chip" data-paths="1 2 3" tabindex="0" role="button" aria-label="gemma-2-9b × BBH: show the scores that pass through this step">
+<rect x="23.0" y="59.5" width="97.4" height="36" rx="3"/>
+<text x="71.7" y="74.5" text-anchor="middle">gemma-2-9b</text><text x="71.7" y="88.5" text-anchor="middle">× BBH</text>
+</g>
+<g class="chip" data-paths="1" tabindex="0" role="button" aria-label="log-likelihood: show the scores that pass through this step">
+<rect x="188.2" y="66.0" width="103.0" height="23" rx="3"/>
+<text x="239.7" y="81.5" text-anchor="middle">log-likelihood</text>
+</g>
+<g class="chip" data-paths="2 3" tabindex="0" role="button" aria-label="CoT generation: show the scores that pass through this step">
+<rect x="188.2" y="131.0" width="103.0" height="23" rx="3"/>
+<text x="239.7" y="146.5" text-anchor="middle">CoT generation</text>
+</g>
+<g class="chip" data-paths="1" tabindex="0" role="button" aria-label="lm-eval, OLv2 fork: show the scores that pass through this step">
+<rect x="353.4" y="66.0" width="108.6" height="23" rx="3"/>
+<text x="407.7" y="81.5" text-anchor="middle">lm-eval, OLv2 fork</text>
+</g>
+<g class="chip" data-paths="2 3" tabindex="0" role="button" aria-label="the model&#x27;s own pipeline: show the scores that pass through this step">
+<rect x="353.4" y="124.5" width="108.6" height="36" rx="3"/>
+<text x="407.7" y="139.5" text-anchor="middle">the model&#x27;s own</text><text x="407.7" y="153.5" text-anchor="middle">pipeline</text>
+</g>
+<g class="chip" data-paths="1" tabindex="0" role="button" aria-label="3-shot: show the scores that pass through this step">
+<rect x="514.4" y="66.0" width="55.4" height="23" rx="3"/>
+<text x="542.1" y="81.5" text-anchor="middle">3-shot</text>
+</g>
+<g class="chip" data-paths="2" tabindex="0" role="button" aria-label="3-shot: show the scores that pass through this step">
+<rect x="514.4" y="131.0" width="55.4" height="23" rx="3"/>
+<text x="542.1" y="146.5" text-anchor="middle">3-shot</text>
+</g>
+<g class="chip" data-paths="3" tabindex="0" role="button" aria-label="0-shot: show the scores that pass through this step">
+<rect x="514.4" y="191.0" width="55.4" height="23" rx="3"/>
+<text x="542.1" y="206.5" text-anchor="middle">0-shot</text>
+</g>
+<g class="chip" data-paths="1" tabindex="0" role="button" aria-label="leaderboard- normalised: show the scores that pass through this step">
+<rect x="625.0" y="59.5" width="103.0" height="36" rx="3"/>
+<text x="676.5" y="74.5" text-anchor="middle">leaderboard-</text><text x="676.5" y="88.5" text-anchor="middle">normalised</text>
+</g>
+<g class="chip" data-paths="2 3" tabindex="0" role="button" aria-label="raw: show the scores that pass through this step">
+<rect x="625.0" y="131.0" width="103.0" height="23" rx="3"/>
+<text x="676.5" y="146.5" text-anchor="middle">raw</text>
+</g>
+<g class="score" data-p="1" tabindex="0" role="button" aria-label="34.10: show the path behind this score"><rect class="hit" x="792.5" y="60.5" width="68.79999999999995" height="34" rx="3"/><text x="822.1" y="84.5" text-anchor="middle">34.10</text></g>
+<g class="score" data-p="2" tabindex="0" role="button" aria-label="68.20: show the path behind this score"><rect class="hit" x="792.5" y="125.5" width="68.79999999999995" height="34" rx="3"/><text x="822.1" y="149.5" text-anchor="middle">68.20</text></g>
+<g class="score" data-p="3" tabindex="0" role="button" aria-label="69.00: show the path behind this score"><rect class="hit" x="792.5" y="185.5" width="68.79999999999995" height="34" rx="3"/><text x="822.1" y="209.5" text-anchor="middle">69.00</text></g>
+<path class="brace red" d="M172.5,232.5 q0,6 6,6 H390.5 q6,0 6,6 q0,-6 6,-6 H614.5 q6,0 6,-6"/>
+<text class="blab red" x="396.5" y="260.5" text-anchor="middle">no source records this as a field</text>
+<path class="brace" d="M777.3,232.5 q0,6 6,6 H816.0999999999999 q6,0 6,6 q0,-6 6,-6 H860.9 q6,0 6,-6"/>
+<text class="blab" x="822.1" y="260.5" text-anchor="middle">all you see</text>
+<path class="arrow red" d="M788.5,290.0 H180.5"/><path class="arrowhead red" d="M172.5,290.0 l10,-4.5 v9 z"/>
+<text class="blab red" x="480.5" y="283.0" text-anchor="middle">34.10 vs. 68.20 is a 34.1 pp gap, and no field recovers which path produced it</text>
+</svg></div>
+<ul class="paths-narrow"><li><b class="blue">34.10</b> OLv2<span>log-likelihood; lm-eval, OLv2 fork; 3-shot; leaderboard-normalised</span></li><li><b class="gold">68.20</b> the model&#x27;s reports<span>CoT generation; the model&#x27;s own pipeline; 3-shot; raw</span></li><li><b class="gold">69.00</b> the model&#x27;s reports<span>CoT generation; the model&#x27;s own pipeline; 0-shot; raw</span></li></ul>
+    </div>
+    <figcaption><b>One cell, two protocols, an uninterpretable gap.</b> Gemma-2-9B on BBH is published as 34.10 by the Open LLM Leaderboard v2 (OLv2; 3-shot log-likelihood, leaderboard-normalised) and as 68.20 and 69.00 by the Gemma 2 and Gemma 3 reports (chain-of-thought generation, raw scale). Neither the scoring mode nor the harness is recorded, so the gap is untraceable. Hover over a score or a box to follow its path.</figcaption>
+  </figure>
+</div>
+
+<div class="d-byline">
+  <div class="byline">
+    <div class="authors-affiliations">
+      <h3>Authors</h3>
+      <h3>Affiliations</h3>
+      <p class="author"><a href="https://openreview.net/profile?id=~Stylianos_Psychias1">Stylianos Psychias</a></p>
+      <p class="affiliation">University of Zurich</p>
+      <p class="author"><a href="https://openreview.net/profile?id=~Hanna_Hubarava1">Hanna Hubarava</a></p>
+      <p class="affiliation">University of Bern</p>
+      <p class="author"><a href="https://openreview.net/profile?id=~Juri_Opitz2">Juri Opitz</a></p>
+      <p class="affiliation">University of Zurich</p>
+      <p class="author"><a href="https://openreview.net/profile?id=~Pius_von_D%C3%A4niken1">Pius von Däniken</a></p>
+      <p class="affiliation">University of Zurich</p>
+      <p class="author"><a href="https://openreview.net/profile?id=~Andrianos_Michail1">Andrianos Michail</a></p>
+      <p class="affiliation">University of Zurich</p>
+    </div>
+    <div>
+      <h3>Venue</h3>
+      <!-- EDIT (status): drop "Accepted, to appear" once the proceedings are out. -->
+      <p>Findings of EACL 2027</p>
+      <p>Accepted, to appear</p>
+    </div>
+    <div>
+      <h3>Paper</h3>
+      <!-- EDIT (links): arXiv or DOI link. -->
+      <p><span class="todo">Link to be added</span></p>
+    </div>
+  </div>
+</div>
+
+<main class="d-article" id="article">
+
+<p>Gemma-2-9B has more than one public score on BIG-Bench Hard (BBH)<a class="cite-ref" href="#ref-1" data-refs="1" aria-label="Reference 1">[1]</a>. The Open LLM Leaderboard v2<a class="cite-ref" href="#ref-2" data-refs="2" aria-label="Reference 2">[2]</a> lists 34.10. The model's own technical report<a class="cite-ref" href="#ref-3" data-refs="3" aria-label="Reference 3">[3]</a> gives 68.20. The two numbers are 34 percentage points (pp) apart, and neither is wrong.<a class="fn-ref" id="fnref-1" href="#fn-1" data-fn="1" aria-label="Footnote 1">1</a></p>
+
+<p>The leaderboard ranks a fixed set of answer choices by how likely the model finds each one, then rescales the result. The report lets the model write out its reasoning and extracts the answer from what it wrote. When we re-ran the leaderboard's configuration we got 53.88 against its unrescaled 53.77, so nothing failed to reproduce. Each score can be reproduced under its own procedure. They cannot be meaningfully compared, and nothing published alongside either number tells you so.</p>
+
+<p>This article is about that missing information. We start by taking a score apart: how a model's answer to one question becomes a number, and which steps along the way can change it, using the Gemma scores as the running example. We then follow other large disagreements between sources back to their causes, and look at 46,559 published evaluation records from 12 sources to count how many of those steps they record. We end with EvalSpec, a short list of fields we propose every published score should carry.</p>
+
+<aside>In the figures, <span class="blue"><b>blue</b></span> marks answers obtained by likelihood ranking and <span class="gold"><b>gold</b></span> answers obtained by generation. A <span class="hollow">dashed outline</span> marks a detail of the procedure that the record in question does not carry.</aside>
+
+<p>A benchmark is a set of questions with reference answers, and a score is the share a model gets right. Scores are usually published with two labels attached, the model and the benchmark. The figure follows one question from the benchmark to the published number, once for each of the two Gemma scores. The lines split at the steps where the two sources are known to differ.</p>
+
+<figure class="fig l-body-outset" id="fig-pipeline">
+  <div class="scroll" tabindex="0" role="region" aria-label="Pipeline figure, scrolls sideways on small screens">
+<svg viewBox="0 0 880 196" role="group" aria-labelledby="pipe-title pipe-desc">
+<title id="pipe-title">The steps from a benchmark question to a published score, for two sources</title>
+<desc id="pipe-desc">Eight steps: question, prompt, model, scoring mode, right or wrong, average, rescale, published score. The leaderboard and the developers' report share the question, the model, the marking and the averaging. They differ in the prompt, the scoring mode and the rescaling, and publish 34.10 and 68.20.</desc>
+<rect class="colbg" data-k="item" x="5" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="prompt" x="114" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="model" x="223" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg on" data-k="mode" x="332" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="mark" x="441" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="avg" x="550" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="rescale" x="659" y="6" width="106" height="184" rx="4"/>
+<rect class="colbg" data-k="pub" x="768" y="6" width="106" height="184" rx="4"/>
+<polyline class="edge lb" points="58,108 167,78 276,108 385,78 494,108 603,108 712,78 821,78"/>
+<polyline class="edge rp" points="58,108 167,138 276,108 385,138 494,108 603,108 712,138 821,138"/>
+<g class="stage" data-k="item" tabindex="0" role="button" aria-label="Question"><rect class="col" x="5" y="6" width="106" height="184" rx="4"/><text class="shead" x="58" y="28" text-anchor="middle">Question</text><circle class="node both" cx="58" cy="108" r="11"/></g>
+<g class="stage" data-k="prompt" tabindex="0" role="button" aria-label="Prompt"><rect class="col" x="114" y="6" width="106" height="184" rx="4"/><text class="shead" x="167" y="28" text-anchor="middle">Prompt</text><circle class="node lb" cx="167" cy="78" r="11"/><circle class="node rp" cx="167" cy="138" r="11"/><text class="nlab lb" x="167" y="59" text-anchor="middle">3 examples</text><text class="nlab rp" x="167" y="167" text-anchor="middle">3 examples + reasoning</text></g>
+<g class="stage" data-k="model" tabindex="0" role="button" aria-label="Model"><rect class="col" x="223" y="6" width="106" height="184" rx="4"/><text class="shead" x="276" y="28" text-anchor="middle">Model</text><circle class="node both" cx="276" cy="108" r="11"/></g>
+<g class="stage on" data-k="mode" tabindex="0" role="button" aria-label="Scoring mode"><rect class="col" x="332" y="6" width="106" height="184" rx="4"/><text class="shead" x="385" y="28" text-anchor="middle">Scoring mode</text><circle class="node lb" cx="385" cy="78" r="11"/><circle class="node rp" cx="385" cy="138" r="11"/><text class="nlab lb" x="385" y="59" text-anchor="middle">rank the options</text><text class="nlab rp" x="385" y="167" text-anchor="middle">generate, then extract</text></g>
+<g class="stage" data-k="mark" tabindex="0" role="button" aria-label="Right or wrong"><rect class="col" x="441" y="6" width="106" height="184" rx="4"/><text class="shead" x="494" y="28" text-anchor="middle">Right or wrong</text><circle class="node both" cx="494" cy="108" r="11"/></g>
+<g class="stage" data-k="avg" tabindex="0" role="button" aria-label="Average"><rect class="col" x="550" y="6" width="106" height="184" rx="4"/><text class="shead" x="603" y="28" text-anchor="middle">Average</text><circle class="node both" cx="603" cy="108" r="11"/></g>
+<g class="stage" data-k="rescale" tabindex="0" role="button" aria-label="Rescale"><rect class="col" x="659" y="6" width="106" height="184" rx="4"/><text class="shead" x="712" y="28" text-anchor="middle">Rescale</text><circle class="node lb" cx="712" cy="78" r="11"/><circle class="node rp" cx="712" cy="138" r="11"/><text class="nlab lb" x="712" y="59" text-anchor="middle">yes</text><text class="nlab rp" x="712" y="167" text-anchor="middle">no</text></g>
+<g class="stage" data-k="pub" tabindex="0" role="button" aria-label="Published score"><rect class="col" x="768" y="6" width="106" height="184" rx="4"/><text class="shead" x="821" y="28" text-anchor="middle">Published score</text><circle class="node lb" cx="821" cy="78" r="11"/><circle class="node rp" cx="821" cy="138" r="11"/><text class="nlab lb big" x="821" y="59" text-anchor="middle">34.10</text><text class="nlab rp big" x="821" y="167" text-anchor="middle">68.20</text></g>
+</svg>
+  </div>
+  <ul class="legend">
+    <li><span class="swatch dot" style="background:var(--blue-2)"></span>Open LLM Leaderboard v2</li>
+    <li><span class="swatch dot" style="background:var(--gold-2)"></span>Gemma 2 report</li>
+    <li><span class="swatch dot" style="background:var(--gold-3)"></span>shared step</li>
+  </ul>
+  <div class="pipe-panel" id="pipe-panel" role="status">
+    <h4>Scoring mode</h4>
+    <p>How an answer is obtained from the model and checked. The leaderboard ranks the answer options it is given by likelihood. The report lets the model generate its reasoning and extracts the answer from the text.</p>
+    <p class="rec"><span class="hollow">not recorded</span> Neither source has a field for it.</p>
+  </div>
+  <figcaption>From a benchmark question to a published score, for Gemma-2-9B on BBH. Hover over a step, or tab to it, to see what is decided there and whether a record of it survives.</figcaption>
+</figure>
+
+<p>The steps in the middle are carried out by a piece of software called an <em>evaluation harness</em>: a bundle of prompt templates, a way of choosing worked examples, a scoring rule and an answer parser, each with defaults. Widely used harnesses include lm-evaluation-harness<a class="cite-ref" href="#ref-4" data-refs="4,5" aria-label="Reference 4, 5">[4, 5]</a>, HELM<a class="cite-ref" href="#ref-6" data-refs="6" aria-label="Reference 6">[6]</a>, LightEval<a class="cite-ref" href="#ref-7" data-refs="7" aria-label="Reference 7">[7]</a> and OpenCompass<a class="cite-ref" href="#ref-8" data-refs="8" aria-label="Reference 8">[8]</a>, and many model developers use pipelines of their own. We will call one published score, together with whatever its source says about how it was obtained, an <em>evaluation record</em>.</p>
+
+<h2 id="anatomy">From an answer to a number</h2>
+
+<p>The harness wraps each question in a <em>prompt template</em>, optionally preceded by a few worked examples (their number is the <em>shot count</em>) and by an instruction to reason step by step (<em>chain-of-thought</em>). Earlier work has shown that scores and even model rankings shift with the harness, the prompt format and the way the answer is extracted<a class="cite-ref" href="#ref-9" data-refs="9,5,10" aria-label="Reference 9, 5, 10">[9, 5, 10]</a>. The step with the least visibility is the one after the prompt: how an answer is obtained from the model and marked. We call it the <em>scoring mode</em>.</p>
+
+<h3 id="modes">Two ways to get an answer from a model</h3>
+
+<p>Take a multiple-choice question. One way to score it never asks the model to write anything. The harness appends each answer option to the prompt in turn, asks the model how probable that continuation is, and takes the most probable option as the answer. This is <em>log-likelihood</em> scoring. It always yields an answer, so a model with no idea still scores at the level of chance.</p>
+
+<p>The other way is <em>generation</em>. The model writes free text, perhaps several sentences of reasoning, and a second piece of code, the <em>answer parser</em>, searches that text for the answer. Two things now have to go right: the model has to reach the right answer, and the parser has to find it. If the parser finds nothing, the item is marked wrong, so the floor is zero, below chance.</p>
+
+<figure class="fig l-body-outset" id="fig-modes">
+  <div class="panelbox">
+    <p class="fig-note">Invented for illustration. The question was written for this article in the style of a BBH date task; the preferences and the outputs are not from a model.</p>
+    <div class="qcard">
+      <p><b>Question.</b> Today is 3 March 2021. What is the date one week from today, in MM/DD/YYYY?</p>
+      <ul class="opts" aria-label="Answer options">
+        <li class="ref"><b>A</b> 03/10/2021 <i>reference answer</i></li><li><b>B</b> 10/03/2021</li><li><b>C</b> 03/17/2021</li><li><b>D</b> 02/24/2021</li>
+      </ul>
+    </div>
+    <div class="two-col">
+      <div class="mode" id="mode-ll">
+        <h4><span class="swatch dot" style="background:var(--blue)"></span>Likelihood ranking</h4>
+        <p class="sub">The model rates each option as a continuation of the prompt. The highest wins. Nothing is generated.</p>
+        <div class="optrow" data-opt="A"><span class="name">A</span><input type="range" min="0" max="100" step="1" value="31" aria-label="Preference for option A, 0 to 100" disabled><span class="lp">31</span></div>
+        <div class="optrow pick" data-opt="B"><span class="name">B</span><input type="range" min="0" max="100" step="1" value="52" aria-label="Preference for option B, 0 to 100" disabled><span class="lp">52</span></div>
+        <div class="optrow" data-opt="C"><span class="name">C</span><input type="range" min="0" max="100" step="1" value="11" aria-label="Preference for option C, 0 to 100" disabled><span class="lp">11</span></div>
+        <div class="optrow" data-opt="D"><span class="name">D</span><input type="range" min="0" max="100" step="1" value="6" aria-label="Preference for option D, 0 to 100" disabled><span class="lp">6</span></div>
+        <p class="outcome bad" role="status"><span class="badge">wrong</span> The model picks <b>B</b>. The reference is A.</p>
+      </div>
+      <div class="mode" id="mode-gen">
+        <h4><span class="swatch dot" style="background:var(--gold)"></span>Generation, then a parser</h4>
+        <p class="sub">The model writes text. A pattern looks for an answer letter in it.</p>
+        <div class="btngroup" role="group" aria-label="What the model writes" hidden>
+          <button class="btn" type="button" data-out="0" aria-pressed="false">Letter only</button>
+          <button class="btn" type="button" data-out="1" aria-pressed="true">Reasoning, then letter</button>
+          <button class="btn" type="button" data-out="2" aria-pressed="false">Reasoning, no letter</button>
+          <button class="btn" type="button" data-out="own" aria-pressed="false">Write your own</button>
+        </div>
+        <label class="sr" for="gen-input">Model output</label>
+        <textarea id="gen-input" class="gen-input" rows="2" maxlength="160" spellcheck="false" hidden>One week after 3 March is 10 March. In MM/DD/YYYY that is 03/10/2021. The answer is (A).</textarea>
+        <p class="tokens" id="gen-tokens" aria-hidden="true"><span>One</span><span>week</span><span>after</span><span>3</span><span>March</span><span>is</span><span>10</span><span>March.</span><span>In</span><span>MM/DD/YYYY</span><span>that</span><span>is</span><span>03/10/2021.</span><span>The</span><span>answer</span><span>is</span><span class="hit">(A).</span></p>
+        <p class="pattern">parser: the first letter in brackets, <span class="mono">\(([A-D])\)</span></p>
+        <p class="outcome good" role="status"><span class="badge">right</span> The parser extracts <b>A</b>. The reference is A.</p>
+      </div>
+    </div>
+  </div>
+  <figcaption>One invented question, scored in two modes. As drawn, likelihood ranking prefers the option with day and month swapped, while the written reasoning reaches the right date. Drag a handle to change the ranking. Choose "Reasoning, no letter" for a correct answer that the parser cannot find, or write an output yourself.</figcaption>
+</figure>
+
+<p>Nothing forces the two modes to agree. A model can rank the options one way and argue its way to another answer when allowed to write. Which mode is closer to what you care about depends on the benchmark. BBH collects tasks that take several steps of reasoning, and it was designed for three-shot chain-of-thought generation<a class="cite-ref" href="#ref-1" data-refs="1" aria-label="Reference 1">[1]</a>, which is how the Gemma report scores it. A model that can work such a task through in writing does not necessarily put the highest probability on the right option when it has to choose in a single pass. The leaderboard scores BBH by likelihood ranking. That is a legitimate choice, and it measures something different.</p>
+
+<aside>There are two more scoring modes. A human or model <em>judge</em> can rate the output, which we come to <a href="#judge">below</a>, or the output can be <em>executed</em> against tests, as in code benchmarks.</aside>
+
+<h3 id="rescale">The number shown may not be the number measured</h3>
+
+<p>A second step separates the leaderboard's 34.10 from what its harness measured. A model that guesses at random on four-option questions scores 25%, so the leaderboard subtracts that floor and stretches what remains back to a 0 to 100 scale. Its documentation gives the rule<a class="cite-ref" href="#ref-11" data-refs="11" aria-label="Reference 11">[11]</a>: subtract the random-guess baseline, divide by the range above it, and multiply by 100. The two starting points in the figure are Gemma-2-9B's own values on two other benchmarks, where the leaderboard's data has both the raw and the displayed number.</p>
+
+<figure class="fig" id="fig-rescale">
+  <div class="panelbox">
+    <div class="rs-plot scroll">
+<svg viewBox="0 0 704 216" role="group" aria-label="Two number lines: measured accuracy on top, the score shown underneath, with lines showing how the range above chance is stretched to 0 to 100">
+<rect id="rs-below" class="below" x="46" y="61" width="153.0" height="18"/>
+<line class="ax" x1="46" y1="70" x2="658" y2="70"/><line class="ax" x1="46" y1="160" x2="658" y2="160"/>
+<text class="end" x="46.0" y="54" text-anchor="middle">0</text><text class="end" x="46.0" y="186" text-anchor="middle">0</text>
+<line class="tick" x1="46.0" y1="65" x2="46.0" y2="75"/><line class="tick" x1="46.0" y1="155" x2="46.0" y2="165"/>
+<text class="end" x="658.0" y="54" text-anchor="middle">100</text><text class="end" x="658.0" y="186" text-anchor="middle">100</text>
+<line class="tick" x1="658.0" y1="65" x2="658.0" y2="75"/><line class="tick" x1="658.0" y1="155" x2="658.0" y2="165"/>
+<text class="axt" x="46" y="34">measured accuracy</text><text class="axt" x="46" y="206">score shown</text>
+<g id="rs-fan"><line class="fan" x1="199.0" y1="70" x2="46.0" y2="160"/><line class="fan" x1="290.8" y1="70" x2="168.4" y2="160"/><line class="fan" x1="382.6" y1="70" x2="290.8" y2="160"/><line class="fan" x1="474.4" y1="70" x2="413.2" y2="160"/><line class="fan" x1="566.2" y1="70" x2="535.6" y2="160"/><line class="fan" x1="658.0" y1="70" x2="658.0" y2="160"/></g>
+<line id="rs-chance" class="chance" x1="199.0" y1="58" x2="199.0" y2="82"/><text id="rs-chancet" class="chancet" x="199.0" y="97" text-anchor="middle">chance 25</text>
+<line id="rs-map" class="map" x1="247.3" y1="70" x2="110.3" y2="160"/>
+<circle id="rs-dshown" class="node shown" cx="110.3" cy="160" r="9"/><text id="rs-tshown" class="val" x="110.3" y="187" text-anchor="middle">10.51</text>
+<text id="rs-traw" class="val" x="247.3" y="53" text-anchor="middle">32.89</text>
+<rect id="rs-hit" class="hit" x="36" y="54" width="632" height="32"/>
+<circle id="rs-draw" class="node raw" cx="247.3" cy="70" r="10" tabindex="0" role="slider" aria-label="Measured accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="32.89"/>
+</svg>
+    </div>
+    <p class="formula" id="rs-formula" role="status">(32.886 &minus; 25) / (100 &minus; 25) &times; 100 = 10.51</p>
+    <div class="row">
+      <span id="rs-exlabel" hidden>Gemma-2-9B on</span>
+      <div class="btngroup" id="rs-ex" role="group" aria-labelledby="rs-exlabel" hidden>
+        <button class="btn" type="button" data-raw="32.8859" data-k="4" aria-pressed="true">GPQA</button>
+        <button class="btn" type="button" data-raw="41.0322" data-k="10" aria-pressed="false">MMLU-Pro</button>
+      </div>
+      <span id="rs-optlabel" style="margin-left:14px" hidden>Answer options per question</span>
+      <div class="cells" id="rs-k" role="group" aria-labelledby="rs-optlabel" hidden>
+        <button type="button" data-k="2" aria-pressed="false">2</button><button type="button" data-k="3" aria-pressed="false">3</button><button type="button" data-k="4" aria-pressed="true">4</button><button type="button" data-k="5" aria-pressed="false">5</button><button type="button" data-k="10" aria-pressed="false">10</button>
+      </div>
+    </div>
+  </div>
+  <figcaption>Rescaling stretches the range above chance to fill 0 to 100. Drag the gold dot along the upper line, or change the number of answer options. The two starting points are Gemma-2-9B's own values: the leaderboard's data lists GPQA as 32.89 measured and 10.51 shown, and MMLU-Pro as 41.03 and 34.48, and the documented rule reproduces both. By the same documentation, a score at or below chance is shown as 0.</figcaption>
+</figure>
+
+<p>BBH is made of subtasks with different numbers of answer options. According to the same documentation<a class="cite-ref" href="#ref-11" data-refs="11" aria-label="Reference 11">[11]</a>, benchmarks with subtasks are rescaled subtask by subtask and then averaged, so no single baseline turns one BBH number into the other. For Gemma-2-9B the value before rescaling is 53.77 and the displayed value is 34.10.</p>
+
+<h3 id="case">Reading the two Gemma scores</h3>
+
+<p>Scoring mode and rescaling are what separate the two Gemma scores. The figure sets the published results side by side with three pieces of procedure a reader would need in order to compare them. None of the three is a field in either source. Under each dashed box is what we recovered from the leaderboard's About page and the report's text.</p>
+
+<figure class="fig l-body-outset" id="fig-records">
+  <div class="pair">
+    <article class="record lb" aria-label="Open LLM Leaderboard v2">
+      <header><b>Open LLM Leaderboard v2</b><span>leaderboard</span></header>
+      <dl>
+        <div class="row"><dt>model</dt><dd>gemma-2-9b</dd></div>
+        <div class="row"><dt>benchmark</dt><dd>BBH</dd></div>
+        <div class="row score"><dt>score</dt><dd class="blue">34.10</dd></div>
+        <div class="row slot"><dt>scoring mode</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: log-likelihood ranking of fixed answer choices, then rescaled</span></dd></div>
+        <div class="row slot"><dt>harness</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: lm-evaluation-harness, the leaderboard's fork</span></dd></div>
+        <div class="row slot"><dt>shots</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: 3</span></dd></div>
+        <div class="row"><dt>before rescaling</dt><dd>53.77 <span class="recov" style="font-family:var(--sans);font-size:12px;color:var(--ink-2)">a column named <span class="mono">BBH Raw</span> in the leaderboard's data</span></dd></div>
+      </dl>
+    </article>
+    <article class="record rp" aria-label="Gemma 2 technical report">
+      <header><b>Gemma 2 technical report</b><span>model developers' paper</span></header>
+      <dl>
+        <div class="row"><dt>model</dt><dd>gemma-2-9b</dd></div>
+        <div class="row"><dt>benchmark</dt><dd>BBH</dd></div>
+        <div class="row score"><dt>score</dt><dd class="gold">68.20</dd></div>
+        <div class="row slot"><dt>scoring mode</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: chain-of-thought generation, answer extracted from the text</span></dd></div>
+        <div class="row slot"><dt>harness</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: the developers' own pipeline</span></dd></div>
+        <div class="row slot"><dt>shots</dt><dd><span class="hollow">not a field</span><span class="recov">recovered: 3</span></dd></div>
+      </dl>
+    </article>
+  </div>
+  <div class="gapline" role="img" aria-label="On a 0 to 100 line: the leaderboard's displayed score 34.10, its value before rescaling 53.77, and the report's score 68.20">
+    <span class="axis"></span>
+    <span class="tk" style="left:0"><i>0</i></span><span class="tk" style="left:10%"></span><span class="tk" style="left:20%"><i>20</i></span><span class="tk" style="left:30%"></span><span class="tk" style="left:40%"><i>40</i></span><span class="tk" style="left:50%"></span><span class="tk" style="left:60%"><i>60</i></span><span class="tk" style="left:70%"></span><span class="tk" style="left:80%"><i>80</i></span><span class="tk" style="left:90%"></span><span class="tk" style="left:100%"><i>100</i></span>
+    <span class="seg a" data-part="rescale" tabindex="0" style="left:34.1%;width:19.67%"><b>rescaling, 19.7 pp</b></span>
+    <span class="seg b" data-part="mode" tabindex="0" style="left:53.77%;width:14.43%"><b>everything else, 14.4 pp</b></span>
+    <span class="nd lb" style="left:34.1%"></span><span class="val blue" style="left:34.1%">34.10</span>
+    <span class="nd lbraw" style="left:53.77%"></span><span class="val" style="left:53.77%">53.77</span>
+    <span class="nd rp" style="left:68.2%"></span><span class="val gold" style="left:68.2%">68.20</span>
+  </div>
+  <ul class="legend">
+    <li><span class="swatch dot" style="background:var(--blue)"></span>leaderboard, as displayed</li>
+    <li><span class="swatch dot" style="background:#fff;box-shadow:inset 0 0 0 2px var(--blue)"></span>leaderboard, before rescaling</li>
+    <li><span class="swatch dot" style="background:var(--gold)"></span>developers' report</li>
+  </ul>
+  <figcaption>The two published records and what separates them. Of the 34.1 pp gap, <span class="hl" data-part="rescale" tabindex="0">19.7 pp is the leaderboard's rescaling</span> (53.77 before, 34.10 after) and <span class="hl" data-part="mode" tabindex="0">14.4 pp is everything else</span>: ranking answer choices against generating answers, and any other difference between the two pipelines. Hover over either phrase, or either band, to see which is which.</figcaption>
+</figure>
+
+<p>The same pattern holds for other models. For Gemma-7B, Gemma-2-2B and MAmmoTH2-7B-Plus, the gap between the leaderboard's unrescaled value and a published paper result is between 4 and 21 pp, and rescaling accounts for the rest.</p>
+
+<p>Likelihood ranking does not always score far below generation. On the full MMLU<a class="cite-ref" href="#ref-12" data-refs="12" aria-label="Reference 12">[12]</a> test set we scored four models both ways and the results differ by at most 0.21 pp. The BBH gap comes from applying likelihood ranking to a benchmark built for chain-of-thought answers, with the rescaling on top.</p>
+
+<h3 id="parser">The parser is part of the score</h3>
+
+<p>In generation mode the parser is easy to overlook, because when it works you never see it. Our clearest example comes from GSM8K<a class="cite-ref" href="#ref-13" data-refs="13" aria-label="Reference 13">[13]</a>, a set of grade-school arithmetic problems. Its reference solutions end with the delimiter <code>####</code> followed by the number, and lm-evaluation-harness finds the model's answer by searching for the same delimiter.</p>
+
+<p>We ran Qwen2.5-14B-Instruct<a class="cite-ref" href="#ref-14" data-refs="14" aria-label="Reference 14">[14]</a> on 200 GSM8K problems under three prompts that differ only in the system message, with the same harness, the same five worked examples and temperature 0. With the model's default system message it scores 58.5%. With an instruction to answer carefully and directly it scores 57.0%. With an instruction to think step by step it scores 2.5%. The figure shows one problem under the first and third prompts.</p>
+
+<figure class="fig l-page" id="fig-parser">
+  <div class="controls">
+    <span id="parser-label">Parser:</span>
+    <div class="btngroup" role="group" aria-labelledby="parser-label" hidden>
+      <button class="btn" type="button" data-parser="strict" aria-pressed="true">The harness pattern: <span class="mono">####</span> then the answer</button>
+      <button class="btn" type="button" data-parser="lenient" aria-pressed="false">Lenient: last number in the text (our illustration)</button>
+    </div>
+    <span class="mono" id="parser-pattern">re.search(r'####\s+(\S+)', output)</span>
+  </div>
+  <div class="runs">
+    <div class="run" data-run="plain">
+      <div>
+        <h4>Plain few-shot prompt</h4>
+        <p class="sys">The model's default system message. Five worked examples, each ending in <span class="mono">#### n</span>.</p>
+      </div>
+      <div>
+        <label for="out-plain">Model output for the target problem</label>
+        <textarea id="out-plain" rows="3" spellcheck="false" data-original="16 - 3 - 4 = 9 eggs. 9 x 2 = 18. #### 18">16 - 3 - 4 = 9 eggs. 9 x 2 = 18. #### 18</textarea>
+        <button class="linkbtn" type="button" hidden>Restore the original output</button>
+      </div>
+      <p class="verdict" role="status"><b class="right">Match: '18'</b><br>reference: 18<br>exact_match = 1</p>
+      <div><span class="acc" data-strict="58.5%">58.5%<small>accuracy over 200 problems</small></span></div>
+    </div>
+    <div class="run" data-run="cot">
+      <div>
+        <h4>Chain-of-thought few-shot prompt</h4>
+        <p class="sys">System message: "You are an expert problem solver. Before answering, think step by step and show your reasoning. Then state the final answer." The same five examples.</p>
+      </div>
+      <div>
+        <label for="out-cot">Model output for the target problem</label>
+        <textarea id="out-cot" rows="4" spellcheck="false" data-original="Janet uses 3 + 4 = 7 eggs each day. 16 - 7 = 9 remain. 9 x 2 = 18. The answer is $18 per day.">Janet uses 3 + 4 = 7 eggs each day. 16 - 7 = 9 remain. 9 x 2 = 18. The answer is $18 per day.</textarea>
+        <button class="linkbtn" type="button" hidden>Restore the original output</button>
+      </div>
+      <p class="verdict" role="status"><b class="wrong">No match</b><br>response recorded as invalid<br>exact_match = 0</p>
+      <div><span class="acc" data-strict="2.5%">2.5%<small>accuracy over 200 problems</small></span></div>
+    </div>
+  </div>
+  <figcaption>The model reaches 18 under both prompts. Try adding <span class="mono">#### 18</span> to the end of the second output. The two outputs are abridged. The real harness also normalizes the extracted string, which this figure only approximates. Accuracies are measured over 200 problems and do not change when you edit. The lenient parser is our illustration, and we have no measured accuracy for it.</figcaption>
+</figure>
+
+<p>The arithmetic is fine. Told to show its reasoning, the model writes the solution as prose and leaves the delimiter out, and the parser records correct answers as invalid. The same thing happens with no worked examples: every zero-shot GSM8K run in our experiments scores exactly 0.0, because nothing has shown the model the delimiter.</p>
+
+<p>Other models behave differently. In a replication on the full test set, run with a different inference backend, Mistral-7B kept the delimiter under all three prompts and scored 38.4%, 41.0% and 40.4%. The effect belongs to a particular model, prompt and parser together, which is why none of the three can be left out of a description of the score.</p>
+
+<p>To compare this effect with the other choices a harness makes, we held the model and the benchmark fixed and changed one setting at a time. The main grid ran four instruction-tuned models, between 7B and 14B parameters, with lm-evaluation-harness 0.4.11 on 200-item subsets; further runs covered four more multiple-choice benchmarks. In the table, each cell is how far the score moves on average when exactly one setting differs between two otherwise identical runs. The last column compares two random seeds, which gives the noise floor.</p>
+
+<figure class="fig l-body-outset" id="fig-heat">
+  <div class="scroll" tabindex="0" role="region" aria-label="Table of score changes, scrolls sideways on small screens">
+  <table class="heat">
+    <thead>
+      <tr>
+        <th scope="col" style="width:112px">Benchmark</th>
+        <th scope="col" style="width:104px">Scored by</th>
+        <th scope="col" data-f="a plain and a chain-of-thought prompt">Plain prompt vs chain-of-thought</th>
+        <th scope="col" data-f="a plain prompt and one with a system instruction">Plain prompt vs instruction</th>
+        <th scope="col" data-f="0 and 5 shots">0 shots vs 5 shots</th>
+        <th scope="col" data-f="temperature 0.0 and 0.7">Temperature 0.0 vs 0.7</th>
+        <th scope="col" data-f="two random seeds">Seed vs seed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-b="GSM8K" data-seed="2.1"><th scope="row">GSM8K</th><td class="by">generation and parser</td><td class="c h4" tabindex="0" data-note="Most of this is the parser losing the answer under the chain-of-thought prompt, as in the figure above.">21.1*</td><td class="c h2" tabindex="0">6.6</td><td class="c h4" tabindex="0" data-note="Every zero-shot GSM8K run scores 0.0 because the parser finds no answer, so this is a parsing failure and not a benefit of examples.">30.7*</td><td class="c h1" tabindex="0">3.0</td><td class="c h1" tabindex="0">2.1</td></tr>
+      <tr data-b="MMLU"><th scope="row">MMLU</th><td class="by">log-likelihood</td><td class="c h3" tabindex="0">13.7</td><td class="c h0" tabindex="0">1.9</td><td class="c h2" tabindex="0" data-note="Pooled zero-shot and five-shot means are 60.17 and 61.16, a difference that is not significant (p = 0.87): individual runs move, the average does not.">6.3</td><td class="c na">not varied</td><td class="c na">not varied</td></tr>
+      <tr data-b="GPQA"><th scope="row">GPQA</th><td class="by">log-likelihood</td><td class="c h2" tabindex="0" data-note="Prompt-format differences on GPQA are not statistically significant, and scores there stay near chance.">6.8</td><td class="c h2" tabindex="0" data-note="Prompt-format differences on GPQA are not statistically significant, and scores there stay near chance.">5.2</td><td class="c h2" tabindex="0">5.7</td><td class="c na">not varied</td><td class="c na">not varied</td></tr>
+      <tr data-b="ARC-Challenge" data-seed="0.7"><th scope="row">ARC-Challenge</th><td class="by">log-likelihood</td><td class="c h1" tabindex="0">4.9</td><td class="c h1" tabindex="0">2.1</td><td class="c h2" tabindex="0">6.8</td><td class="c na">not varied</td><td class="c h0" tabindex="0">0.7</td></tr>
+      <tr data-b="WinoGrande" data-seed="1.0"><th scope="row">WinoGrande</th><td class="by">log-likelihood</td><td class="c h0" tabindex="0">1.9</td><td class="c h0" tabindex="0">1.3</td><td class="c h1" tabindex="0">3.3</td><td class="c na">not varied</td><td class="c h0" tabindex="0">1.0</td></tr>
+      <tr data-b="OpenBookQA" data-seed="1.0"><th scope="row">OpenBookQA</th><td class="by">log-likelihood</td><td class="c h0" tabindex="0">1.7</td><td class="c h0" tabindex="0">1.4</td><td class="c h1" tabindex="0">3.9</td><td class="c na">not varied</td><td class="c h0" tabindex="0">1.0</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul class="legend">
+    <li><i class="sw h0"></i>under 2 pp</li><li><i class="sw h1"></i>2 to 5</li><li><i class="sw h2"></i>5 to 10</li><li><i class="sw h3"></i>10 to 20</li><li><i class="sw h4"></i>over 20</li>
+  </ul>
+  <p class="status" id="heat-status" role="status">On GSM8K, runs that differ only in using a plain and a chain-of-thought prompt are 21.1 pp apart on average. Two seeds differ by 2.1 pp there.</p>
+  <figcaption>Mean absolute score change, in percentage points, between runs that differ in exactly one setting. Hover over a cell to read it as a sentence. The largest changes sit in the row where the answer has to be parsed out of generated text. * marks cells driven by the parser failing to find an answer. On GPQA the prompt-format differences are not significant and scores stay near chance. <a href="data/single_setting_change.csv">Table as CSV</a>.</figcaption>
+</figure>
+
+<p>On GSM8K and MMLU, a change of prompt format moves the score by many times the seed-to-seed change. On WinoGrande and OpenBookQA it barely exceeds it. Temperature stays close to the noise floor. Put as shares of the total variation in five-shot GSM8K scores, prompt format accounts for about 27% (bootstrap 95% interval 14.4% to 44.9%) and temperature for 0.25%. Both large GSM8K cells are largely the parser failure from the previous figure, seen in aggregate.</p>
+
+<aside>A small effect of temperature on the <em>score</em> says nothing about which <em>text</em> was sampled. We would not carry this result over to uses that depend on the diversity of outputs.</aside>
+
+<p>A parser can also change underneath a published number. In February 2025 the Open LLM Leaderboard replaced the answer parser it used for MATH Level 5<a class="cite-ref" href="#ref-15" data-refs="15,16" aria-label="Reference 15, 16">[15, 16]</a>. Scores rose by 4.66 pp on average across 3,751 models, and by about 90 pp in the most extreme cases. Its records carry a submission date but no evaluation timestamp and no parser version, so a record does not say which parser produced its score.</p>
+
+<h3 id="judge">When a model does the judging</h3>
+
+<p>For open-ended tasks there is no reference answer to match, and a second model is often asked to rate the output. The judge is then part of the measurement in the same way a parser is. To see how much, we had five models each answer the 80 first-turn questions of MT-Bench<a class="cite-ref" href="#ref-17" data-refs="17" aria-label="Reference 17">[17]</a> once, and gave the same answers to four judge models from different providers, each using the standard 1 to 10 rubric at temperature 0. The answers are fixed, so any change in a model's mean rating comes from the judge.</p>
+
+<figure class="fig" id="fig-judges">
+  <div tabindex="0" role="region" aria-label="Field coverage chart, scrolls sideways on small screens" class="scroll">
+<svg viewBox="0 0 704 330" role="group" aria-labelledby="judges-title judges-desc">
+<title id="judges-title">Mean MT-Bench rating of five models under four judge models</title>
+<desc id="judges-desc">Ministral-8B: 8.44, 7.54, 8.62, 7.51 under GPT-4o-mini, Gemini-3.5-Flash, Llama-3.1-70B, Claude-Haiku-4.5. Qwen2.5-72B: 8.32, 8.59, 8.38, 7.74 under GPT-4o-mini, Gemini-3.5-Flash, Llama-3.1-70B, Claude-Haiku-4.5. Gemma-3-4B: 8.24, 7.96, 8.31, 7.26 under GPT-4o-mini, Gemini-3.5-Flash, Llama-3.1-70B, Claude-Haiku-4.5. Llama-3.1-8B: 8.04, 7.61, 8.22, 6.87 under GPT-4o-mini, Gemini-3.5-Flash, Llama-3.1-70B, Claude-Haiku-4.5. Qwen2.5-7B: 7.86, 8.02, 7.96, 6.97 under GPT-4o-mini, Gemini-3.5-Flash, Llama-3.1-70B, Claude-Haiku-4.5.</desc>
+<text class="ax" x="170" y="22" text-anchor="middle">GPT-4o-mini</text>
+<line class="gridl" x1="170" y1="36" x2="170" y2="308"/>
+<text class="ax" x="310" y="22" text-anchor="middle">Gemini-3.5-Flash</text>
+<line class="gridl" x1="310" y1="36" x2="310" y2="308"/>
+<text class="ax" x="450" y="22" text-anchor="middle">Llama-3.1-70B</text>
+<line class="gridl" x1="450" y1="36" x2="450" y2="308"/>
+<text class="ax" x="590" y="22" text-anchor="middle">Claude-Haiku-4.5</text>
+<line class="gridl" x1="590" y1="36" x2="590" y2="308"/>
+<line class="gridl" x1="160" y1="275.0" x2="660" y2="275.0"/>
+<text class="ax" x="696" y="279.0" text-anchor="end">7.0</text>
+<line class="gridl" x1="160" y1="212.5" x2="660" y2="212.5"/>
+<text class="ax" x="696" y="216.5" text-anchor="end">7.5</text>
+<line class="gridl" x1="160" y1="150.0" x2="660" y2="150.0"/>
+<text class="ax" x="696" y="154.0" text-anchor="end">8.0</text>
+<line class="gridl" x1="160" y1="87.5" x2="660" y2="87.5"/>
+<text class="ax" x="696" y="91.5" text-anchor="end">8.5</text>
+<text class="ax" x="696" y="38" text-anchor="end">mean rating</text>
+<g class="model on" data-m="Ministral-8B" data-spread="1.11" data-ranks="1st,5th,1st,2nd" data-v="8.44,7.54,8.62,7.51" tabindex="0" role="button" aria-label="Ministral-8B: mean ratings 8.44, 7.54, 8.62, 7.51"><polyline class="jl" points="170,95.0 310,207.5 450,72.5 590,211.3"/><circle class="jd" cx="170" cy="95.0" r="4.5"/><circle class="jd" cx="310" cy="207.5" r="4.5"/><circle class="jd" cx="450" cy="72.5" r="4.5"/><circle class="jd" cx="590" cy="211.3" r="4.5"/><text class="jt" x="148" y="99.0" text-anchor="end">Ministral-8B</text><rect x="0" y="87.0" width="156" height="16" fill="transparent"/></g>
+<g class="model" data-m="Qwen2.5-72B" data-spread="0.84" data-ranks="2nd,1st,2nd,1st" data-v="8.32,8.59,8.38,7.74" tabindex="0" role="button" aria-label="Qwen2.5-72B: mean ratings 8.32, 8.59, 8.38, 7.74"><polyline class="jl" points="170,110.0 310,76.3 450,102.5 590,182.5"/><circle class="jd" cx="170" cy="110.0" r="4.5"/><circle class="jd" cx="310" cy="76.3" r="4.5"/><circle class="jd" cx="450" cy="102.5" r="4.5"/><circle class="jd" cx="590" cy="182.5" r="4.5"/><text class="jt" x="148" y="114.0" text-anchor="end">Qwen2.5-72B</text><rect x="0" y="102.0" width="156" height="16" fill="transparent"/></g>
+<g class="model" data-m="Gemma-3-4B" data-spread="1.04" data-ranks="3rd,3rd,3rd,3rd" data-v="8.24,7.96,8.31,7.26" tabindex="0" role="button" aria-label="Gemma-3-4B: mean ratings 8.24, 7.96, 8.31, 7.26"><polyline class="jl" points="170,120.0 310,155.0 450,111.2 590,242.5"/><circle class="jd" cx="170" cy="120.0" r="4.5"/><circle class="jd" cx="310" cy="155.0" r="4.5"/><circle class="jd" cx="450" cy="111.2" r="4.5"/><circle class="jd" cx="590" cy="242.5" r="4.5"/><text class="jt" x="148" y="129.0" text-anchor="end">Gemma-3-4B</text><rect x="0" y="117.0" width="156" height="16" fill="transparent"/></g>
+<g class="model" data-m="Llama-3.1-8B" data-spread="1.35" data-ranks="4th,4th,4th,5th" data-v="8.04,7.61,8.22,6.87" tabindex="0" role="button" aria-label="Llama-3.1-8B: mean ratings 8.04, 7.61, 8.22, 6.87"><polyline class="jl" points="170,145.0 310,198.8 450,122.5 590,291.2"/><circle class="jd" cx="170" cy="145.0" r="4.5"/><circle class="jd" cx="310" cy="198.8" r="4.5"/><circle class="jd" cx="450" cy="122.5" r="4.5"/><circle class="jd" cx="590" cy="291.2" r="4.5"/><text class="jt" x="148" y="149.0" text-anchor="end">Llama-3.1-8B</text><rect x="0" y="137.0" width="156" height="16" fill="transparent"/></g>
+<g class="model" data-m="Qwen2.5-7B" data-spread="1.05" data-ranks="5th,2nd,5th,4th" data-v="7.86,8.02,7.96,6.97" tabindex="0" role="button" aria-label="Qwen2.5-7B: mean ratings 7.86, 8.02, 7.96, 6.97"><polyline class="jl" points="170,167.5 310,147.5 450,155.0 590,278.8"/><circle class="jd" cx="170" cy="167.5" r="4.5"/><circle class="jd" cx="310" cy="147.5" r="4.5"/><circle class="jd" cx="450" cy="155.0" r="4.5"/><circle class="jd" cx="590" cy="278.8" r="4.5"/><text class="jt" x="148" y="171.5" text-anchor="end">Qwen2.5-7B</text><rect x="0" y="159.5" width="156" height="16" fill="transparent"/></g>
+<g class="overlay" aria-hidden="true"><polyline class="jl" points="170,95.0 310,207.5 450,72.5 590,211.3"/><circle class="jd" cx="170" cy="95.0" r="4.5"/><circle class="jd" cx="310" cy="207.5" r="4.5"/><circle class="jd" cx="450" cy="72.5" r="4.5"/><circle class="jd" cx="590" cy="211.3" r="4.5"/><text class="jv" x="170" y="85.0" text-anchor="middle">8.44</text><text class="jv" x="310" y="197.5" text-anchor="middle">7.54</text><text class="jv" x="450" y="62.5" text-anchor="middle">8.62</text><text class="jv" x="590" y="201.3" text-anchor="middle">7.51</text></g>
+</svg>
+  </div>
+  <p class="status" id="judges-status" role="status">Ministral-8B is rated 8.44, 7.54, 8.62 and 7.51, which ranks it 1st, 5th, 1st and 2nd of the five.</p>
+  <figcaption>Mean rating out of 10 for five models, under four judges scoring identical answers. Hover over a model's name, or tab to it. The vertical axis covers 6.8 to 8.8 of the 1 to 10 scale. Each mean is over 78 to 80 ratings, except under Gemini-3.5-Flash, where it is over only 48 to 63, so small differences in that column deserve less weight. <a href="data/judge_sensitivity.csv">Means as CSV</a>.</figcaption>
+</figure>
+
+<p>Across the four judges a model's mean moves by 1.08 points on average and by up to 1.35. Two of the judges order the five models identically, and another pair disagree more than they agree (rank correlation &minus;0.30). Some of the differences between neighbouring models under one judge are under a tenth of a point, so we would not read much into any single crossing. What the chart does show is that a rating has no meaning without the name of the judge. The name is still not enough: the judge's prompt and the rule that turns its response into a number are part of the measurement as well.</p>
+
+<h2 id="cases">The same benchmark name, different procedures</h2>
+
+<p>We followed up several more large gaps between two sources reporting the same model on the same benchmark, most of them above 30 pp, tracing each by hand through documentation, methods sections and citations. We chose cases we expected to be able to diagnose, so they show what kinds of cause exist and say nothing about how common each is. Each row below is one model on one benchmark, and each dot is a published score on a line from 0 to 100.</p>
+
+<figure class="fig l-page" id="fig-cases">
+  <ul class="legend" style="margin:0 0 4px">
+    <li><span class="swatch dot" style="background:var(--gold)"></span>published score</li>
+    <li><span class="swatch" style="background:#fff;border:2px solid var(--gold);border-radius:50%"></span>a second value from the same source (before rescaling, or under another setting)</li>
+    <li><span class="swatch" style="background:var(--gold-3);width:22px"></span>gap between the published scores</li>
+  </ul>
+
+  <h3 class="group-h">Scoring and parsing that were never written down</h3>
+  <div class="ledger">
+    <div class="lrow">
+      <div class="who"><b>Gemma-7B on BBH</b><span>Open LLM Leaderboard v2 and the RecurrentGemma paper</span></div>
+      <div class="strip" role="img" aria-label="Leaderboard 21.12 displayed, 43.62 before rescaling. Paper 55.10.">
+        <span class="axis"></span><span class="seg gap" style="left:21.12%;width:33.98%"></span>
+        <span class="dot k" style="left:21.12%"></span><span class="val" style="left:21.12%">21.12</span>
+        <span class="dot kraw" style="left:43.62%"></span><span class="val below" style="left:43.62%">43.62</span>
+        <span class="dot k" style="left:55.1%"></span><span class="val" style="left:55.1%">55.10</span>
+      </div>
+      <div class="why"><p>The leaderboard ranks answer choices by likelihood and rescales. The papers generate chain-of-thought answers. Other model papers give 55.10 and 57.40 for this model, and a further 59.60 appears under a differently named benchmark entry.</p><p class="rec">In the published records: visible only indirectly, through the metric name (<span class="mono">acc_norm</span>, a normalized accuracy, against <span class="mono">exact_match</span>) and a chain-of-thought flag.</p></div>
+    </div>
+    <div class="lrow">
+      <div class="who"><b>Gemma-2-2B on BBH</b><span>Leaderboard and a model paper</span></div>
+      <div class="strip" role="img" aria-label="Leaderboard 11.76 displayed, 36.56 before rescaling. Paper 40.80.">
+        <span class="axis"></span><span class="seg gap" style="left:11.76%;width:29.04%"></span>
+        <span class="dot k" style="left:11.76%"></span><span class="val" style="left:11.76%">11.76</span>
+        <span class="dot kraw" style="left:36.56%"></span><span class="val below" style="left:36.56%">36.56</span>
+        <span class="dot k" style="left:40.8%"></span><span class="val" style="left:40.8%">40.80</span>
+      </div>
+      <div class="why"><p>The same two choices. Here most of the 29.0 pp is rescaling: the unrescaled value is 4.2 pp from the paper's.</p></div>
+    </div>
+    <div class="lrow">
+      <div class="who"><b>MAmmoTH2-7B-Plus on BBH</b><span>Leaderboard and a model paper</span></div>
+      <div class="strip" role="img" aria-label="Leaderboard 18.93 displayed, 42.35 before rescaling. Paper 63.10.">
+        <span class="axis"></span><span class="seg gap" style="left:18.93%;width:44.17%"></span>
+        <span class="dot k" style="left:18.93%"></span><span class="val" style="left:18.93%">18.93</span>
+        <span class="dot kraw" style="left:42.35%"></span><span class="val below" style="left:42.35%">42.35</span>
+        <span class="dot k" style="left:63.1%"></span><span class="val" style="left:63.1%">63.10</span>
+      </div>
+      <div class="why"><p>The same two choices again. Here the two parts are of similar size: 23.4 pp of rescaling, and 20.8 pp between the unrescaled value and the paper's.</p></div>
+    </div>
+  </div>
+
+  <h3 class="group-h">One benchmark name, several protocols</h3>
+  <div class="ledger">
+    <div class="lrow">
+      <div class="who"><b>Mistral-7B on Belebele</b><span>Reka report and Falcon2 report</span></div>
+      <div class="strip" style="height:66px" role="img" aria-label="Reka report 32.80. Falcon2 report 79.42 five-shot and 32.48 zero-shot.">
+        <span class="axis"></span><span class="seg gap" style="left:32.8%;width:46.62%"></span>
+        <span class="dot k" style="left:32.8%"></span><span class="val" style="left:32.8%">32.80</span>
+        <span class="dot kraw" style="left:32.48%;top:34px"></span><span class="val below" style="left:32.48%;top:50px">32.48</span>
+        <span class="dot k" style="left:79.42%"></span><span class="val" style="left:79.42%">79.42</span>
+      </div>
+      <div class="why"><p>32.80 is zero-shot, averaged over 150 languages. 79.42 is five-shot, English only. The second report's own zero-shot English score is 32.48 (open dot), so shot count explains much of the 46.6 pp.</p><p class="rec">In the published records: shot count can be carried. Language scope has no field.</p></div>
+    </div>
+    <div class="lrow">
+      <div class="who"><b>Llama-2-Chat-7B on TruthfulQA</b><span>OLMo paper and Code Llama paper</span></div>
+      <div class="strip" role="img" aria-label="OLMo paper 26.30. Code Llama paper 57.04.">
+        <span class="axis"></span><span class="seg gap" style="left:26.3%;width:30.74%"></span>
+        <span class="dot k" style="left:26.3%"></span><span class="val" style="left:26.3%">26.30</span>
+        <span class="dot k" style="left:57.04%"></span><span class="val" style="left:57.04%">57.04</span>
+      </div>
+      <div class="why"><p>26.30 is zero-shot with a fine-tuned Llama-2-7B as judge. 57.04 is six-shot with a GPT-3-based judge. Both things change at once, so the gap cannot be divided between them.</p><p class="rec">In the published records: the judge model has no field.</p></div>
+    </div>
+    <div class="lrow">
+      <div class="who"><b>Gemma-7B on HellaSwag</b><span>Phi-3 report and Gemma report</span></div>
+      <div class="strip" role="img" aria-label="Phi-3 report 49.80. Gemma report 81.20.">
+        <span class="axis"></span><span class="seg gap" style="left:49.8%;width:31.4%"></span>
+        <span class="dot k" style="left:49.8%"></span><span class="val" style="left:49.8%">49.80</span>
+        <span class="dot k" style="left:81.2%"></span><span class="val" style="left:81.2%">81.20</span>
+      </div>
+      <div class="why"><p>49.80 is five-shot and 81.20 zero-shot. Shot count alone is unlikely to explain 31 pp, and neither source states its scoring mode. <b>We could not identify the cause.</b></p></div>
+    </div>
+  </div>
+
+  <h3 class="group-h">The same number twice is one measurement</h3>
+  <div class="ledger">
+    <div class="lrow">
+      <div class="who"><b>Gemma-2-9B on BBH</b><span>Four sources, five scores</span></div>
+      <div class="strip" style="height:84px" role="img" aria-label="Two sources report 34.10. Two reports give 68.20, 69.00 and 69.40.">
+        <span class="axis" style="top:42px"></span>
+        <span class="val" style="left:34.1%;top:4px">34.10, twice</span>
+        <span class="dot k" style="left:34.1%;top:24px"></span><span class="dot k" style="left:34.1%;top:44px"></span>
+        <span class="val" style="left:68.87%;top:-6px">68.20, 69.00, 69.40</span>
+        <span class="dot k" style="left:68.2%;top:14px"></span><span class="dot k" style="left:69%;top:34px"></span><span class="dot k" style="left:69.4%;top:54px"></span>
+      </div>
+      <div class="why"><p>The leaderboard lists 34.10. The SEA-LION paper lists the same number and says its English results come from that leaderboard. Whether the value was copied or re-run through the same deterministic pipeline, it is one measurement. The Gemma 2 and Gemma 3 reports form a second cluster about 34 pp higher.</p><p class="rec">In the published records: no run identifier, evaluation timestamp, harness or prompt hash that would tell a copy from an independent run.</p></div>
+    </div>
+  </div>
+  <figcaption>Seven cases in three groups. Each line runs from 0 at its left end to 100 at its right. Dots are stacked or set below the line where scores would overlap. <a href="data/case_studies.csv">Scores as CSV</a>.</figcaption>
+</figure>
+
+<p>The sources for these cases are RecurrentGemma and other model papers for Gemma-7B; Instella<a class="cite-ref" href="#ref-18" data-refs="18" aria-label="Reference 18">[18]</a> for Gemma-2-2B; MAmmoTH2<a class="cite-ref" href="#ref-19" data-refs="19" aria-label="Reference 19">[19]</a>; Belebele<a class="cite-ref" href="#ref-20" data-refs="20" aria-label="Reference 20">[20]</a> as reported by Reka<a class="cite-ref" href="#ref-21" data-refs="21" aria-label="Reference 21">[21]</a> and Falcon2<a class="cite-ref" href="#ref-22" data-refs="22" aria-label="Reference 22">[22]</a>; TruthfulQA<a class="cite-ref" href="#ref-23" data-refs="23" aria-label="Reference 23">[23]</a> as reported in the Code Llama<a class="cite-ref" href="#ref-24" data-refs="24" aria-label="Reference 24">[24]</a> and OLMo<a class="cite-ref" href="#ref-25" data-refs="25" aria-label="Reference 25">[25]</a> papers; HellaSwag<a class="cite-ref" href="#ref-26" data-refs="26" aria-label="Reference 26">[26]</a> as reported by Phi-3<a class="cite-ref" href="#ref-27" data-refs="27" aria-label="Reference 27">[27]</a> and Gemma<a class="cite-ref" href="#ref-28" data-refs="28" aria-label="Reference 28">[28]</a>; and SEA-LION<a class="cite-ref" href="#ref-29" data-refs="29" aria-label="Reference 29">[29]</a> with the Gemma 3 report<a class="cite-ref" href="#ref-30" data-refs="30" aria-label="Reference 30">[30]</a>.</p>
+
+<p>The first group is what the previous section explained: scoring mode and rescaling, neither written down. The second is a different problem. A benchmark name such as Belebele or TruthfulQA covers several legitimate ways of running it, with different shot counts, language subsets or judges, and the name alone does not say which. The third is the opposite of a disagreement. Two sources carry the same 34.10, which looks like one confirming the other, and is one measurement reported twice.</p>
+
+<p>Where we found a cause, it was because documentation happened to survive somewhere outside the record: an About page, a methods section, or a citation for a reused number. For Gemma-7B on HellaSwag nothing of the kind survived, and the gap stays unexplained.</p>
+
+<h2 id="audit">What published records keep</h2>
+
+<p>The cases above turned on scoring mode, harness, prompt, shot count, parser and judge. To see how often details like these are published, we collected 46,559 evaluation records covering 7,398 models and 1,954 benchmarks. Ten sources are leaderboards or structured repositories. The other two are 100 arXiv model papers and technical reports from 2022 to 2026, and Papers With Code<a class="cite-ref" href="#ref-31" data-refs="31" aria-label="Reference 31">[31]</a>.</p>
+
+<p>For each record we checked the five details of the procedure that our harmonized records can hold: shot count, harness, chain-of-thought status, prompt template and temperature. In the chart, compare the middle column with the right-hand one. The only difference is one leaderboard, the one whose values we mostly filled in ourselves, and without it four of the five rows are empty.</p>
+
+<figure class="fig l-body-outset" id="fig-coverage">
+  <div tabindex="0" role="region" aria-label="Per-leaderboard coverage grid, scrolls sideways on small screens" class="scroll">
+<table class="cov"><thead><tr><th scope="col"><span class="sr">Field</span></th><th scope="col"><b>All 12 sources</b> 46,559 records</th><th scope="col"><b>10 leaderboard sources</b> 28,755 records</th><th scope="col"><b>9 leaderboards without Open LLM Leaderboard v2</b> 1,965 records</th></tr></thead>
+<tbody>
+<tr><th scope="row">Shot count</th><td data-label="All 12 sources, 46,559 records"><span class="cell"><span class="track"><span class="fill" style="--v:80.5"></span></span><span class="v">80.5%</span></span></td><td data-label="10 leaderboard sources, 28,755 records"><span class="cell"><span class="track"><span class="fill" style="--v:98.0"></span></span><span class="v">98.0%</span></span></td><td data-label="9 leaderboards without Open LLM Leaderboard v2, 1,965 records"><span class="cell"><span class="track"><span class="fill" style="--v:71.0"></span></span><span class="v">71.0%</span></span></td></tr>
+<tr><th scope="row">Harness</th><td data-label="All 12 sources, 46,559 records"><span class="cell"><span class="track"><span class="fill att" style="--v:57.5"></span><span class="fill" style="--v:5.7"></span></span><span class="v">63.2%</span></span></td><td data-label="10 leaderboard sources, 28,755 records"><span class="cell"><span class="track"><span class="fill att" style="--v:93.2"></span></span><span class="v">93.2%</span></span></td><td data-label="9 leaderboards without Open LLM Leaderboard v2, 1,965 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td></tr>
+<tr><th scope="row">Chain-of-thought status</th><td data-label="All 12 sources, 46,559 records"><span class="cell"><span class="track"><span class="fill" style="--v:50.0"></span></span><span class="v">50.0%</span></span></td><td data-label="10 leaderboard sources, 28,755 records"><span class="cell"><span class="track"><span class="fill" style="--v:77.7"></span></span><span class="v">77.7%</span></span></td><td data-label="9 leaderboards without Open LLM Leaderboard v2, 1,965 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td></tr>
+<tr><th scope="row">Prompt template</th><td data-label="All 12 sources, 46,559 records"><span class="cell"><span class="track"><span class="fill" style="--v:14.1"></span></span><span class="v">14.1%</span></span></td><td data-label="10 leaderboard sources, 28,755 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td><td data-label="9 leaderboards without Open LLM Leaderboard v2, 1,965 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td></tr>
+<tr><th scope="row">Temperature</th><td data-label="All 12 sources, 46,559 records"><span class="cell"><span class="track"><span class="fill" style="--v:3.1"></span></span><span class="v">3.1%</span></span></td><td data-label="10 leaderboard sources, 28,755 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td><td data-label="9 leaderboards without Open LLM Leaderboard v2, 1,965 records"><span class="cell"><span class="track"></span><span class="v zero">0%</span></span></td></tr>
+</tbody></table>
+  </div>
+  <ul class="legend">
+    <li><span class="swatch" style="background:var(--gold)"></span>record holds a value</li>
+    <li><span class="swatch" style="background:repeating-linear-gradient(135deg,var(--gold) 0 3px,var(--gold-3) 3px 6px)"></span>harness name we attached from documentation (the one field where we know the exact split)</li>
+  </ul>
+  <div tabindex="0" role="region" aria-label="Judge ratings chart, scrolls sideways on small screens" class="scroll">
+<table class="grid"><thead><tr><th scope="col">Leaderboard <small>(records)</small></th><th scope="col">Shot count</th><th scope="col">Harness</th><th scope="col">Chain-of-thought status</th><th scope="col">Prompt template</th><th scope="col">Temperature</th></tr></thead>
+<tbody>
+<tr><th scope="row">Open LLM Leaderboard v2 <small>(26,790)</small></th><td><span class="sq full">100</span></td><td><span class="sq att">100</span></td><td><span class="sq part" style="--v:83.4">83.4</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">AlpacaEval 2 <small>(446)</small></th><td><span class="sq full">100</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">BFCL <small>(327)</small></th><td><span class="sq full">100</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">BigCodeBench <small>(280)</small></th><td><span class="sq full">100</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">Chatbot Arena <small>(218)</small></th><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">EvalPlus <small>(214)</small></th><td><span class="sq full">100</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">Hugging Face model cards <small>(207)</small></th><td><span class="sq part" style="--v:5.8">5.8</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">WildBench <small>(122)</small></th><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">SWE-Bench <small>(117)</small></th><td><span class="sq full">100</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+<tr><th scope="row">MT-Bench <small>(34)</small></th><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td><td><span class="sq none">0</span></td></tr>
+</tbody></table>
+  </div>
+  <figcaption><b>Top:</b> share of records with a value for each field, under three denominators. <b>Bottom:</b> the same five fields for each of the ten leaderboards, as a percentage of that leaderboard's records. A field counts as filled if it holds anything other than "unknown", including values we inferred from platform documentation or set by default, so these numbers describe our corpus and overstate what the sources publish. Scoring mode has no row because no source records it. <a href="data/coverage.csv">Bars as CSV</a>, <a href="data/sources.csv">grid as CSV</a>.</figcaption>
+</figure>
+
+<p>The harness row shows why coverage cannot be read at face value. Across all records it stands at 63.2%. But 57.5 of those points are Open LLM Leaderboard v2 records to which we attached the harness name ourselves, because its About page names it. None of the ten leaderboard APIs returns a harness field. Leaderboard shot counts and chain-of-thought status come mostly from the same kind of inference: each platform runs one fixed protocol, and we filled the value in from its documentation.</p>
+
+<aside>The arXiv records were extracted from papers with a language model. Against hand-checked tables from ten papers the extracted scores are 97.5% precise, with 81.4% recall. See <a href="#details">Details and controls</a>.</aside>
+
+<p>That one leaderboard contributes 26,790 of the 28,755 leaderboard records. Without it, four of the five fields are empty, and shot count survives at 71.0% only for leaderboards that run at a single fixed shot count.</p>
+
+<p>The leaderboard's own row for <code>google/gemma-2-9b</code> has 36 columns. It identifies the evaluated model precisely, down to the exact weight revision, the numeric precision and whether a chat template was applied, and it gives every benchmark both a raw and a displayed value. No column names the harness, the scoring mode, the prompt template or the temperature. When the score is repeated in a comparison table or on another site, most of even this is dropped: what travels is little more than the model name and the six displayed scores.</p>
+
+<h3 id="overlap">How often can one source be checked against another?</h3>
+
+<p>If records do not say how a score was produced, the next best check is a second source reporting the same model on the same benchmark. The 46,559 records cover 41,999 distinct pairs of model and benchmark. Under our name matching, 291 of those pairs appear in at least two sources.</p>
+
+<figure class="fig" id="fig-overlap">
+  <div class="sliver" role="img" aria-label="291 of 41,999 pairs, 0.69 percent"><i></i></div>
+  <p class="sliver-label">The blue sliver at the left end is 291 of 41,999 pairs (0.69%), drawn to scale.</p>
+<div class="waffle" role="img" aria-label="291 squares: 77 pairs within 1 percentage point, 45 between 1 and 5, 169 more than 5 apart"><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b1" data-b="b1"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b2" data-b="b2"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i><i class="b3" data-b="b3"></i></div>
+  <ul class="bands" aria-label="How far apart the sources are">
+    <li data-b="b1" tabindex="0"><span class="swatch b1"></span><b>77</b> within 1 pp</li>
+    <li data-b="b2" tabindex="0"><span class="swatch b2"></span><b>45</b> between 1 and 5 pp apart</li>
+    <li data-b="b3" tabindex="0"><span class="swatch b3"></span><b>169</b> more than 5 pp apart</li>
+  </ul>
+  <figcaption>Each square is one model and benchmark pair reported by at least two sources. Blue squares are pairs whose sources agree to within 1 pp, and the two golds are pairs whose sources do not. Hover over a row of the key, or over a square, to pick out one group. 214 of the 291 (74%) differ by more than 1 pp and 169 (58%) by more than 5 pp, which leaves 77 within 1 pp and 45 between 1 and 5. The squares within a band are interchangeable: we are showing counts, not individual pairs. Name matching can miss pairs, which makes 291 a lower bound.</figcaption>
+</figure>
+
+<p>A cross-check is possible for fewer than one pair in a hundred, and where it is possible the sources usually disagree. For 98% of these disagreements the harness is unknown, and the scoring mode is never recorded. Agreement is not always reassuring either. As the Gemma case showed, two sources can carry the same number because one took it from the other.</p>
+
+<p>One regularity is visible even without metadata. Open LLM Leaderboard v2 scores below a paper reporting the same model in 37 of 42 BBH comparisons, with a median gap of 25.6 pp, and in 19 of 24 MMLU-Pro comparisons, with a median gap of 8.0 pp. Each comparison sets the leaderboard against whichever result a paper chose to report, so these gaps mix differences of protocol with differences in what gets reported, and should not be read as the size of any one effect.</p>
+
+<h2 id="evalspec">EvalSpec: fields to publish with a score</h2>
+
+<p>Metadata that was left out cannot be recovered after the fact, so a remedy has to apply to results published from now on. EvalSpec is our proposal for the minimum a published score should carry. It is a conformance profile, a statement of which fields must be present, over the Every Eval Ever schema<a class="cite-ref" href="#ref-32" data-refs="32" aria-label="Reference 32">[32]</a> as we extended it for this study (version 0.2.1 plus eight fields). It adds no file format of its own: most EvalSpec fields name a location that already exists in that schema and make it mandatory. One field is new, <code>scoring_mode</code>, because no existing path carries it.</p>
+
+<p>The fields come in three tiers. <em>Required</em> fields let a reader decide whether two scores were produced under the same regime. <em>Recommended</em> fields are what you would need to re-run the evaluation. <em>Full</em> fields support an audit. Where we have evidence, the tiers follow it: prompt and shot count moved scores by tens of points and are Required, while temperature barely moved them and is Recommended.</p>
+
+<figure class="fig l-body-outset" id="fig-fields">
+  <div class="fields">
+    <section class="tier">
+      <header><h3>Required</h3><p>For comparability. 13 fields: ten for every result, one more when the answer is parsed from generated text, two more when a judge produces the score.</p></header>
+      <dl>
+        <div class="f"><dt>model_id</dt><dd>Model identifier.</dd></div>
+        <div class="f"><dt>benchmark_id</dt><dd>Benchmark name and release version.</dd></div>
+        <div class="f"><dt>scoring_mode <span class="new">new field</span></dt><dd>One of <span class="mono">log-likelihood</span>, <span class="mono">generation</span>, <span class="mono">preference</span>, <span class="mono">execution</span>. <span class="because">Separates the 34.10 from the 68.20 for Gemma-2-9B on BBH.</span></dd></div>
+        <div class="f"><dt>harness_name</dt><dd>Software or evaluation framework that ran the benchmark. <span class="because">Unknown for 98% of the cross-source disagreements.</span></dd></div>
+        <div class="f"><dt>harness_version</dt><dd>Exact immutable harness version. <span class="because">Two releases differed by at most 1.97 pp on GSM8K; with the version recorded, a later divergence can be attributed.</span></dd></div>
+        <div class="f"><dt>n_shot</dt><dd>Number of in-context examples. <span class="because">Differs between the two Belebele reports, and explains much of their 46.6 pp.</span></dd></div>
+        <div class="f"><dt>benchmark_variant</dt><dd>Sub-task or configuration key. <span class="because">Language scope on Belebele has nowhere else to go.</span></dd></div>
+        <div class="f"><dt>judge_model</dt><dd>Scorer model, <span class="mono">null</span> if there is none. <span class="because">The field the TruthfulQA records lack.</span></dd></div>
+        <div class="f"><dt>evaluation_timestamp</dt><dd>When the evaluation was run, ISO 8601. <span class="because">Would separate scores from before and after the MATH Level 5 parser change, and a re-run from a copy.</span></dd></div>
+        <div class="f"><dt>prompt_template_hash</dt><dd>SHA-256 of the fully rendered prompt: task template, system instruction and chat template. <span class="because">The prompt is the only thing that differs between 58.5% and 2.5% on GSM8K.</span></dd></div>
+        <div class="f"><dt>answer_parser_version <span class="cond">generation-scored results</span></dt><dd>Answer extractor or parser, with its version.</dd></div>
+        <div class="f"><dt>judge_prompt_hash <span class="cond">judge-scored results</span></dt><dd>SHA-256 of the canonical judge prompt and rubric.</dd></div>
+        <div class="f"><dt>judge_score_rule <span class="cond">judge-scored results</span></dt><dd>Procedure that turns the judge's response into a score.</dd></div>
+      </dl>
+    </section>
+    <section class="tier">
+      <header><h3>Recommended</h3><p>For reproducibility. 5 fields.</p></header>
+      <dl>
+        <div class="f"><dt>temperature</dt><dd>Sampling temperature.</dd></div>
+        <div class="f"><dt>top_p</dt><dd>Cumulative-probability threshold for nucleus sampling.</dd></div>
+        <div class="f"><dt>quantization</dt><dd>Weight-quantization method used for inference.</dd></div>
+        <div class="f"><dt>hardware</dt><dd>GPU type and count.</dd></div>
+        <div class="f"><dt>random_seed</dt><dd>Random number generator seed.</dd></div>
+      </dl>
+    </section>
+    <section class="tier">
+      <header><h3>Full</h3><p>For audit. 3 fields.</p></header>
+      <dl>
+        <div class="f"><dt>provenance_url</dt><dd>Link to raw outputs, logs or evaluation artifacts.</dd></div>
+        <div class="f"><dt>contamination_check</dt><dd>Decontamination method and the date it was run.</dd></div>
+        <div class="f"><dt>compute_hours</dt><dd>Total GPU time in device-hours.</dd></div>
+      </dl>
+    </section>
+  </div>
+  <figcaption>The EvalSpec fields by tier. Under some Required fields is the case from this article where the missing value stood between us and an explanation. Every value also carries a tag saying whether the source reported it or a pipeline filled it in. <a href="data/evalspec_fields.json">Field list as JSON</a>.</figcaption>
+</figure>
+
+<p>The four values of <code>scoring_mode</code> are set by how the reported number is produced. <span class="mono">log-likelihood</span>: the model assigns a probability to each answer option given in advance and the most probable is selected; no text is generated. <span class="mono">generation</span>: the model writes free text and a parser extracts the answer. <span class="mono">preference</span>: a human or model judge rates or ranks outputs, and the score is derived from those judgments. <span class="mono">execution</span>: the output is run against test cases or a verifier. A pipeline with several stages is labelled by the stage that produces the number.</p>
+
+<p>EvalSpec is a proposal and has not been validated as a standard. No record we collected satisfies the Required tier, because its fields are the ones public sources tend to leave out.</p>
+
+<h3 id="worked">The Gemma scores with the fields filled in</h3>
+
+<p>The table takes three of the sources for Gemma-2-9B on BBH and lists them by Required field. Switch between the records as released, where every field below the score is unknown, and the configuration we reconstructed. Under the table are the two questions a reader has about any pair of scores.</p>
+
+<figure class="fig l-body-outset" id="fig-worked">
+  <div class="controls">
+    <div class="btngroup" role="group" aria-label="Which version of the records to show" hidden>
+      <button class="btn" type="button" data-view="released" aria-pressed="false">As released</button>
+      <button class="btn" type="button" data-view="filled" aria-pressed="true">With the Required fields filled in</button>
+    </div>
+  </div>
+  <div tabindex="0" role="region" aria-label="Worked example table, scrolls sideways on small screens" class="scroll">
+  <table class="worked">
+    <thead><tr><th scope="col">Field</th><th scope="col">Open LLM Leaderboard v2</th><th scope="col">SEA-LION paper</th><th scope="col">Gemma reports</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">model_id</th><td>gemma-2-9b</td><td>gemma-2-9b</td><td>gemma-2-9b</td></tr>
+      <tr><th scope="row">benchmark_id</th><td>BBH</td><td>BBH</td><td>BBH</td></tr>
+      <tr><th scope="row">score</th><td><b>34.10</b></td><td><b>34.10</b></td><td><b>68.2 to 69.4</b></td></tr>
+      <tr class="f"><th scope="row">scoring_mode</th><td><span class="v blue">log-likelihood</span><span class="u hollow">unknown</span></td><td><span class="v blue">log-likelihood</span><span class="u hollow">unknown</span></td><td><span class="v gold">generation</span><span class="u hollow">unknown</span></td></tr>
+      <tr class="f"><th scope="row">harness_name</th><td><span class="v">lm-evaluation-harness (fork)</span><span class="u hollow">unknown</span></td><td><span class="v">lm-evaluation-harness (fork)</span><span class="u hollow">unknown</span></td><td><span class="v">a chain-of-thought pipeline</span><span class="u hollow">unknown</span></td></tr>
+      <tr class="f"><th scope="row">n_shot</th><td><span class="v">3</span><span class="u hollow">unknown</span></td><td><span class="v">3</span><span class="u hollow">unknown</span></td><td><span class="v">0 to 3</span><span class="u hollow">unknown</span></td></tr>
+      <tr><th scope="row">evaluation_timestamp</th><td><span class="hollow">unknown</span></td><td><span class="hollow">unknown</span></td><td><span class="hollow">unknown</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <dl class="qa" id="worked-qa" role="status">
+    <dt>Were the scores produced the same way?</dt>
+    <dd class="filled">The two 34.10s share a scoring mode, a harness and a shot count. The Gemma reports use a different scoring mode, so 68.2 to 69.4 cannot be set against 34.10.</dd>
+    <dd class="released">Cannot tell. Every field below the score is unknown, and the scores span 35 pp.</dd>
+    <dt>Are the two 34.10s independent measurements?</dt>
+    <dd class="filled">Still cannot tell. A harness name with two distinct evaluation timestamps would separate a re-run from a re-import, and no timestamp is recorded anywhere, so this row stays empty even in our reconstruction.</dd>
+    <dd class="released">Cannot tell. Two sources agreeing to the second decimal looks like a replication.</dd>
+  </dl>
+  <figcaption>The values in the three rows below the score are the configuration each score was produced under, as we reconstructed it. In the released records they are unknown for every source.</figcaption>
+</figure>
+
+<p>Partial adoption already helps. One recorded field, the scoring mode, is enough to stop 34.10 and 68.20 from being averaged or ranked together. Telling a copy from a replication needs the evaluation timestamp as well, which we could not reconstruct.</p>
+
+<h3 id="records">What a record looks like</h3>
+
+<p>Written as a Required-tier record, the leaderboard's BBH score looks like the first block below. The placeholders in angle brackets are values that only the producer knows, and knows at the moment the evaluation runs. The second block is what our released hook, a small add-on that writes a record when a run finishes, emits from an ordinary lm-evaluation-harness run of Qwen2.5-14B on GSM8K.</p>
+
+<div class="two-col l-body-outset" style="margin-bottom:1em">
+<pre tabindex="0" aria-label="Required-tier record for the leaderboard's BBH score"><code>{
+  "model_id": "google/gemma-2-9b",
+  "benchmark_id": "bbh",
+  "score": 34.10,
+  "scoring_mode": "log-likelihood",
+  "harness_name": "lm-evaluation-harness",
+  "harness_version": "&lt;version&gt;",
+  "n_shot": 3,
+  "benchmark_variant": "bbh",
+  "judge_model": null,
+  "evaluation_timestamp": "&lt;ISO-8601&gt;",
+  "prompt_template_hash": "sha256:&lt;hash&gt;"
+}</code></pre>
+<pre tabindex="0" aria-label="Record emitted by the hook for a GSM8K run"><code>{
+  "model_id": "Qwen/Qwen2.5-14B-Instruct",
+  "benchmark": "gsm8k",
+  "score": 0.585,
+  "scoring_mode": "generation",
+  "harness_name": "lm-evaluation-harness",
+  "harness_version": "0.4.11",
+  "n_shot": 5,
+  "random_seed": 42,
+  "evaluation_timestamp": "2026-07-03T10:00:00Z",
+  "prompt_template_hash": "sha256:870",
+  "temperature": 0.0,
+  "evidence_source": "source-reported"
+}</code></pre>
+</div>
+
+<p>The hook's record is not yet a complete Required-tier record. It fills seven of the thirteen Required fields and two Recommended ones, and reads <code>scoring_mode</code> from the task's <code>output_type</code>. It lacks two things. It has no <code>answer_parser_version</code>, which a generation-scored result needs. Its hash covers only the task's prompt template, where a conformant hash also covers the system instruction and chat template. That gap matters: our three GSM8K prompts differ only in the system message, so this hash would not tell the 58.5% run from the 2.5% run.</p>
+
+<p>We show the hook's output anyway because of where its information comes from. A harness holds the full configuration in memory when it computes a score, so writing it out needs no extra measurement, and large or sensitive items such as prompts can be recorded as hashes. That makes harnesses the natural place to start. Model developers can publish the resulting records next to model cards and technical reports. Leaderboards can expose the Required fields through their APIs, where today they are implicit in the platform's protocol, and keep the source of any score they import so that a copy is not counted as a replication.</p>
+
+<h2 id="details">Details and controls</h2>
+
+<h3 id="details-corpus">How the corpus was built</h3>
+
+<p>Leaderboards alone could not support the cross-source analysis, since few model and benchmark pairs appear on more than one of them. We therefore added 100 arXiv model papers and extracted their result tables with a language model. 17,228 of the 46,559 records, 37%, come from that extraction. Against hand-checked tables from ten papers, 1,976 of 2,027 extracted triples matched (97.5% precision) at 81.4% recall. Settings are harder than scores: in a separate six-paper audit, carried out with a second model, 42.3% of the settings our pipeline had filled in were never stated by the paper and are defaults or guesses. For harness names the extractor erred on the cautious side, returning "unknown" for 105 of 368 rows where the paper did name one, and never naming a harness the paper did not.</p>
+
+<div tabindex="0" role="region" aria-label="Sources table, scrolls sideways on small screens" class="scroll l-body-outset">
+<table>
+  <thead><tr><th scope="col">Source</th><th scope="col" class="n">Records</th><th scope="col" class="n">Models</th><th scope="col" class="n">Benchmarks</th></tr></thead>
+  <tbody>
+    <tr><td>Open LLM Leaderboard v2</td><td class="n">26,790</td><td class="n">4,465</td><td class="n">6</td></tr>
+    <tr><td>AlpacaEval 2</td><td class="n">446</td><td class="n">223</td><td class="n">2</td></tr>
+    <tr><td>BFCL</td><td class="n">327</td><td class="n">109</td><td class="n">3</td></tr>
+    <tr><td>BigCodeBench</td><td class="n">280</td><td class="n">156</td><td class="n">2</td></tr>
+    <tr><td>Chatbot Arena</td><td class="n">218</td><td class="n">218</td><td class="n">1</td></tr>
+    <tr><td>EvalPlus</td><td class="n">214</td><td class="n">125</td><td class="n">2</td></tr>
+    <tr><td>Hugging Face model cards</td><td class="n">207</td><td class="n">11</td><td class="n">156</td></tr>
+    <tr><td>WildBench</td><td class="n">122</td><td class="n">61</td><td class="n">2</td></tr>
+    <tr><td>SWE-Bench</td><td class="n">117</td><td class="n">117</td><td class="n">1</td></tr>
+    <tr><td>MT-Bench</td><td class="n">34</td><td class="n">34</td><td class="n">1</td></tr>
+    <tr><td>arXiv papers (language-model extraction)</td><td class="n">17,228</td><td class="n">1,726</td><td class="n">1,806</td></tr>
+    <tr><td>Papers With Code</td><td class="n">576</td><td class="n">383</td><td class="n">16</td></tr>
+    <tr><td><b>Total</b></td><td class="n"><b>46,559</b></td><td class="n"><b>7,398</b></td><td class="n"><b>1,954</b></td></tr>
+  </tbody>
+</table>
+</div>
+
+
+<p style="font-size:13px;color:var(--ink-2)">Model and benchmark totals are smaller than the column sums because some appear in several sources.</p>
+
+<h3 id="details-small">Settings that moved scores little</h3>
+
+<p>Three further results belong next to the table of score changes. A separate sweep of sampling temperature from 0.0 to 1.0 accounts for 2.2% of the variance in GSM8K accuracy and 0.66% in MT-Bench judged scores, where the mean spread is 0.05 on the ten-point scale. Two releases of one harness, lm-evaluation-harness 0.4.3 and 0.4.11, differ by at most 1.97 pp on GSM8K, less than the spread between two seeds (up to 2.81 pp). And on MMLU, zero-shot and five-shot means pooled over runs are 60.17 and 61.16, a difference that is not significant, even though individual pairs of runs move by 6.3 pp on average in one direction or the other.</p>
+
+<p>The parser effect on GSM8K also depends on the software around the model. In a replication on the full test set with a different inference backend, the two Qwen2.5 models fell from 37.0% to 7.0% and from 38.2% to 0.1% between the plain and chain-of-thought prompts. A pooled test over three models there was underpowered, and a further run on the same backend with a different few-shot seed and batch size reversed the ordering for one of the models. We cannot rule out that the backend itself shifts scores.</p>
+
+<h3 id="details-modes">How common benchmarks are usually scored</h3>
+
+<p>These are usual defaults. A benchmark can be run under another mode, which is why <code>scoring_mode</code> has to be recorded and cannot be inferred from the benchmark's name.</p>
+
+<div tabindex="0" role="region" aria-label="Benchmark scoring table, scrolls sideways on small screens" class="scroll l-body-outset">
+<table>
+  <thead><tr><th scope="col">Benchmark</th><th scope="col">Typical scoring mode</th><th scope="col">Variants that change scores</th></tr></thead>
+  <tbody>
+    <tr><td>MMLU</td><td>log-likelihood, multiple choice</td><td><span class="mono">acc</span> or <span class="mono">acc_norm</span>; letter or full option; shot count</td></tr>
+    <tr><td>ARC, OpenBookQA, WinoGrande</td><td>log-likelihood, multiple choice</td><td><span class="mono">acc</span> or length-normalized <span class="mono">acc_norm</span>; shot count</td></tr>
+    <tr><td>HellaSwag</td><td>log-likelihood, continuation</td><td>raw or length-normalized; shot count</td></tr>
+    <tr><td>GSM8K</td><td>generation with a numeric parser</td><td>answer-extraction pattern; chain-of-thought or plain; flexible or strict match</td></tr>
+    <tr><td>BBH</td><td>generation with chain-of-thought</td><td>chain-of-thought or direct; answer-extraction rule</td></tr>
+    <tr><td>TruthfulQA</td><td>log-likelihood (MC1, MC2) or a model judge</td><td>multiple choice or judge; which judge</td></tr>
+    <tr><td>HumanEval, MBPP</td><td>execution (pass@<i>k</i>)</td><td><i>k</i>; test harness; prompt wrapping</td></tr>
+    <tr><td>AlpacaEval, MT-Bench, Chatbot Arena</td><td>model judge or preference</td><td>judge model; rubric; length control</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="details-platforms">What three evaluation platforms already expose</h3>
+
+<p>We checked how HELM, LightEval and OpenCompass expose the ten Required fields that apply to every result. "Field" means a first-class field that can be queried; "implicit" means present only by convention or as an ad hoc run parameter. The platforms log the execution context (harness, shots, model) and leave the scoring contract (mode, judge, parser) implicit.</p>
+
+<div tabindex="0" role="region" aria-label="Platform table, scrolls sideways on small screens" class="scroll">
+<table>
+  <thead><tr><th scope="col">Required field</th><th scope="col">HELM</th><th scope="col">LightEval</th><th scope="col">OpenCompass</th></tr></thead>
+  <tbody>
+    <tr><td><span class="mono">harness_name</span>, <span class="mono">harness_version</span></td><td>field</td><td>field</td><td>implicit</td></tr>
+    <tr><td><span class="mono">n_shot</span></td><td>field</td><td>field</td><td>implicit</td></tr>
+    <tr><td><span class="mono">prompt_template_hash</span></td><td>implicit</td><td>field</td><td>implicit</td></tr>
+    <tr><td><span class="mono">scoring_mode</span></td><td>implicit</td><td>implicit</td><td><span class="hollow">absent</span></td></tr>
+    <tr><td><span class="mono">model_id</span></td><td>field</td><td>field</td><td>field</td></tr>
+    <tr><td><span class="mono">benchmark_id</span></td><td>field</td><td>field</td><td>implicit</td></tr>
+    <tr><td><span class="mono">benchmark_variant</span></td><td>implicit</td><td>field</td><td><span class="hollow">absent</span></td></tr>
+    <tr><td><span class="mono">judge_model</span></td><td>implicit</td><td><span class="hollow">absent</span></td><td><span class="hollow">absent</span></td></tr>
+    <tr><td><span class="mono">evaluation_timestamp</span></td><td>implicit</td><td>implicit</td><td><span class="hollow">absent</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="details-related">Related proposals</h3>
+
+<p>EvalSpec sits beside several efforts to document evaluations, among them model cards<a class="cite-ref" href="#ref-33" data-refs="33" aria-label="Reference 33">[33]</a>, Evaluation Cards<a class="cite-ref" href="#ref-34" data-refs="34" aria-label="Reference 34">[34]</a>, Eval Factsheets<a class="cite-ref" href="#ref-35" data-refs="35" aria-label="Reference 35">[35]</a> and Croissant Tasks<a class="cite-ref" href="#ref-36" data-refs="36" aria-label="Reference 36">[36]</a>. Those describe an evaluation for a human reader or define a general metadata format. EvalSpec is narrower: a fixed list of machine-readable fields, chosen by which ones were missing in our audit and moved scores in our experiments.</p>
+
+<h2 id="limits">What this does not show</h2>
+
+<p>Our coverage numbers count inferred and default values, so they overstate what leaderboards publish, while extraction misses pull the other way for papers. Matching records across sources depends on heuristic name normalization. Matches we missed make 0.69% a lower bound on overlap. Wrong merges are the worse error: two different checkpoints collapsed into one name appear as a disagreement that our own pipeline created.</p>
+
+<p>One platform supplies 93% of the leaderboard records, so the aggregate statistics mostly describe the Open LLM Leaderboard v2. The cases we traced were chosen because we thought they could be diagnosed, and one of them could not. The controlled experiments use four instruction-tuned models between 7B and 14B parameters, English benchmarks and subsampled test sets, with few independent units per test.</p>
+
+<p>EvalSpec makes protocols visible. It does not make them the same: two fully documented scores produced by different procedures are still not comparable, and the record only lets you see that. It cannot repair the historical records examined here. And we have not measured what it costs a harness or a leaderboard to adopt it.</p>
+
+</main>
+
+<div class="d-appendix">
+  <h3 id="footnotes">Footnotes</h3>
+<ol class="footnotes">
+  <li id="fn-1">68.20 is exactly twice 34.10. That is a coincidence: the leaderboard's unrounded value is 34.097, and no step in either procedure doubles or halves a score. <a class="backlink" href="#fnref-1" aria-label="Back to text">[&#8617;]</a></li>
+</ol>
+
+  <h3 id="references">References</h3>
+<ol class="references">
+  <li id="ref-1"><span class="title">Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them</span> <a href="https://aclanthology.org/2023.findings-acl.824/">[link]</a><br>Mirac Suzgun et al., Findings of the Association for Computational Linguistics: ACL 2023, 2023.</li>
+  <li id="ref-2"><span class="title">Open LLM Leaderboard v2: About</span> <a href="https://huggingface.co/docs/leaderboards/en/open_llm_leaderboard/about">[link]</a><br>Hugging Face, Hugging Face documentation, 2024.</li>
+  <li id="ref-3"><span class="title">Gemma 2: Improving Open Language Models at a Practical Size</span> <a href="https://arxiv.org/abs/2408.00118">[link]</a><br>Gemma Team et al., arXiv, 2024.</li>
+  <li id="ref-4"><span class="title">The Language Model Evaluation Harness</span> <a href="https://zenodo.org/records/12608602">[link]</a><br>Leo Gao et al., Zenodo, 2024.</li>
+  <li id="ref-5"><span class="title">Lessons from the Trenches on Reproducible Evaluation of Language Models</span> <a href="https://arxiv.org/abs/2405.14782">[link]</a><br>Stella Biderman et al., arXiv, 2024.</li>
+  <li id="ref-6"><span class="title">Holistic Evaluation of Language Models</span> <a href="https://openreview.net/forum?id=iO4LZibEqW">[link]</a><br>Percy Liang et al., Transactions on Machine Learning Research, 2023.</li>
+  <li id="ref-7"><span class="title">LightEval: A lightweight framework for LLM evaluation</span> <a href="https://github.com/huggingface/lighteval">[link]</a><br>Nathan Habib et al., GitHub repository, 2023.</li>
+  <li id="ref-8"><span class="title">OpenCompass: A Universal Evaluation Platform for Foundation Models</span> <a href="https://github.com/open-compass/opencompass">[link]</a><br>OpenCompass Contributors, GitHub repository, 2023.</li>
+  <li id="ref-9"><span class="title">When Benchmarks are Targets: Revealing the Sensitivity of Large Language Model Leaderboards</span> <a href="https://doi.org/10.18653/v1/2024.acl-long.744">[link]</a><br>Norah Alzahrani et al., Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2024.</li>
+  <li id="ref-10"><span class="title">State of What Art? A Call for Multi-Prompt LLM Evaluation</span> <a href="https://aclanthology.org/2024.tacl-1.52/">[link]</a><br>Moran Mizrahi et al., Transactions of the Association for Computational Linguistics, 2024.</li>
+  <li id="ref-11"><span class="title">Open LLM Leaderboard: Scores Normalization</span> <a href="https://huggingface.co/docs/leaderboards/en/open_llm_leaderboard/normalization">[link]</a><br>Hugging Face, Hugging Face documentation, 2024.</li>
+  <li id="ref-12"><span class="title">Measuring Massive Multitask Language Understanding</span> <a href="https://openreview.net/forum?id=d7KBjmI3GmQ">[link]</a><br>Dan Hendrycks et al., International Conference on Learning Representations, 2021.</li>
+  <li id="ref-13"><span class="title">Training Verifiers to Solve Math Word Problems</span> <a href="https://arxiv.org/abs/2110.14168">[link]</a><br>Karl Cobbe et al., arXiv, 2021.</li>
+  <li id="ref-14"><span class="title">Qwen2.5 Technical Report</span> <a href="https://arxiv.org/abs/2412.15115">[link]</a><br>Qwen Team, arXiv, 2025.</li>
+  <li id="ref-15"><span class="title">Fixing Open LLM Leaderboard with Math-Verify</span> <a href="https://huggingface.co/blog/math_verify_leaderboard">[link]</a><br>Hynek Kydlicek, Hugging Face blog, 2025.</li>
+  <li id="ref-16"><span class="title">Measuring Mathematical Problem Solving With the MATH Dataset</span> <a href="https://openreview.net/forum?id=7Bywt2mQsCe">[link]</a><br>Dan Hendrycks et al., Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 2), 2021.</li>
+  <li id="ref-17"><span class="title">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</span> <a href="https://proceedings.neurips.cc/paper_files/paper/2023/file/91f18a1287b398d378ef22505bf41832-Paper-Datasets_and_Benchmarks.pdf">[link]</a><br>Lianmin Zheng et al., Advances in Neural Information Processing Systems, 2023.</li>
+  <li id="ref-18"><span class="title">Instella: Fully Open Language Models with Stellar Performance</span> <a href="https://arxiv.org/abs/2511.10628">[link]</a><br>Jiang Liu et al., arXiv, 2025.</li>
+  <li id="ref-19"><span class="title">MAmmoTH2: Scaling Instructions from the Web</span> <a href="https://proceedings.neurips.cc/paper_files/paper/2024/file/a4ca07aa108036f80cbb5b82285fd4b1-Paper-Conference.pdf">[link]</a><br>Xiang Yue et al., Advances in Neural Information Processing Systems, 2024.</li>
+  <li id="ref-20"><span class="title">The Belebele Benchmark: A Parallel Reading Comprehension Dataset in 122 Language Variants</span> <a href="https://aclanthology.org/2024.acl-long.44/">[link]</a><br>Lucas Bandarkar et al., Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2024.</li>
+  <li id="ref-21"><span class="title">Reka Core, Flash, and Edge: A Series of Powerful Multimodal Language Models</span> <a href="https://arxiv.org/abs/2404.12387">[link]</a><br>Reka Team et al., arXiv, 2024.</li>
+  <li id="ref-22"><span class="title">Falcon2-11B Technical Report</span> <a href="https://arxiv.org/abs/2407.14885">[link]</a><br>Quentin Malartic et al., arXiv, 2024.</li>
+  <li id="ref-23"><span class="title">TruthfulQA: Measuring How Models Mimic Human Falsehoods</span> <a href="https://aclanthology.org/2022.acl-long.229/">[link]</a><br>Stephanie Lin, Jacob Hilton and Owain Evans, Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2022.</li>
+  <li id="ref-24"><span class="title">Code Llama: Open Foundation Models for Code</span> <a href="https://arxiv.org/abs/2308.12950">[link]</a><br>Baptiste Rozière et al., arXiv, 2024.</li>
+  <li id="ref-25"><span class="title">OLMo: Accelerating the Science of Language Models</span> <a href="https://aclanthology.org/2024.acl-long.841/">[link]</a><br>Dirk Groeneveld et al., Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2024.</li>
+  <li id="ref-26"><span class="title">HellaSwag: Can a Machine Really Finish Your Sentence?</span> <a href="https://aclanthology.org/P19-1472/">[link]</a><br>Rowan Zellers et al., Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, 2019.</li>
+  <li id="ref-27"><span class="title">Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone</span> <a href="https://arxiv.org/abs/2404.14219">[link]</a><br>Marah Abdin et al., arXiv, 2024.</li>
+  <li id="ref-28"><span class="title">Gemma: Open Models Based on Gemini Research and Technology</span> <a href="https://arxiv.org/abs/2403.08295">[link]</a><br>Gemma Team et al., arXiv, 2024.</li>
+  <li id="ref-29"><span class="title">SEA-LION: Southeast Asian Languages in One Network</span> <a href="https://aclanthology.org/2025.ijcnlp-long.30/">[link]</a><br>Raymond Ng et al., Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics, 2025.</li>
+  <li id="ref-30"><span class="title">Gemma 3 Technical Report</span> <a href="https://arxiv.org/abs/2503.19786">[link]</a><br>Gemma Team et al., arXiv, 2025.</li>
+  <li id="ref-31"><span class="title">Papers With Code</span> <a href="https://huggingface.co/papers/trending">[link]</a><br>Papers With Code, Site decommissioned July 2025, 2025.</li>
+  <li id="ref-32"><span class="title">Every Eval Ever: Toward a Common Language for AI Eval Reporting</span> <a href="https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/">[link]</a><br>Jan Batzner et al., EvalEval Coalition blog, 2026.</li>
+  <li id="ref-33"><span class="title">Model Cards for Model Reporting</span> <a href="https://doi.org/10.1145/3287560.3287596">[link]</a><br>Margaret Mitchell et al., Proceedings of the Conference on Fairness, Accountability, and Transparency, 2019.</li>
+  <li id="ref-34"><span class="title">Evaluation Cards: An Interpretive Layer for AI Evaluation Reporting</span> <a href="https://arxiv.org/abs/2606.09809">[link]</a><br>Avijit Ghosh et al., arXiv, 2026.</li>
+  <li id="ref-35"><span class="title">Eval Factsheets: A Structured Framework for Documenting AI Evaluations</span> <a href="https://arxiv.org/abs/2512.04062">[link]</a><br>Florian Bordes et al., arXiv, 2025.</li>
+  <li id="ref-36"><span class="title">Croissant Tasks: A Metadata Format for Reproducible Machine Learning Evaluations</span> <a href="https://arxiv.org/abs/2605.29786">[link]</a><br>Omar Benjelloun et al., arXiv, 2026.</li>
+</ol>
+
+  <h3 id="reuse">Reuse</h3>
+  <p>EvalSpec, the harmonized dataset, the extraction and analysis pipeline and the experiment records are released under <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>. <!-- EDIT (licence): state the licence for this page's text and figures if you want one. --></p>
+  <p>The page layout follows the open-source Distill article template (Apache-2.0, The Distill Template Authors). This page is not a Distill publication and has not been reviewed by Distill.</p>
+
+  <h3 id="citation">Citation</h3>
+  <!-- EDIT (links): once the ACL Anthology entry exists, replace the note with its url, pages and publisher. -->
+  <p>For attribution in academic contexts, please cite this work as</p>
+  <pre class="citation short">Psychias, et al., "LLM Evaluation Discrepancies And How To Prevent Them", Findings of EACL, 2027.</pre>
+  <p>BibTeX citation</p>
+  <pre class="citation long" id="bibtex">@inproceedings{psychias2027discrepancies,
+  title     = {{LLM} Evaluation Discrepancies And How To Prevent Them},
+  author    = {Psychias, Stylianos and Hubarava, Hanna and Opitz, Juri and von D{\"a}niken, Pius and Michail, Andrianos},
+  booktitle = {Findings of the Association for Computational Linguistics: EACL 2027},
+  year      = {2027},
+  note      = {To appear}
+}</pre>
+  <button class="copy" type="button" data-copy="bibtex" hidden>Copy BibTeX</button>
+</div>
+
+<footer class="footer">
+  <p>LLM Evaluation Discrepancies And How To Prevent Them</p>
+  <p>Page last updated 14 November 2026. No tracking, no external requests.</p>
+</footer>
+
+<div class="hover-box" id="hover-box" role="tooltip"><div class="panel"></div></div>
+<script src="assets/js/article.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+contestant,gpt_4o_mini,gemini_3.5_flash,llama_3.1_70b,claude_haiku_4.5,spread
+Gemma-3-4B,8.24,7.96,8.31,7.26,1.04
+Qwen2.5-7B,7.86,8.02,7.96,6.97,1.05
+Llama-3.1-8B,8.04,7.61,8.22,6.87,1.35
+Ministral-8B,8.44,7.54,8.62,7.51,1.11
+Qwen2.5-72B,8.32,8.59,8.38,7.74,0.84

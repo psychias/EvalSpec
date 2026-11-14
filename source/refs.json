@@ -1,0 +1,290 @@
+[
+ {
+  "key": "openllmv2about",
+  "authors": "Hugging Face",
+  "title": "Open LLM Leaderboard v2: About",
+  "venue": "Hugging Face documentation",
+  "year": "2024",
+  "url": "https://huggingface.co/docs/leaderboards/en/open_llm_leaderboard/about"
+ },
+ {
+  "key": "gemma2report",
+  "authors": "Gemma Team et al.",
+  "title": "Gemma 2: Improving Open Language Models at a Practical Size",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2408.00118"
+ },
+ {
+  "key": "gemmateam2025gemma3",
+  "authors": "Gemma Team et al.",
+  "title": "Gemma 3 Technical Report",
+  "venue": "arXiv",
+  "year": "2025",
+  "url": "https://arxiv.org/abs/2503.19786"
+ },
+ {
+  "key": "suzgun2023",
+  "authors": "Mirac Suzgun et al.",
+  "title": "Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them",
+  "venue": "Findings of the Association for Computational Linguistics: ACL 2023",
+  "year": "2023",
+  "url": "https://aclanthology.org/2023.findings-acl.824/"
+ },
+ {
+  "key": "gao2024lmevalharness",
+  "authors": "Leo Gao et al.",
+  "title": "The Language Model Evaluation Harness",
+  "venue": "Zenodo",
+  "year": "2024",
+  "url": "https://zenodo.org/records/12608602"
+ },
+ {
+  "key": "biderman2024",
+  "authors": "Stella Biderman et al.",
+  "title": "Lessons from the Trenches on Reproducible Evaluation of Language Models",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2405.14782"
+ },
+ {
+  "key": "liang2023helm",
+  "authors": "Percy Liang et al.",
+  "title": "Holistic Evaluation of Language Models",
+  "venue": "Transactions on Machine Learning Research",
+  "year": "2023",
+  "url": "https://openreview.net/forum?id=iO4LZibEqW"
+ },
+ {
+  "key": "lighteval",
+  "authors": "Nathan Habib et al.",
+  "title": "LightEval: A lightweight framework for LLM evaluation",
+  "venue": "GitHub repository",
+  "year": "2023",
+  "url": "https://github.com/huggingface/lighteval"
+ },
+ {
+  "key": "opencompass2023",
+  "authors": "OpenCompass Contributors",
+  "title": "OpenCompass: A Universal Evaluation Platform for Foundation Models",
+  "venue": "GitHub repository",
+  "year": "2023",
+  "url": "https://github.com/open-compass/opencompass"
+ },
+ {
+  "key": "evaleval2026everyevalever",
+  "authors": "Jan Batzner et al.",
+  "title": "Every Eval Ever: Toward a Common Language for AI Eval Reporting",
+  "venue": "EvalEval Coalition blog",
+  "year": "2026",
+  "url": "https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/"
+ },
+ {
+  "key": "ng2025sealion",
+  "authors": "Raymond Ng et al.",
+  "title": "SEA-LION: Southeast Asian Languages in One Network",
+  "venue": "Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics",
+  "year": "2025",
+  "url": "https://aclanthology.org/2025.ijcnlp-long.30/"
+ },
+ {
+  "key": "team2024reka",
+  "authors": "Reka Team et al.",
+  "title": "Reka Core, Flash, and Edge: A Series of Powerful Multimodal Language Models",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2404.12387"
+ },
+ {
+  "key": "malartic2024falcon2",
+  "authors": "Quentin Malartic et al.",
+  "title": "Falcon2-11B Technical Report",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2407.14885"
+ },
+ {
+  "key": "bandarkar2023belebele",
+  "authors": "Lucas Bandarkar et al.",
+  "title": "The Belebele Benchmark: A Parallel Reading Comprehension Dataset in 122 Language Variants",
+  "venue": "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+  "year": "2024",
+  "url": "https://aclanthology.org/2024.acl-long.44/"
+ },
+ {
+  "key": "lin2022truthfulqa",
+  "authors": "Stephanie Lin, Jacob Hilton and Owain Evans",
+  "title": "TruthfulQA: Measuring How Models Mimic Human Falsehoods",
+  "venue": "Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+  "year": "2022",
+  "url": "https://aclanthology.org/2022.acl-long.229/"
+ },
+ {
+  "key": "roziere2023codellama",
+  "authors": "Baptiste Rozière et al.",
+  "title": "Code Llama: Open Foundation Models for Code",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2308.12950"
+ },
+ {
+  "key": "groeneveld2024olmo",
+  "authors": "Dirk Groeneveld et al.",
+  "title": "OLMo: Accelerating the Science of Language Models",
+  "venue": "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+  "year": "2024",
+  "url": "https://aclanthology.org/2024.acl-long.841/"
+ },
+ {
+  "key": "zellers2019hellaswag",
+  "authors": "Rowan Zellers et al.",
+  "title": "HellaSwag: Can a Machine Really Finish Your Sentence?",
+  "venue": "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+  "year": "2019",
+  "url": "https://aclanthology.org/P19-1472/"
+ },
+ {
+  "key": "abdin2024phi3",
+  "authors": "Marah Abdin et al.",
+  "title": "Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2404.14219"
+ },
+ {
+  "key": "gemmateam2024gemma",
+  "authors": "Gemma Team et al.",
+  "title": "Gemma: Open Models Based on Gemini Research and Technology",
+  "venue": "arXiv",
+  "year": "2024",
+  "url": "https://arxiv.org/abs/2403.08295"
+ },
+ {
+  "key": "cobbe2021trainingvt",
+  "authors": "Karl Cobbe et al.",
+  "title": "Training Verifiers to Solve Math Word Problems",
+  "venue": "arXiv",
+  "year": "2021",
+  "url": "https://arxiv.org/abs/2110.14168"
+ },
+ {
+  "key": "kydlicek2025mathverify",
+  "authors": "Hynek Kydlicek",
+  "title": "Fixing Open LLM Leaderboard with Math-Verify",
+  "venue": "Hugging Face blog",
+  "year": "2025",
+  "url": "https://huggingface.co/blog/math_verify_leaderboard"
+ },
+ {
+  "key": "zheng2023mtbench",
+  "authors": "Lianmin Zheng et al.",
+  "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+  "venue": "Advances in Neural Information Processing Systems",
+  "year": "2023",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/91f18a1287b398d378ef22505bf41832-Paper-Datasets_and_Benchmarks.pdf"
+ },
+ {
+  "key": "hendrycks2021mmlu",
+  "authors": "Dan Hendrycks et al.",
+  "title": "Measuring Massive Multitask Language Understanding",
+  "venue": "International Conference on Learning Representations",
+  "year": "2021",
+  "url": "https://openreview.net/forum?id=d7KBjmI3GmQ"
+ },
+ {
+  "key": "hendrycks2021math",
+  "authors": "Dan Hendrycks et al.",
+  "title": "Measuring Mathematical Problem Solving With the MATH Dataset",
+  "venue": "Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 2)",
+  "year": "2021",
+  "url": "https://openreview.net/forum?id=7Bywt2mQsCe"
+ },
+ {
+  "key": "alzahrani2024",
+  "authors": "Norah Alzahrani et al.",
+  "title": "When Benchmarks are Targets: Revealing the Sensitivity of Large Language Model Leaderboards",
+  "venue": "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+  "year": "2024",
+  "url": "https://doi.org/10.18653/v1/2024.acl-long.744"
+ },
+ {
+  "key": "mizrahi2024",
+  "authors": "Moran Mizrahi et al.",
+  "title": "State of What Art? A Call for Multi-Prompt LLM Evaluation",
+  "venue": "Transactions of the Association for Computational Linguistics",
+  "year": "2024",
+  "url": "https://aclanthology.org/2024.tacl-1.52/"
+ },
+ {
+  "key": "mitchell2019",
+  "authors": "Margaret Mitchell et al.",
+  "title": "Model Cards for Model Reporting",
+  "venue": "Proceedings of the Conference on Fairness, Accountability, and Transparency",
+  "year": "2019",
+  "url": "https://doi.org/10.1145/3287560.3287596"
+ },
+ {
+  "key": "ghosh2026evalcards",
+  "authors": "Avijit Ghosh et al.",
+  "title": "Evaluation Cards: An Interpretive Layer for AI Evaluation Reporting",
+  "venue": "arXiv",
+  "year": "2026",
+  "url": "https://arxiv.org/abs/2606.09809"
+ },
+ {
+  "key": "bordes2025",
+  "authors": "Florian Bordes et al.",
+  "title": "Eval Factsheets: A Structured Framework for Documenting AI Evaluations",
+  "venue": "arXiv",
+  "year": "2025",
+  "url": "https://arxiv.org/abs/2512.04062"
+ },
+ {
+  "key": "croissanttasks2026",
+  "authors": "Omar Benjelloun et al.",
+  "title": "Croissant Tasks: A Metadata Format for Reproducible Machine Learning Evaluations",
+  "venue": "arXiv",
+  "year": "2026",
+  "url": "https://arxiv.org/abs/2605.29786"
+ },
+ {
+  "key": "yue2024mammoth2",
+  "authors": "Xiang Yue et al.",
+  "title": "MAmmoTH2: Scaling Instructions from the Web",
+  "venue": "Advances in Neural Information Processing Systems",
+  "year": "2024",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/a4ca07aa108036f80cbb5b82285fd4b1-Paper-Conference.pdf"
+ },
+ {
+  "key": "instella2025",
+  "authors": "Jiang Liu et al.",
+  "title": "Instella: Fully Open Language Models with Stellar Performance",
+  "venue": "arXiv",
+  "year": "2025",
+  "url": "https://arxiv.org/abs/2511.10628"
+ },
+ {
+  "key": "qwenteam2024qwen25",
+  "authors": "Qwen Team",
+  "title": "Qwen2.5 Technical Report",
+  "venue": "arXiv",
+  "year": "2025",
+  "url": "https://arxiv.org/abs/2412.15115"
+ },
+ {
+  "key": "paperswithcode",
+  "authors": "Papers With Code",
+  "title": "Papers With Code",
+  "venue": "Site decommissioned July 2025",
+  "year": "2025",
+  "url": "https://huggingface.co/papers/trending"
+ },
+ {
+  "key": "olv2norm",
+  "authors": "Hugging Face",
+  "title": "Open LLM Leaderboard: Scores Normalization",
+  "venue": "Hugging Face documentation",
+  "year": "2024",
+  "url": "https://huggingface.co/docs/leaderboards/en/open_llm_leaderboard/normalization"
+ }
+]

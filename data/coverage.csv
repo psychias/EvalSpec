@@ -1,0 +1,6 @@
+field,all_12_sources_46559_records_pct,ten_leaderboard_sources_28755_records_pct,nine_leaderboards_without_olv2_1965_records_pct,note
+n_shot,80.5,98.0,71.0,
+harness,63.2,93.2,0.0,"pipeline-attached from platform documentation; no leaderboard API returns a harness field"
+chain_of_thought,50.0,77.7,0.0,
+prompt_template,14.1,0.0,0.0,
+temperature,3.1,0.0,0.0,

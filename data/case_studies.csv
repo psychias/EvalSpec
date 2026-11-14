@@ -1,0 +1,28 @@
+mechanism,model,benchmark,source,score,note
+undocumented scoring and parsing,Gemma-7B,BBH,Open LLM Leaderboard v2 (displayed),21.12,"3-shot log-likelihood, leaderboard-normalized"
+undocumented scoring and parsing,Gemma-7B,BBH,Open LLM Leaderboard v2 (raw acc_norm),43.62,
+undocumented scoring and parsing,Gemma-7B,BBH,Jamba paper,55.10,CoT generation
+undocumented scoring and parsing,Gemma-7B,BBH,RecurrentGemma paper,55.10,CoT generation
+undocumented scoring and parsing,Gemma-7B,BBH,MAmmoTH2 paper,57.40,CoT generation
+undocumented scoring and parsing,Gemma-7B,BBH,(BigBench-Hard alias),59.60,CoT generation
+undocumented scoring and parsing,Gemma-2-2B,BBH,Open LLM Leaderboard v2 (displayed),11.76,
+undocumented scoring and parsing,Gemma-2-2B,BBH,Open LLM Leaderboard v2 (raw),36.56,
+undocumented scoring and parsing,Gemma-2-2B,BBH,model paper,40.80,
+undocumented scoring and parsing,MAmmoTH2-7B-Plus,BBH,Open LLM Leaderboard v2 (displayed),18.93,
+undocumented scoring and parsing,MAmmoTH2-7B-Plus,BBH,Open LLM Leaderboard v2 (raw),42.35,
+undocumented scoring and parsing,MAmmoTH2-7B-Plus,BBH,model paper,63.10,
+undocumented scoring and parsing,Qwen2.5-14B-Instruct,GSM8K,controlled run (plain prompt),58.5,"5-shot, temperature 0, lm-evaluation-harness 0.4.11"
+undocumented scoring and parsing,Qwen2.5-14B-Instruct,GSM8K,controlled run (instruct prompt),57.0,"5-shot, temperature 0, lm-evaluation-harness 0.4.11"
+undocumented scoring and parsing,Qwen2.5-14B-Instruct,GSM8K,controlled run (cot prompt),2.5,"5-shot, temperature 0, lm-evaluation-harness 0.4.11"
+one name several protocols,Mistral-7B,Belebele,Reka report,32.80,"0-shot, average over 150 language variants"
+one name several protocols,Mistral-7B,Belebele,Falcon2 report,79.42,"5-shot, English only"
+one name several protocols,Mistral-7B,Belebele,Falcon2 report (0-shot English),32.48,
+one name several protocols,Llama-2-Chat-7B,TruthfulQA,Code Llama paper,57.04,"6-shot, GPT-3 judge"
+one name several protocols,Llama-2-Chat-7B,TruthfulQA,OLMo paper,26.30,"0-shot, fine-tuned Llama-2-7B judge"
+one name several protocols,Gemma-7B,HellaSwag,Phi-3 report,49.80,5-shot
+one name several protocols,Gemma-7B,HellaSwag,Gemma report,81.20,0-shot
+non-independent results,Gemma-2-9B,BBH,Open LLM Leaderboard v2 (displayed),34.10,"3-shot log-likelihood; raw 53.77"
+non-independent results,Gemma-2-9B,BBH,SEA-LION paper (arXiv 2504.05747),34.10,shared pipeline origin
+non-independent results,Gemma-2-9B,BBH,Gemma 2 report (arXiv 2408.00118),68.20,CoT generation (3-shot)
+non-independent results,Gemma-2-9B,BBH,Gemma 3 report (arXiv 2503.19786),69.00,CoT generation (0-shot)
+non-independent results,Gemma-2-9B,BBH,Gemma 3 report (arXiv 2503.19786),69.40,CoT generation

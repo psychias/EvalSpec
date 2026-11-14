@@ -1,0 +1,112 @@
+{
+  "name": "EvalSpec",
+  "status": "proposal",
+  "source": "Table 2 of 'LLM Evaluation Discrepancies And How To Prevent Them'",
+  "tiers": [
+    {
+      "tier": "Required",
+      "purpose": "comparability",
+      "fields": [
+        {
+          "name": "model_id",
+          "description": "Model identifier"
+        },
+        {
+          "name": "benchmark_id",
+          "description": "Benchmark name and release version"
+        },
+        {
+          "name": "scoring_mode",
+          "description": "One of: log-likelihood, generation, preference, execution"
+        },
+        {
+          "name": "harness_name",
+          "description": "Software or evaluation framework used to run the benchmark"
+        },
+        {
+          "name": "harness_version",
+          "description": "Exact immutable harness version"
+        },
+        {
+          "name": "n_shot",
+          "description": "Number of in-context examples"
+        },
+        {
+          "name": "benchmark_variant",
+          "description": "Sub-task or configuration key"
+        },
+        {
+          "name": "judge_model",
+          "description": "Scorer model (null if not applicable)"
+        },
+        {
+          "name": "evaluation_timestamp",
+          "description": "Date and time at which the evaluation was run (ISO 8601)"
+        },
+        {
+          "name": "prompt_template_hash",
+          "description": "SHA-256 of the fully rendered prompt (task template, system instruction, chat template)"
+        },
+        {
+          "name": "answer_parser_version",
+          "description": "Answer-extractor or parser id and version",
+          "required_when": "generation-scored results"
+        },
+        {
+          "name": "judge_prompt_hash",
+          "description": "SHA-256 of the canonicalized judge prompt + rubric",
+          "required_when": "judge-scored results"
+        },
+        {
+          "name": "judge_score_rule",
+          "description": "Procedure for converting judge response into score",
+          "required_when": "judge-scored results"
+        }
+      ]
+    },
+    {
+      "tier": "Recommended",
+      "purpose": "reproducibility",
+      "fields": [
+        {
+          "name": "temperature",
+          "description": "Sampling temperature"
+        },
+        {
+          "name": "top_p",
+          "description": "Cumulative-probability threshold for nucleus sampling"
+        },
+        {
+          "name": "quantization",
+          "description": "Weight-quantization method used for inference"
+        },
+        {
+          "name": "hardware",
+          "description": "GPU type and count"
+        },
+        {
+          "name": "random_seed",
+          "description": "Random number generator seed"
+        }
+      ]
+    },
+    {
+      "tier": "Full",
+      "purpose": "audit",
+      "fields": [
+        {
+          "name": "provenance_url",
+          "description": "Link to raw outputs, log or evaluation artifacts"
+        },
+        {
+          "name": "contamination_check",
+          "description": "Decontamination method and execution date"
+        },
+        {
+          "name": "compute_hours",
+          "description": "Total GPU time, measured in device-hours"
+        }
+      ]
+    }
+  ]
+}

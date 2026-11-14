@@ -178,7 +178,7 @@ double-blind; AI-assistance disclosure required.
   49,420 / 11 sources / ArXiv 20,665. Investigated: those numbers exist only in
   `acl_lualatex.tex` (abandoned, last real edit June 13) and the stale `-5.pdf`
   built from it; the CHANGELOG shows 49,420 was *superseded* at Pass 18.
-  `analysis_output/paper_numbers.json` (generated from data), `CLAUDE.md`, memory,
+  `analysis_output/paper_numbers.json` (generated from data)
   and the fresh `-6.pdf` (built from `acl_latex.tex`) all confirm **46,559 / 12
   sources**. Author confirmed: **stay on 46,559, ship `acl_latex.tex`.** The pack's
   ready-to-paste sections (49,420) are NOT used.

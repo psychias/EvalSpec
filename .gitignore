@@ -87,7 +87,7 @@ pip-wheel-metadata/
 # Lock files
 uv.lock
 
-# Claude / Copilot agent metadata
+# Agent metadata
 .claude/
 CLAUDE.md
 dmypy.json

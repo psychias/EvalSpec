@@ -229,5 +229,5 @@ To start the autonomous run, say any of:
 - "Run the test batch"
 - "Run the full pipeline on arxiv_ids_test.txt"
 
-Claude will then execute all stages autonomously, fix errors, evaluate
+The agent will then execute all stages autonomously, fix errors, evaluate
 results, and produce the report above without further prompting.

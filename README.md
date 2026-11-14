@@ -69,23 +69,24 @@ to two decimals on Gemma-2-9B BBH.
 The arXiv extraction was checked by hand against the source papers.
 
 - Scores: 2,027 extracted scores from 10 papers were compared with the papers.
-  1,976 matched, a precision of 97.5%. Recall is about 81%: the pipeline picks
-  up the main tables and skips many secondary ones.
-- Harness: on five papers that name a harness (817 rows), per-row precision is
-  89.5% (731/817). Every harness the pipeline names is correct (263/263), so
-  the errors are rows where it named none. On five papers that name no harness
-  (869 rows), it abstained on every row.
+  1,976 matched, a precision of 97.5%. Recall is 81.4%: the pipeline picks up
+  the main tables and skips many secondary ones.
+- Harness: five papers name a harness (817 rows). In 368 of those rows the
+  paper attributes a harness to the result, and the extractor named it
+  correctly in 263 (71.5%). It missed the other 105 and never named a wrong
+  one. It abstained on all 449 rows with no attributed harness, and on all 869
+  rows from five papers that name no harness.
 
 ### EvalSpec
 
-EvalSpec is the reporting specification the paper proposes: 9 Required fields,
-8 Recommended and 3 Full. A record that follows it either states the settings
-that drive score differences or shows that they were left out.
+EvalSpec is the reporting specification the paper proposes: 13 Required
+fields, 5 Recommended and 3 Full. A record that follows it either states the
+settings that drive score differences or shows that they were left out.
 
 ## Experiment outcomes
 
 The dataset shows which settings go unrecorded. The controlled experiments in
-Appendix G of the paper measure how far each of those settings moves a score.
+Appendix M of the paper measure how far each of those settings moves a score.
 Runs use `lm-evaluation-harness` with vLLM unless stated otherwise.
 
 ### 1. Factorial grid
@@ -96,8 +97,8 @@ MMLU), 3 prompt formats (`plain` few-shot, `instruct` with a system prompt,
 `cot` chain-of-thought), 2 temperatures (0.0, 0.7), 2 shot counts (0 and 3 for
 BBH; 0 and 5 for GSM8K and MMLU) and 3 seeds (42, 123, 7). MMLU was cut to
 temperature 0.0 and one seed because of server limits. That gives 312
-successful runs: 144 BBH, 144 GSM8K, 24 MMLU. GSM8K and MMLU use a 200-problem
-subset; BBH uses the full suite. Six MMLU runs failed under vLLM and were
+successful runs: 144 BBH, 144 GSM8K, 24 MMLU. All three benchmarks use a
+200-problem subset. Six MMLU runs failed under vLLM and were
 re-scored on the `hf` backend. Cells run on both backends agree within 0.5 pp.
 
 Prompt format, one-way ANOVA per benchmark on the 5-shot cells:
@@ -253,9 +254,10 @@ The Llama-3.1-8B mirror is flagged, and the conclusions hold without it.
   variance and 0.66% of MT-Bench judged-quality variance.
   (`experiments/temperature_panel/`)
 - EvalSpec emission hook: an adapter, with tests, that turns an existing
-  lm-evaluation-harness run into EvalSpec-R records and fills 8 of 8
-  Required fields, including `scoring_mode` and the prompt-template
-  hash. (`src/emission_hooks/lm_eval_to_evalspec.py`)
+  lm-evaluation-harness run into EvalSpec records. For a GSM8K run it fills
+  seven of the thirteen Required fields and two Recommended ones, including
+  `scoring_mode`; the three judge fields do not apply to GSM8K.
+  (`src/emission_hooks/lm_eval_to_evalspec.py`)
 
 ## Repository layout
 
@@ -323,9 +325,9 @@ python scripts/reproduce_paper.py --no-rebuild # reuse the existing data/aggrega
 # or: make repro
 ```
 
-It covers the §3.2 dataset totals and per-source counts, the §4.1 score
-extraction audit, the §4.2 harness audit, the §4.3 metadata coverage, the §5
-factorial-grid ANOVA and the appendix experiments. Two more scripts give the
+It covers the dataset totals and per-source counts, the score extraction
+audit, the harness audit, the metadata coverage, the factorial-grid ANOVA and
+the appendix experiments. Two more scripts give the
 detail behind the case studies, down to the JSON paths and the harness and shot
 fields of each record:
 
@@ -365,9 +367,9 @@ python -m eee_eval.analysis.aggregate_results
 python -m eee_eval.analysis.coverage_audit
 
 # Regenerate the paper figures
-python LLM_Evaluation_Report/figures/scripts/coverage_bars.py   # Figure 6 (§4.3)
-python LLM_Evaluation_Report/figures/scripts/unified.py         # Figure 5 (§5)
-python LLM_Evaluation_Report/figures/scripts/case1.py           # Figure 4 (§5.1)
+python LLM_Evaluation_Report/figures/scripts/coverage_bars.py   # metadata coverage bars
+python LLM_Evaluation_Report/figures/scripts/unified.py         # case-study panels (Belebele, HellaSwag)
+python LLM_Evaluation_Report/figures/scripts/case1.py           # GSM8K answer-parser flow
 ```
 
 ## Converting evaluation-framework logs

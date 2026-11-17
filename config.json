@@ -10,7 +10,7 @@
   "datastore": {
     "_comment": "The Hugging Face dataset that holds every record. When the dataset is renamed, change hf_repo only; every link and command on the site is derived from it.",
     "name": "EvalSpec",
-    "hf_repo": "evaleval/EEE_datastore",
+    "hf_repo": "Hermeneia/EvalSpec_Dataset",
     "revision": "main",
     "data_dir": "data"
   },

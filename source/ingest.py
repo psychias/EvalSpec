@@ -2,7 +2,8 @@
 
   registry = ingest.build(pathlib.Path("datastore"), file_base="datastore/")
 
-The datastore is a folder of EEE files (data/<source>/<developer>/<model>/<uuid>.json).
+The datastore is a folder of EEE files (data/<source>/<developer>/<model>/<uuid>.json),
+or of files with one EEE record per line (data/<source>.jsonl).
 Each evaluation result becomes one record. Records are grouped three ways:
 by source (the transparency board), by model (the lookup by Hugging Face id) and
 by model and benchmark (cells, where sources can be compared).
@@ -91,6 +92,27 @@ def read(root: pathlib.Path, data_dir: str = "data"):
             skipped.append({"file": rel, "reason": "not an EEE record"})
             continue
         docs.append((rel, doc))
+    for path in sorted(base.rglob("*.jsonl")):               # one EEE record per line
+        rel = path.relative_to(root).as_posix()
+        if SKIP_DIRS & set(path.relative_to(base).parts):
+            continue
+        try:
+            lines = path.read_text(encoding="utf-8-sig").splitlines()
+        except OSError as e:
+            skipped.append({"file": rel, "reason": f"could not be read ({e})"})
+            continue
+        for n, line in enumerate(lines, 1):
+            if not line.strip():
+                continue
+            try:
+                doc = json.loads(line)
+            except ValueError as e:
+                skipped.append({"file": rel, "reason": f"line {n} is not valid JSON ({e})"})
+                continue
+            if not E.is_eee(doc):
+                skipped.append({"file": rel, "reason": f"line {n} is not an EEE record"})
+                continue
+            docs.append((rel, doc))
     return docs, skipped
 
 
@@ -128,7 +150,7 @@ def build(root: pathlib.Path, file_base: str = "", data_dir: str = "data") -> di
     cells = build_cells([r for r in records if not r["superseded"]])
     return {"records": records, "sources": rank_sources(sources), "models": sorted(models.values(), key=lambda m: m["id"].lower()),
             "benches": sorted(benches.values(), key=lambda b: b["label"].lower()), "cells": cells, "skipped": skipped,
-            "stats": statistics(records, sources, models, benches, cells, len(docs)), "file_base": file_base}
+            "stats": statistics(records, sources, models, benches, cells, len({rel for rel, _ in docs})), "file_base": file_base}
 
 
 def coverage(recs, tier="required") -> dict:

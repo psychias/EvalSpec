@@ -41,7 +41,7 @@
           <input class="es-input" id="lookup" name="id" type="search" placeholder="Hugging Face id, for example google/gemma-2-9b" autocomplete="off" spellcheck="false" aria-describedby="lookup-try">
           <button class="es-btn" type="submit">Find reports</button>
         </div>
-        <p class="es-tryline" id="lookup-try">In the registry now: <a href="model.html?id=google/gemma-2-9b">google/gemma-2-9b</a>, <a href="model.html?id=google/gemma-7b">google/gemma-7b</a>, <a href="model.html?id=allenai/Llama-3.1-Tulu-3-8B">allenai/Llama-3.1-Tulu-3-8B</a>.</p>
+        <p class="es-tryline" id="lookup-try">In the registry now: <a href="model.html?id=meta-llama/LLaMA2-7b">meta-llama/LLaMA2-7b</a>, <a href="model.html?id=mistralai/Mistral-7B">mistralai/Mistral-7B</a>, <a href="model.html?id=meta-llama/Llama-2-13B">meta-llama/Llama-2-13B</a>.</p>
       </form>
       <div class="es-actions">
         <a class="es-btn is-plain" href="submit.html#check">Check a record</a>
@@ -83,15 +83,15 @@
 
   <section class="es-section">
     <h2>The registry</h2>
-    <div class="es-note"><p>This build reads the sample bundled with the site: 122 records that the paper and its code repository quote in full. The full corpus of the paper has 46,559 records and lives in the <a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a>; the <a href="data.html#rebuild">Data page</a> says how to build the site from it.</p></div>
-    <p class="es-prose">The registry holds <b>122</b> records for <b>20</b> models and <b>15</b> benchmarks, from <b>17</b> sources. 64 are author-reported and 58 are predicted. Sources are ordered by how much of the procedure they report themselves, so a source moves up by publishing its own records.</p>
-    <div class="es-scroll"><table class="es-table"><thead><tr><th scope="col">Rank</th><th scope="col">Source</th><th scope="col" class="es-num">Records</th><th scope="col">Procedure fields on record</th><th scope="col" class="es-num">First-hand</th><th scope="col" class="es-num">On record</th></tr></thead><tbody><tr><td class="es-rank">1</td><td>LLM Evaluation Discrepancies: controlled runs<span class="es-sub">Evaluation run</span></td><td class="es-num">64</td><td><span class="es-meter" role="img" tabindex="0" aria-label="68% first-hand" data-tip="first-hand: 392 of 579; read by an LLM: 0 of 579; inferred: 0 of 579; not on record: 187 of 579"><i class="is-first" style="width:67.70%"></i></span></td><td class="es-num">68%</td><td class="es-num">68%</td></tr><tr><td class="es-rank">2</td><td>Falcon2-11B Technical Report<span class="es-sub">Paper, arXiv:2407.14885</span></td><td class="es-num">2</td><td><span class="es-meter" role="img" tabindex="0" aria-label="13% read by an LLM" data-tip="first-hand: 0 of 16; read by an LLM: 2 of 16; inferred: 0 of 16; not on record: 14 of 16"><i class="is-llm" style="width:12.50%"></i></span></td><td class="es-num">0%</td><td class="es-num">13%</td></tr><tr><td class="es-rank">2</td><td>RecurrentGemma: Moving Past Transformers for Efficient Open LMs<span class="es-sub">Paper, arXiv:2404.07839</span></td><td class="es-num">2</td><td><span class="es-meter" role="img" tabindex="0" aria-label="13% read by an LLM" data-tip="first-hand: 0 of 16; read by an LLM: 2 of 16; inferred: 0 of 16; not on record: 14 of 16"><i class="is-llm" style="width:12.50%"></i></span></td><td class="es-num">0%</td><td class="es-num">13%</td></tr><tr><td class="es-rank">2</td><td>Code Llama: Open Foundation Models for Code<span class="es-sub">Paper, arXiv:2308.12950</span></td><td class="es-num">1</td><td><span class="es-meter" role="img" tabindex="0" aria-label="13% read by an LLM" data-tip="first-hand: 0 of 8; read by an LLM: 1 of 8; inferred: 0 of 8; not on record: 7 of 8"><i class="is-llm" style="width:12.50%"></i></span></td><td class="es-num">0%</td><td class="es-num">13%</td></tr><tr><td class="es-rank">2</td><td>OLMo: Accelerating the Science of Language Models<span class="es-sub">Paper, arXiv:2402.00838</span></td><td class="es-num">1</td><td><span class="es-meter" role="img" tabindex="0" aria-label="13% read by an LLM" data-tip="first-hand: 0 of 8; read by an LLM: 1 of 8; inferred: 0 of 8; not on record: 7 of 8"><i class="is-llm" style="width:12.50%"></i></span></td><td class="es-num">0%</td><td class="es-num">13%</td></tr></tbody></table></div><ul class="es-key"><li><span class="es-mark is-first"></span>reported first-hand</li><li><span class="es-mark is-llm"></span>read from the source by an LLM</li><li><span class="es-mark is-inferred"></span>inferred by a pipeline</li></ul>
+    
+    <p class="es-prose">The registry holds <b>45,705</b> records for <b>6,720</b> models and <b>1,231</b> benchmarks, from <b>262</b> sources. 0 are author-reported and 45,705 are predicted. Sources are ordered by how much of the procedure they report themselves, so a source moves up by publishing its own records.</p>
+    <div class="es-scroll"><table class="es-table"><thead><tr><th scope="col">Rank</th><th scope="col">Source</th><th scope="col" class="es-num">Records</th><th scope="col">Procedure fields on record</th><th scope="col" class="es-num">First-hand</th><th scope="col" class="es-num">On record</th></tr></thead><tbody><tr><td class="es-rank">1</td><td>OpenELM: An Efficient Language Model Family with Open Training and Inference Framework<span class="es-sub">Paper, arXiv:2404.14619</span></td><td class="es-num">192</td><td><span class="es-meter" role="img" tabindex="0" aria-label="35% read by an LLM" data-tip="first-hand: 0 of 1,536; read by an LLM: 544 of 1,536; inferred: 0 of 1,536; not on record: 992 of 1,536"><i class="is-llm" style="width:35.42%"></i></span></td><td class="es-num">0%</td><td class="es-num">35%</td></tr><tr><td class="es-rank">2</td><td>Pre-training via Structured Pruning<span class="es-sub">Paper, arXiv:2310.06694</span></td><td class="es-num">141</td><td><span class="es-meter" role="img" tabindex="0" aria-label="23% read by an LLM, under 1% inferred" data-tip="first-hand: 0 of 1,128; read by an LLM: 259 of 1,128; inferred: 3 of 1,128; not on record: 866 of 1,128"><i class="is-llm" style="width:22.96%"></i><i class="is-inferred" style="width:0.27%"></i></span></td><td class="es-num">0%</td><td class="es-num">23%</td></tr><tr><td class="es-rank">3</td><td>Sailor: Open Language Models for South-East Asia<span class="es-sub">Paper, arXiv:2404.03608</span></td><td class="es-num">205</td><td><span class="es-meter" role="img" tabindex="0" aria-label="23% read by an LLM" data-tip="first-hand: 0 of 1,640; read by an LLM: 369 of 1,640; inferred: 0 of 1,640; not on record: 1,271 of 1,640"><i class="is-llm" style="width:22.50%"></i></span></td><td class="es-num">0%</td><td class="es-num">23%</td></tr><tr><td class="es-rank">4</td><td>Aya 23: Open Weight Releases to Further Multilingual Progress<span class="es-sub">Paper, arXiv:2405.15032</span></td><td class="es-num">58</td><td><span class="es-meter" role="img" tabindex="0" aria-label="20% read by an LLM" data-tip="first-hand: 0 of 464; read by an LLM: 93 of 464; inferred: 0 of 464; not on record: 371 of 464"><i class="is-llm" style="width:20.04%"></i></span></td><td class="es-num">0%</td><td class="es-num">20%</td></tr><tr><td class="es-rank">5</td><td>Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone<span class="es-sub">Paper, arXiv:2404.14219</span></td><td class="es-num">276</td><td><span class="es-meter" role="img" tabindex="0" aria-label="20% read by an LLM" data-tip="first-hand: 0 of 2,208; read by an LLM: 435 of 2,208; inferred: 0 of 2,208; not on record: 1,773 of 2,208"><i class="is-llm" style="width:19.70%"></i></span></td><td class="es-num">0%</td><td class="es-num">20%</td></tr></tbody></table></div><ul class="es-key"><li><span class="es-mark is-first"></span>reported first-hand</li><li><span class="es-mark is-llm"></span>read from the source by an LLM</li><li><span class="es-mark is-inferred"></span>inferred by a pipeline</li></ul>
     <p class="es-actions" style="margin-top:16px"><a class="es-btn is-plain" href="registry.html">See the full board</a> <a class="es-btn is-plain" href="statistics.html">Statistics</a></p>
   </section>
 
   <section class="es-section">
     <h2>Report a result</h2>
-    <p class="es-prose">Every record goes to the <a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a> on Hugging Face as a pull request. Records written by whoever ran the evaluation and records filled in by a language model are both welcome, and are shown separately.</p>
+    <p class="es-prose">Every record goes to the <a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">EvalSpec datastore</a> on Hugging Face as a pull request. Records written by whoever ran the evaluation and records filled in by a language model are both welcome, and are shown separately.</p>
     <div class="es-routes">
       <div>
         <h3>You ran the evaluation</h3>
@@ -141,13 +141,13 @@
     <div>
       <p><b>EvalSpec 1.0</b></p>
       <p>A minimum reporting standard for LLM evaluation results, proposed in "LLM Evaluation Discrepancies And How To Prevent Them" (Findings of EACL 2027).</p>
-      <p>Built on 17 November 2026 from 122 records. No tracking, no external requests.</p>
+      <p>Built on 17 November 2026 from 45,705 records. No tracking, no external requests.</p>
     </div>
     <ul>
       <li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li>
       <li><a href="article.html">Interactive article</a></li>
       <li><a href="https://github.com/psychias/eee-eval">Code</a></li>
-      <li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a></li>
+      <li><a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">EvalSpec datastore</a></li>
     </ul>
     <ul>
       <li><a href="index.html#paper">Cite</a></li>
@@ -157,7 +157,7 @@
     </ul>
   </div>
 </footer>
-<script src="data/spec.js?v=5ad25090" defer></script>
+<script src="data/spec.js?v=401a6d09" defer></script>
 <script src="assets/js/site.js?v=388bdc60" defer></script>
 <script src="assets/js/home.js?v=4133fe35" defer></script>
 </body>

@@ -37,6 +37,27 @@ def registry(records):
         return ingest.build(root, "datastore/")
 
 
+def registry_jsonl(records):
+    """The same registry, from one file with one EEE record per line."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = pathlib.Path(tmp)
+        (root / "data").mkdir()
+        lines = [json.dumps(doc) for doc in E.to_eee_all(records, now=1790000000)]
+        (root / "data" / "runs.jsonl").write_text("\n".join(lines) + "\n\n", encoding="utf-8")
+        return ingest.build(root, "datastore/")
+
+
+class JsonLines(unittest.TestCase):
+    def test_one_record_per_line_reads_like_one_file_per_record(self):
+        records = [flat("org/a", "BBH", 34.1, "Board"), flat("org/b", "BBH", 68.2, "Board"), flat("org/a", "GSM8K", 58.5, "Report")]
+        files, lines = registry(records), registry_jsonl(records)
+        self.assertEqual(len(lines["records"]), len(files["records"]))
+        self.assertEqual(sorted((r["model"], r["bench"], r["pct"]) for r in lines["records"]),
+                         sorted((r["model"], r["bench"], r["pct"]) for r in files["records"]))
+        self.assertEqual({r["file"] for r in lines["records"]}, {"data/runs.jsonl"})
+        self.assertEqual(lines["stats"]["files"], 1)
+
+
 def paper_file(model, bench, score, arxiv="2408.00118", title="A model report"):
     """A file in the layout of the paper's extraction pipeline."""
     return {"schema_version": "0.2.1", "evaluation_id": f"arxiv_html_llm/{model}/{arxiv}/{bench}/{score}", "retrieved_timestamp": "1790000000",

@@ -383,7 +383,7 @@ def data_page(cfg, reg, meta, base):
          [(blocks.paper_link(cfg), ""), ("Interactive article", "article.html")]),
     ]
     path, shortened = example_file(reg)
-    doc = json.loads((meta["root"] / path).read_text(encoding="utf-8-sig"))
+    doc = example_doc(meta["root"] / path, reg)
     if len(doc["evaluation_results"]) > 1:
         doc["evaluation_results"], shortened = doc["evaluation_results"][:1], True
     caption = f'The file <code>{esc(path)}</code> of the datastore this site was built from' + (", shortened to its first result." if shortened else ".")
@@ -393,8 +393,22 @@ def data_page(cfg, reg, meta, base):
 
 def example_file(reg) -> tuple[str, bool]:
     """A datastore file to show on the Data page: an author-reported one when there is one."""
-    recs = sorted(reg["records"], key=lambda r: (r["report"]["track"] != "author-reported", -r["report"]["coverage"]["required"]["have"], r["file"]))
-    return recs[0]["file"], False
+    return min(reg["records"], key=example_order)["file"], False
+
+
+def example_order(r):
+    return (r["report"]["track"] != "author-reported", -r["report"]["coverage"]["required"]["have"], r["file"])
+
+
+def example_doc(path: pathlib.Path, reg) -> dict:
+    """The record to show for the example file. In a file with one record per line, the line of the example record."""
+    text = path.read_text(encoding="utf-8-sig")
+    if path.suffix != ".jsonl":
+        return json.loads(text)
+    rel = example_file(reg)[0]
+    eid = next(r["eid"] for r in sorted(reg["records"], key=example_order) if r["file"] == rel)
+    docs = [json.loads(line) for line in text.splitlines() if line.strip()]
+    return next((d for d in docs if d.get("evaluation_id") == eid), docs[0])
 
 
 def article(cfg, reg, meta, base):

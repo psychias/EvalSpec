@@ -2,51 +2,42 @@
   "built": "2026-11-17",
   "datastore": {
     "name": "EvalSpec",
-    "hf_repo": "evaleval/EEE_datastore",
+    "hf_repo": "Hermeneia/EvalSpec_Dataset",
     "revision": "main",
     "data_dir": "data",
-    "url": "https://huggingface.co/datasets/evaleval/EEE_datastore",
-    "file_base": "datastore/"
+    "url": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset",
+    "file_base": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset/blob/main/"
   },
   "snapshot": {
-    "name": "EvalSpec datastore, bundled sample",
-    "kind": "sample",
-    "assembled": "2026-11-17",
-    "files": 98,
-    "records": 122,
-    "description": "The records that the paper and its code repository quote in full: the case studies of Section 5, the cross-source pairs shipped with the repository, and the authors' own controlled runs. The full corpus of the paper has 46,559 records and lives in the Hugging Face datastore."
+    "kind": "full",
+    "name": "EvalSpec datastore"
   },
-  "records": 122,
-  "files": 98,
-  "models": 20,
-  "benches": 15,
-  "sources": 17,
-  "pairs": 44,
+  "records": 45705,
+  "files": 12,
+  "models": 6720,
+  "benches": 1231,
+  "sources": 262,
+  "pairs": 41428,
   "tracks": {
-    "author-reported": 64,
-    "predicted": 58
+    "author-reported": 0,
+    "predicted": 45705
   },
   "tiers": {
-    "none": 122,
+    "none": 45705,
     "required": 0,
     "recommended": 0,
     "full": 0
   },
   "modes": {
-    "not recorded": 58,
-    "generation": 27,
-    "preference": 20,
-    "log-likelihood": 17
+    "not recorded": 45705
   },
   "tags": {
-    "source-reported": 64,
-    "documentation-inferred": 42,
-    "LLM-extracted": 16
+    "documentation-inferred": 29331,
+    "LLM-extracted": 16374
   },
   "kinds": {
-    "Paper": 12,
-    "Leaderboard": 3,
-    "Evaluation run": 1,
+    "Paper": 252,
+    "Leaderboard": 9,
     "Model card": 1
   },
   "superseded": 0,
@@ -56,29 +47,29 @@
       {
         "name": "model_id",
         "tier": "required",
-        "applies": 122,
-        "have": 122,
-        "first_hand": 106,
-        "llm": 16,
+        "applies": 45705,
+        "have": 45705,
+        "first_hand": 29331,
+        "llm": 16374,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "benchmark_id",
         "tier": "required",
-        "applies": 122,
-        "have": 122,
-        "first_hand": 106,
-        "llm": 16,
+        "applies": 45705,
+        "have": 45705,
+        "first_hand": 29331,
+        "llm": 16374,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "scoring_mode",
         "tier": "required",
-        "applies": 122,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 45705,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -86,39 +77,39 @@
       {
         "name": "harness_name",
         "tier": "required",
-        "applies": 122,
-        "have": 105,
-        "first_hand": 64,
-        "llm": 0,
-        "inferred": 41,
+        "applies": 45705,
+        "have": 29307,
+        "first_hand": 0,
+        "llm": 2505,
+        "inferred": 26802,
         "invalid": 0
       },
       {
         "name": "harness_version",
         "tier": "required",
-        "applies": 122,
-        "have": 44,
-        "first_hand": 44,
-        "llm": 0,
+        "applies": 45705,
+        "have": 192,
+        "first_hand": 0,
+        "llm": 192,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "n_shot",
         "tier": "required",
-        "applies": 122,
-        "have": 108,
-        "first_hand": 64,
-        "llm": 8,
-        "inferred": 36,
+        "applies": 45705,
+        "have": 36922,
+        "first_hand": 0,
+        "llm": 8551,
+        "inferred": 28371,
         "invalid": 0
       },
       {
         "name": "benchmark_variant",
         "tier": "required",
-        "applies": 122,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 45705,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -126,9 +117,9 @@
       {
         "name": "judge_model",
         "tier": "required",
-        "applies": 122,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 45705,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -136,17 +127,17 @@
       {
         "name": "evaluation_timestamp",
         "tier": "required",
-        "applies": 122,
-        "have": 8,
-        "first_hand": 8,
+        "applies": 45705,
+        "have": 1162,
+        "first_hand": 0,
         "llm": 0,
-        "inferred": 0,
+        "inferred": 1162,
         "invalid": 0
       },
       {
         "name": "prompt_template_hash",
         "tier": "required",
-        "applies": 122,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -156,7 +147,7 @@
       {
         "name": "answer_parser_version",
         "tier": "required",
-        "applies": 27,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -166,7 +157,7 @@
       {
         "name": "judge_prompt_hash",
         "tier": "required",
-        "applies": 20,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -176,9 +167,9 @@
       {
         "name": "judge_score_rule",
         "tier": "required",
-        "applies": 20,
-        "have": 20,
-        "first_hand": 20,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -186,17 +177,17 @@
       {
         "name": "temperature",
         "tier": "recommended",
-        "applies": 122,
-        "have": 55,
-        "first_hand": 55,
-        "llm": 0,
-        "inferred": 0,
+        "applies": 45705,
+        "have": 1436,
+        "first_hand": 0,
+        "llm": 1430,
+        "inferred": 6,
         "invalid": 0
       },
       {
         "name": "top_p",
         "tier": "recommended",
-        "applies": 122,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -206,7 +197,7 @@
       {
         "name": "quantization",
         "tier": "recommended",
-        "applies": 122,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -216,9 +207,9 @@
       {
         "name": "hardware",
         "tier": "recommended",
-        "applies": 122,
-        "have": 24,
-        "first_hand": 24,
+        "applies": 45705,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -226,19 +217,19 @@
       {
         "name": "random_seed",
         "tier": "recommended",
-        "applies": 122,
-        "have": 43,
-        "first_hand": 43,
-        "llm": 0,
+        "applies": 45705,
+        "have": 641,
+        "first_hand": 0,
+        "llm": 641,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "provenance_url",
         "tier": "full",
-        "applies": 122,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 45705,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -246,7 +237,7 @@
       {
         "name": "contamination_check",
         "tier": "full",
-        "applies": 122,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -256,7 +247,7 @@
       {
         "name": "compute_hours",
         "tier": "full",
-        "applies": 122,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -268,9 +259,9 @@
       {
         "name": "model_id",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -278,9 +269,9 @@
       {
         "name": "benchmark_id",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -288,9 +279,9 @@
       {
         "name": "scoring_mode",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -298,9 +289,9 @@
       {
         "name": "harness_name",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -308,9 +299,9 @@
       {
         "name": "harness_version",
         "tier": "required",
-        "applies": 64,
-        "have": 44,
-        "first_hand": 44,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -318,9 +309,9 @@
       {
         "name": "n_shot",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -328,9 +319,9 @@
       {
         "name": "benchmark_variant",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -338,9 +329,9 @@
       {
         "name": "judge_model",
         "tier": "required",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -348,9 +339,9 @@
       {
         "name": "evaluation_timestamp",
         "tier": "required",
-        "applies": 64,
-        "have": 8,
-        "first_hand": 8,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -358,7 +349,7 @@
       {
         "name": "prompt_template_hash",
         "tier": "required",
-        "applies": 64,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -368,7 +359,7 @@
       {
         "name": "answer_parser_version",
         "tier": "required",
-        "applies": 27,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -378,7 +369,7 @@
       {
         "name": "judge_prompt_hash",
         "tier": "required",
-        "applies": 20,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -388,9 +379,9 @@
       {
         "name": "judge_score_rule",
         "tier": "required",
-        "applies": 20,
-        "have": 20,
-        "first_hand": 20,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -398,9 +389,9 @@
       {
         "name": "temperature",
         "tier": "recommended",
-        "applies": 64,
-        "have": 55,
-        "first_hand": 55,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -408,7 +399,7 @@
       {
         "name": "top_p",
         "tier": "recommended",
-        "applies": 64,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -418,7 +409,7 @@
       {
         "name": "quantization",
         "tier": "recommended",
-        "applies": 64,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -428,9 +419,9 @@
       {
         "name": "hardware",
         "tier": "recommended",
-        "applies": 64,
-        "have": 24,
-        "first_hand": 24,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -438,9 +429,9 @@
       {
         "name": "random_seed",
         "tier": "recommended",
-        "applies": 64,
-        "have": 43,
-        "first_hand": 43,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -448,9 +439,9 @@
       {
         "name": "provenance_url",
         "tier": "full",
-        "applies": 64,
-        "have": 64,
-        "first_hand": 64,
+        "applies": 0,
+        "have": 0,
+        "first_hand": 0,
         "llm": 0,
         "inferred": 0,
         "invalid": 0
@@ -458,7 +449,7 @@
       {
         "name": "contamination_check",
         "tier": "full",
-        "applies": 64,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -468,7 +459,7 @@
       {
         "name": "compute_hours",
         "tier": "full",
-        "applies": 64,
+        "applies": 0,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -480,27 +471,27 @@
       {
         "name": "model_id",
         "tier": "required",
-        "applies": 58,
-        "have": 58,
-        "first_hand": 42,
-        "llm": 16,
+        "applies": 45705,
+        "have": 45705,
+        "first_hand": 29331,
+        "llm": 16374,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "benchmark_id",
         "tier": "required",
-        "applies": 58,
-        "have": 58,
-        "first_hand": 42,
-        "llm": 16,
+        "applies": 45705,
+        "have": 45705,
+        "first_hand": 29331,
+        "llm": 16374,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "scoring_mode",
         "tier": "required",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -510,37 +501,37 @@
       {
         "name": "harness_name",
         "tier": "required",
-        "applies": 58,
-        "have": 41,
+        "applies": 45705,
+        "have": 29307,
         "first_hand": 0,
-        "llm": 0,
-        "inferred": 41,
+        "llm": 2505,
+        "inferred": 26802,
         "invalid": 0
       },
       {
         "name": "harness_version",
         "tier": "required",
-        "applies": 58,
-        "have": 0,
+        "applies": 45705,
+        "have": 192,
         "first_hand": 0,
-        "llm": 0,
+        "llm": 192,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "n_shot",
         "tier": "required",
-        "applies": 58,
-        "have": 44,
+        "applies": 45705,
+        "have": 36922,
         "first_hand": 0,
-        "llm": 8,
-        "inferred": 36,
+        "llm": 8551,
+        "inferred": 28371,
         "invalid": 0
       },
       {
         "name": "benchmark_variant",
         "tier": "required",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -550,7 +541,7 @@
       {
         "name": "judge_model",
         "tier": "required",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -560,17 +551,17 @@
       {
         "name": "evaluation_timestamp",
         "tier": "required",
-        "applies": 58,
-        "have": 0,
+        "applies": 45705,
+        "have": 1162,
         "first_hand": 0,
         "llm": 0,
-        "inferred": 0,
+        "inferred": 1162,
         "invalid": 0
       },
       {
         "name": "prompt_template_hash",
         "tier": "required",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -610,17 +601,17 @@
       {
         "name": "temperature",
         "tier": "recommended",
-        "applies": 58,
-        "have": 0,
+        "applies": 45705,
+        "have": 1436,
         "first_hand": 0,
-        "llm": 0,
-        "inferred": 0,
+        "llm": 1430,
+        "inferred": 6,
         "invalid": 0
       },
       {
         "name": "top_p",
         "tier": "recommended",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -630,7 +621,7 @@
       {
         "name": "quantization",
         "tier": "recommended",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -640,7 +631,7 @@
       {
         "name": "hardware",
         "tier": "recommended",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -650,17 +641,17 @@
       {
         "name": "random_seed",
         "tier": "recommended",
-        "applies": 58,
-        "have": 0,
+        "applies": 45705,
+        "have": 641,
         "first_hand": 0,
-        "llm": 0,
+        "llm": 641,
         "inferred": 0,
         "invalid": 0
       },
       {
         "name": "provenance_url",
         "tier": "full",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -670,7 +661,7 @@
       {
         "name": "contamination_check",
         "tier": "full",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -680,7 +671,7 @@
       {
         "name": "compute_hours",
         "tier": "full",
-        "applies": 58,
+        "applies": 45705,
         "have": 0,
         "first_hand": 0,
         "llm": 0,
@@ -691,35 +682,35 @@
   },
   "coverage": {
     "required": {
-      "of": 1287,
-      "have": 721,
-      "first_hand": 604,
-      "llm": 40,
-      "inferred": 77
+      "of": 457050,
+      "have": 158993,
+      "first_hand": 58662,
+      "llm": 43996,
+      "inferred": 56335
     },
     "recommended": {
-      "of": 610,
-      "have": 122,
-      "first_hand": 122,
-      "llm": 0,
-      "inferred": 0
+      "of": 228525,
+      "have": 2077,
+      "first_hand": 0,
+      "llm": 2071,
+      "inferred": 6
     },
     "full": {
-      "of": 366,
-      "have": 64,
-      "first_hand": 64,
+      "of": 137115,
+      "have": 0,
+      "first_hand": 0,
       "llm": 0,
       "inferred": 0
     }
   },
   "overlap": {
-    "cells": 23,
+    "cells": 828,
     "bands": {
-      "within1": 12,
-      "within5": 2,
-      "over5": 9,
-      "unscaled": 0
+      "within1": 261,
+      "within5": 171,
+      "over5": 382,
+      "unscaled": 14
     },
-    "unexplained": 7
+    "unexplained": 391
   }
 }

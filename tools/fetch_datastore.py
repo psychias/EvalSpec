@@ -20,13 +20,13 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
 def with_hub(repo: str, revision: str, data_dir: str, target: pathlib.Path) -> bool:
-    """Download the JSON files with huggingface_hub. False when the package is not installed."""
+    """Download the JSON and JSONL files with huggingface_hub. False when the package is not installed."""
     try:
         from huggingface_hub import snapshot_download
     except ImportError:
         return False
     snapshot_download(repo_id=repo, repo_type="dataset", revision=revision, local_dir=str(target),
-                      allow_patterns=[f"{data_dir}/**/*.json", "*.md"])
+                      allow_patterns=[f"{data_dir}/**/*.json", f"{data_dir}/*.jsonl", f"{data_dir}/**/*.jsonl", "*.md"])
     return True
 
 
@@ -65,9 +65,9 @@ def main(argv=None) -> int:
         return 1
 
     base = args.to / data_dir if (args.to / data_dir).is_dir() else args.to
-    files = sorted(base.rglob("*.json"))
+    files = sorted([*base.rglob("*.json"), *base.rglob("*.jsonl")])
     if not files:
-        print(f"no JSON files under {base}", file=sys.stderr)
+        print(f"no JSON or JSONL files under {base}", file=sys.stderr)
         return 1
     if lfs_pointers(files):
         print("the files are Git LFS pointers, not the records. Either install huggingface_hub (pip install huggingface_hub)\n"

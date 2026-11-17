@@ -30,7 +30,7 @@ Open `index.html` in a browser. Or serve the folder:
 ## Build
 
     python source/build.py                           # from the sample bundled in datastore/
-    python -m unittest discover -s tests             # 45 tests
+    python -m unittest discover -s tests             # 46 tests
 
     python tools/fetch_datastore.py                  # copy the datastore from Hugging Face into datastore_cache/
     python source/build.py --datastore datastore_cache
@@ -40,12 +40,14 @@ write identical files). Optional:
 `jsonschema` for the schema tests, `node` for the tests that compare the browser validator
 with the Python one, `huggingface_hub` for the download.
 
-**Before the site goes live, build it from the full datastore.** As delivered it shows the
-bundled sample of 122 records and says so on its pages (see `datastore/README.md`). The
-workspace this site was written in could not reach Hugging Face, so the build has been run
-on the sample and on a synthetic datastore of 46,638 records in the layout of the paper's
-pipeline (16 s, 156 per-model files), not on the real one. If the real files hold something
-the build does not expect, it leaves those files out and prints how many, with an example.
+The pages in this branch are built from the full datastore, `Hermeneia/EvalSpec_Dataset` on
+Hugging Face: 12 files with one record per line, 46,559 results. The registry shows 45,705
+of them; the other 854 are results read from arXiv papers that carry no numeric score, and
+the build leaves those out. Without `--datastore` the build reads the bundled sample of 122
+records instead and says so on its pages (see `datastore/README.md`).
+
+The dataset is gated: downloading it needs a Hugging Face account that has accepted its
+terms (`huggingface-cli login`).
 
 ## Settings: `config.json`
 
@@ -73,8 +75,9 @@ Everything that may change is in this one file.
 
 ## How the registry reads the datastore
 
-`source/ingest.py` reads a folder of Every Eval Ever files; `tools/evalspec.py` reads the
-21 fields out of each result.
+`source/ingest.py` reads a folder of Every Eval Ever files, either one record per `.json`
+file or one record per line of a `.jsonl` file; `tools/evalspec.py` reads the 21 fields out
+of each result.
 
 - **Two tracks.** A record whose provenance tag is `source-reported` is shown as
   author-reported. Every other record is shown as predicted. The tag is read from
@@ -168,8 +171,7 @@ drawn in the browser against the board computed by the build, on the sample and 
 synthetic datastore; the new pages with axe-core (WCAG 2.1 A and AA rules, no finding);
 HTML parsing of every page.
 
-Not checked: a build from the real datastore, the download with `huggingface_hub`, the two
-workflows, and the pull-request steps on Hugging Face, none of which could be reached. The
+Not checked: the two workflows and the pull-request steps on Hugging Face. The
 article keeps eight accessibility findings it already had (for example `dt` and `dd`
 outside a `dl` in one figure, and a faint footnote back-link); its markup was left as it is.
 

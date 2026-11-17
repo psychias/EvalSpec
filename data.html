@@ -39,7 +39,7 @@
     <div class="es-scroll">
     <table class="es-releases">
       <thead><tr><th scope="col">Release</th><th scope="col">What it holds</th><th scope="col">Version and licence</th><th scope="col">Get it</th></tr></thead>
-      <tbody><tr><td>EvalSpec datastore<small>the home of every submission</small></td><td>One Every Eval Ever file per record, author-reported and predicted. New records arrive as pull requests.</td><td>EEE 0.2.1 with eight added fields<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">Datastore on Hugging Face</a></li><li><a href="data/records.csv">The 122 records on this site as CSV</a></li><li><a href="data/board.csv">The board as CSV</a></li><li><a href="data/stats.json">Counts as JSON</a></li></ul></td></tr><tr><td>The paper&#x27;s corpus<small>frozen</small></td><td>46,559 records from 12 sources, harmonized for the paper: ten leaderboards and structured repositories, 100 arXiv papers read by a language model, and Papers With Code. It is the set of predicted records the datastore starts from.</td><td>As analysed in the paper<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">In the datastore</a></li><li><a href="data/paper/sources.csv">Sources table as CSV</a></li><li><a href="data/paper/coverage.csv">Coverage table as CSV</a></li></ul></td></tr><tr><td>EvalSpec 1.0<small>the specification</small></td><td>The 21 fields with their tiers, types and EEE paths; the JSON Schema of a flat record; the EEE schema the datastore follows; worked examples.</td><td>Version 1.0<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="spec.html">Specification</a></li><li><a href="spec/fields.json">fields.json</a></li><li><a href="spec/evalspec-1.0.schema.json">JSON Schema</a></li><li><a href="spec/eee-0.2.1-extended.schema.json">EEE schema</a></li><li><a href="spec/CHANGELOG.md">Changes</a></li></ul></td></tr><tr><td>Validator</td><td>Checks a record, reports its tier and coverage, and converts it into a datastore file. One Python file without dependencies; the same rules run in the browser on the Submit page.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a></td><td><ul><li><a href="tools/evalspec.py">evalspec.py</a></li><li><a href="assets/js/evalspec.js">evalspec.js</a></li><li><a href="submit.html#check">Check a record in the browser</a></li></ul></td></tr><tr><td>Emission hook<small>for lm-evaluation-harness</small></td><td>Writes one record per task from the objects the harness returns at the end of a run.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a></td><td><ul><li><a href="https://github.com/psychias/eee-eval/blob/main/src/emission_hooks/lm_eval_to_evalspec.py">lm_eval_to_evalspec.py</a></li><li><a href="submit.html#route-run">How to use it</a></li></ul></td></tr><tr><td>Code and experiment records</td><td>The extraction and analysis pipeline, and the logs of the controlled experiments on prompt format, temperature, scoring mode, harness version and judges.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a> (code)<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> (records)</td><td><ul><li><a href="https://github.com/psychias/eee-eval">Code repository</a></li></ul></td></tr><tr><td>Tables behind the article</td><td>The numbers drawn in the figures of the interactive article.</td><td><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="data/paper/case_studies.csv">case_studies.csv</a></li><li><a href="data/paper/coverage.csv">coverage.csv</a></li><li><a href="data/paper/sources.csv">sources.csv</a></li><li><a href="data/paper/single_setting_change.csv">single_setting_change.csv</a></li><li><a href="data/paper/judge_sensitivity.csv">judge_sensitivity.csv</a></li><li><a href="data/paper/evalspec_fields.json">evalspec_fields.json</a></li></ul></td></tr><tr><td>The paper</td><td>LLM Evaluation Discrepancies And How To Prevent Them. Findings of EACL 2027. Accepted, to appear.</td><td></td><td><ul><li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li><li><a href="article.html">Interactive article</a></li></ul></td></tr></tbody>
+      <tbody><tr><td>EvalSpec datastore<small>the home of every submission</small></td><td>One Every Eval Ever file per record, author-reported and predicted. New records arrive as pull requests.</td><td>EEE 0.2.1 with eight added fields<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">Datastore on Hugging Face</a></li><li><a href="data/records.csv">The 45,705 records on this site as CSV</a></li><li><a href="data/board.csv">The board as CSV</a></li><li><a href="data/stats.json">Counts as JSON</a></li></ul></td></tr><tr><td>The paper&#x27;s corpus<small>frozen</small></td><td>46,559 records from 12 sources, harmonized for the paper: ten leaderboards and structured repositories, 100 arXiv papers read by a language model, and Papers With Code. It is the set of predicted records the datastore starts from.</td><td>As analysed in the paper<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">In the datastore</a></li><li><a href="data/paper/sources.csv">Sources table as CSV</a></li><li><a href="data/paper/coverage.csv">Coverage table as CSV</a></li></ul></td></tr><tr><td>EvalSpec 1.0<small>the specification</small></td><td>The 21 fields with their tiers, types and EEE paths; the JSON Schema of a flat record; the EEE schema the datastore follows; worked examples.</td><td>Version 1.0<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="spec.html">Specification</a></li><li><a href="spec/fields.json">fields.json</a></li><li><a href="spec/evalspec-1.0.schema.json">JSON Schema</a></li><li><a href="spec/eee-0.2.1-extended.schema.json">EEE schema</a></li><li><a href="spec/CHANGELOG.md">Changes</a></li></ul></td></tr><tr><td>Validator</td><td>Checks a record, reports its tier and coverage, and converts it into a datastore file. One Python file without dependencies; the same rules run in the browser on the Submit page.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a></td><td><ul><li><a href="tools/evalspec.py">evalspec.py</a></li><li><a href="assets/js/evalspec.js">evalspec.js</a></li><li><a href="submit.html#check">Check a record in the browser</a></li></ul></td></tr><tr><td>Emission hook<small>for lm-evaluation-harness</small></td><td>Writes one record per task from the objects the harness returns at the end of a run.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a></td><td><ul><li><a href="https://github.com/psychias/eee-eval/blob/main/src/emission_hooks/lm_eval_to_evalspec.py">lm_eval_to_evalspec.py</a></li><li><a href="submit.html#route-run">How to use it</a></li></ul></td></tr><tr><td>Code and experiment records</td><td>The extraction and analysis pipeline, and the logs of the controlled experiments on prompt format, temperature, scoring mode, harness version and judges.</td><td><a href="https://github.com/psychias/eee-eval/blob/main/LICENSE">MIT</a> (code)<br><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> (records)</td><td><ul><li><a href="https://github.com/psychias/eee-eval">Code repository</a></li></ul></td></tr><tr><td>Tables behind the article</td><td>The numbers drawn in the figures of the interactive article.</td><td><a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a></td><td><ul><li><a href="data/paper/case_studies.csv">case_studies.csv</a></li><li><a href="data/paper/coverage.csv">coverage.csv</a></li><li><a href="data/paper/sources.csv">sources.csv</a></li><li><a href="data/paper/single_setting_change.csv">single_setting_change.csv</a></li><li><a href="data/paper/judge_sensitivity.csv">judge_sensitivity.csv</a></li><li><a href="data/paper/evalspec_fields.json">evalspec_fields.json</a></li></ul></td></tr><tr><td>The paper</td><td>LLM Evaluation Discrepancies And How To Prevent Them. Findings of EACL 2027. Accepted, to appear.</td><td></td><td><ul><li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li><li><a href="article.html">Interactive article</a></li></ul></td></tr></tbody>
     </table>
     </div>
   </section>
@@ -47,13 +47,13 @@
   <section class="es-section" id="rebuild">
     <h2>Build the site from the datastore</h2>
     <p class="es-prose">The site is static. Its registry pages are generated from a folder of EEE files, so pointing the build at the full datastore is all it takes to list every record.</p>
-    <div class="es-cmd"><pre id="cmd-build" tabindex="0" aria-label="Commands to rebuild the site"><code>python tools/fetch_datastore.py          # copies evaleval/EEE_datastore into datastore_cache/
+    <div class="es-cmd"><pre id="cmd-build" tabindex="0" aria-label="Commands to rebuild the site"><code>python tools/fetch_datastore.py          # copies Hermeneia/EvalSpec_Dataset into datastore_cache/
 python source/build.py --datastore datastore_cache
 python -m unittest discover -s tests     # optional: check the build</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-build" hidden>Copy</button></div>
     <p class="es-prose">Without <code>--datastore</code>, the build reads the sample in <code>datastore/</code>. The name and address of the datastore are set once, in <code>config.json</code>:</p>
     <pre tabindex="0" aria-label="Datastore settings in config.json"><code>"datastore": {
   "name": "EvalSpec",
-  "hf_repo": "evaleval/EEE_datastore",
+  "hf_repo": "Hermeneia/EvalSpec_Dataset",
   "revision": "main",
   "data_dir": "data"
 }</code></pre>
@@ -65,61 +65,73 @@ python -m unittest discover -s tests     # optional: check the build</code></pre
     <p class="es-prose">One EEE file per model and source, under <code>data/&lt;source&gt;/&lt;developer&gt;/&lt;model&gt;/&lt;uuid&gt;.json</code>. A file can hold several results. The <a href="spec.html#formats">Spec</a> page shows where each EvalSpec field lives in it.</p>
     <pre tabindex="0" aria-label="A datastore file"><code>{
   &quot;schema_version&quot;: &quot;0.2.1&quot;,
-  &quot;evaluation_id&quot;: &quot;evalspec_controlled_runs/Qwen_Qwen2.5-14B-Instruct/e2/generation&quot;,
-  &quot;retrieved_timestamp&quot;: &quot;1794873600&quot;,
+  &quot;evaluation_id&quot;: &quot;arxiv_html_llm/MobiLlama-0.50B/2404.14619/ARC-c/0_894be111&quot;,
+  &quot;evaluation_timestamp&quot;: &quot;2026-06-25&quot;,
+  &quot;retrieved_timestamp&quot;: &quot;2026-06-25&quot;,
   &quot;source_metadata&quot;: {
-    &quot;source_name&quot;: &quot;LLM Evaluation Discrepancies: controlled runs&quot;,
-    &quot;source_type&quot;: &quot;evaluation_run&quot;,
-    &quot;source_organization_name&quot;: &quot;University of Zurich&quot;,
-    &quot;source_organization_url&quot;: &quot;https://github.com/psychias/eee-eval&quot;,
+    &quot;source_name&quot;: &quot;arxiv_html_llm&quot;,
+    &quot;source_type&quot;: &quot;documentation&quot;,
+    &quot;source_organization_name&quot;: &quot;arXiv&quot;,
+    &quot;source_organization_url&quot;: &quot;https://arxiv.org&quot;,
     &quot;evaluator_relationship&quot;: &quot;third_party&quot;,
     &quot;additional_details&quot;: {
-      &quot;evidence_source&quot;: &quot;source-reported&quot;,
-      &quot;sample_origin&quot;: &quot;experiments/scoring_mode_eval/scoring_mode_results.jsonl in the code repository (experiment E2)&quot;
+      &quot;paper_url&quot;: &quot;https://arxiv.org/abs/2404.14619&quot;,
+      &quot;arxiv_id&quot;: &quot;2404.14619&quot;,
+      &quot;paper_title&quot;: &quot;OpenELM: An Efficient Language Model Family with Open Training and Inference Framework&quot;,
+      &quot;paper_title_expected&quot;: &quot;OpenELM: An Efficient Language Model Family with Open Training and Inference Framework&quot;,
+      &quot;paper_authors&quot;: &quot;unknown&quot;,
+      &quot;year&quot;: &quot;2024&quot;,
+      &quot;is_baseline&quot;: &quot;True&quot;,
+      &quot;model_family&quot;: &quot;MobiLlama&quot;,
+      &quot;extraction_approach&quot;: &quot;llm&quot;,
+      &quot;validated&quot;: &quot;True&quot;
     }
   },
   &quot;eval_library&quot;: {
     &quot;name&quot;: &quot;lm-evaluation-harness&quot;,
-    &quot;version&quot;: &quot;0.4.11&quot;
+    &quot;version&quot;: &quot;commit dc90fec&quot;
   },
   &quot;model_info&quot;: {
-    &quot;name&quot;: &quot;Qwen2.5-14B-Instruct&quot;,
-    &quot;id&quot;: &quot;Qwen/Qwen2.5-14B-Instruct&quot;,
-    &quot;developer&quot;: &quot;Qwen&quot;
+    &quot;name&quot;: &quot;MobiLlama-0.50B&quot;,
+    &quot;id&quot;: &quot;MobiLlama-0.50B&quot;,
+    &quot;developer&quot;: &quot;MobiLlama&quot;
   },
   &quot;evaluation_results&quot;: [
     {
-      &quot;evaluation_name&quot;: &quot;mmlu&quot;,
+      &quot;evaluation_name&quot;: &quot;ARC-c&quot;,
+      &quot;evaluation_timestamp&quot;: &quot;2026-06-25&quot;,
       &quot;source_data&quot;: {
-        &quot;dataset_name&quot;: &quot;mmlu&quot;,
-        &quot;source_type&quot;: &quot;other&quot;
+        &quot;dataset_name&quot;: &quot;ARC-c&quot;,
+        &quot;source_type&quot;: &quot;url&quot;,
+        &quot;url&quot;: [
+          &quot;https://arxiv.org/abs/2404.14619&quot;
+        ]
       },
       &quot;metric_config&quot;: {
+        &quot;metric_name&quot;: &quot;normalized accuracy&quot;,
         &quot;lower_is_better&quot;: false,
         &quot;score_type&quot;: &quot;continuous&quot;,
         &quot;min_score&quot;: 0.0,
         &quot;max_score&quot;: 100.0
       },
       &quot;score_details&quot;: {
-        &quot;score&quot;: 79.7892
+        &quot;score&quot;: 26.62
       },
       &quot;generation_config&quot;: {
         &quot;generation_args&quot;: {
-          &quot;shots&quot;: 5,
-          &quot;temperature&quot;: 0.0
+          &quot;shots&quot;: 0,
+          &quot;prompt_template&quot;: &quot;direct&quot;
         },
         &quot;additional_details&quot;: {
-          &quot;scoring_mode&quot;: &quot;generation&quot;,
-          &quot;benchmark_variant&quot;: &quot;mmlu, plain prompt, full test set (14,042 items)&quot;,
-          &quot;random_seed&quot;: &quot;42&quot;,
-          &quot;provenance_url&quot;: &quot;https://github.com/psychias/eee-eval/tree/main/experiments/scoring_mode_eval&quot;
+          &quot;source&quot;: &quot;arxiv_html_llm&quot;,
+          &quot;eval_harness&quot;: &quot;lm-evaluation-harness&quot;,
+          &quot;decoding_strategy&quot;: &quot;greedy&quot;
         }
-      },
-      &quot;evaluation_timestamp&quot;: &quot;2026-04-20T08:37:00.590464+00:00&quot;
+      }
     }
   ]
 }</code></pre>
-    <p class="es-small">The file <code>data/evalspec_controlled_runs/Qwen/Qwen2.5-14B-Instruct/86b9b728-ee2a-5b1a-bb0e-e8508012f79f.json</code> of the datastore this site was built from.</p>
+    <p class="es-small">The file <code>data/arxiv_extraction.jsonl</code> of the datastore this site was built from.</p>
   </section>
 
   <section class="es-section" id="cite">
@@ -142,13 +154,13 @@ python -m unittest discover -s tests     # optional: check the build</code></pre
     <div>
       <p><b>EvalSpec 1.0</b></p>
       <p>A minimum reporting standard for LLM evaluation results, proposed in "LLM Evaluation Discrepancies And How To Prevent Them" (Findings of EACL 2027).</p>
-      <p>Built on 17 November 2026 from 122 records. No tracking, no external requests.</p>
+      <p>Built on 17 November 2026 from 45,705 records. No tracking, no external requests.</p>
     </div>
     <ul>
       <li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li>
       <li><a href="article.html">Interactive article</a></li>
       <li><a href="https://github.com/psychias/eee-eval">Code</a></li>
-      <li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a></li>
+      <li><a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">EvalSpec datastore</a></li>
     </ul>
     <ul>
       <li><a href="index.html#paper">Cite</a></li>
@@ -158,7 +170,7 @@ python -m unittest discover -s tests     # optional: check the build</code></pre
     </ul>
   </div>
 </footer>
-<script src="data/spec.js?v=5ad25090" defer></script>
+<script src="data/spec.js?v=401a6d09" defer></script>
 <script src="assets/js/site.js?v=388bdc60" defer></script>
 </body>
 </html>

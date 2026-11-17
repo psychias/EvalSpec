@@ -17,7 +17,7 @@ import uuid
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUT = ROOT / "datastore"
 RETRIEVED = "1794873600"            # 2026-11-17T00:00:00Z, when the sample was assembled
-REPO = "https://github.com/psychias/eee-eval/tree/main/"
+REPO = "https://github.com/psychias/EvalSpec/tree/main/"
 
 
 def uid(key: str) -> str:
@@ -187,7 +187,7 @@ def papers():
 
 # ------------------------------------------------------------------ author-reported: the paper's own controlled runs
 
-RUNS = ("LLM Evaluation Discrepancies: controlled runs", "University of Zurich", "https://github.com/psychias/eee-eval")
+RUNS = ("LLM Evaluation Discrepancies: controlled runs", "University of Zurich", "https://github.com/psychias/EvalSpec")
 HARNESS = ("lm-evaluation-harness", "0.4.11")
 TULU_GRID = [   # experiments/controlled_eval/collision_model_results.jsonl: benchmark, task, prompt format, shots, scoring mode, score
     ("gpqa_main", "gpqa_main_zeroshot", "plain", 0, "log-likelihood", 31.0), ("gpqa_main", "gpqa_main_n_shot", "plain", 5, "log-likelihood", 23.5),

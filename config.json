@@ -4,7 +4,7 @@
   "site": {
     "name": "EvalSpec",
     "tagline": "A minimum reporting standard for LLM evaluation results",
-    "url": "https://psychias.github.io/eee-eval/"
+    "url": "https://psychias.github.io/EvalSpec/"
   },
 
   "datastore": {
@@ -41,13 +41,13 @@
   },
 
   "links": {
-    "code": "https://github.com/psychias/eee-eval",
-    "issues": "https://github.com/psychias/eee-eval/issues",
+    "code": "https://github.com/psychias/EvalSpec",
+    "issues": "https://github.com/psychias/EvalSpec/issues",
     "eee": "https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/"
   },
 
   "licences": {
     "data": {"name": "MIT", "url": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset/blob/main/LICENSE"},
-    "code": {"name": "MIT", "url": "https://github.com/psychias/eee-eval/blob/main/LICENSE"}
+    "code": {"name": "MIT", "url": "https://github.com/psychias/EvalSpec/blob/main/LICENSE"}
   }
 }

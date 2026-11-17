@@ -6,7 +6,7 @@
     "source_name": "LLM Evaluation Discrepancies: controlled runs",
     "source_type": "evaluation_run",
     "source_organization_name": "University of Zurich",
-    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "source_organization_url": "https://github.com/psychias/EvalSpec",
     "evaluator_relationship": "third_party",
     "additional_details": {
       "evidence_source": "source-reported",
@@ -47,7 +47,7 @@
           "scoring_mode": "log-likelihood",
           "benchmark_variant": "mmlu, plain prompt, full test set (14,042 items)",
           "random_seed": "42",
-          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/scoring_mode_eval"
+          "provenance_url": "https://github.com/psychias/EvalSpec/tree/main/experiments/scoring_mode_eval"
         }
       },
       "evaluation_timestamp": "2026-07-01"

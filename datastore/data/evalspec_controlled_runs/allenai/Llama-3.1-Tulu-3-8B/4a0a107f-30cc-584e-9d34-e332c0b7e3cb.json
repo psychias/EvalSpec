@@ -6,7 +6,7 @@
     "source_name": "LLM Evaluation Discrepancies: controlled runs",
     "source_type": "evaluation_run",
     "source_organization_name": "University of Zurich",
-    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "source_organization_url": "https://github.com/psychias/EvalSpec",
     "evaluator_relationship": "third_party",
     "additional_details": {
       "evidence_source": "source-reported",
@@ -48,7 +48,7 @@
           "benchmark_variant": "gsm8k, cot prompt, first 200 items",
           "random_seed": "42",
           "hardware": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
-          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/controlled_eval"
+          "provenance_url": "https://github.com/psychias/EvalSpec/tree/main/experiments/controlled_eval"
         }
       }
     }

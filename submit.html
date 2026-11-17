@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Submit a report to EvalSpec</title>
 <meta name="description" content="Write an EvalSpec record, check it in the browser, convert it into a datastore file and open a pull request.">
-<link rel="canonical" href="https://psychias.github.io/eee-eval/submit.html">
+<link rel="canonical" href="https://psychias.github.io/EvalSpec/submit.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Submit a report to EvalSpec">
 <meta property="og:description" content="Write an EvalSpec record, check it in the browser, convert it into a datastore file and open a pull request.">
-<meta property="og:url" content="https://psychias.github.io/eee-eval/submit.html">
-<meta property="og:image" content="https://psychias.github.io/eee-eval/assets/img/og-site.png">
+<meta property="og:url" content="https://psychias.github.io/EvalSpec/submit.html">
+<meta property="og:image" content="https://psychias.github.io/EvalSpec/assets/img/og-site.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css?v=a4967f39">
@@ -230,7 +230,7 @@ hf upload Hermeneia/EvalSpec_Dataset my_submission/data data --repo-type dataset
 
   <section class="es-section" id="route-run">
     <h2>Emit records from a run</h2>
-    <p class="es-prose">A harness holds the whole configuration at the moment it computes a score. The released hook for lm-evaluation-harness reads it from the objects the harness returns and writes one flat record per task. It is <a href="https://github.com/psychias/eee-eval/blob/main/src/emission_hooks/lm_eval_to_evalspec.py"><code>lm_eval_to_evalspec.py</code></a> in the code repository.</p>
+    <p class="es-prose">A harness holds the whole configuration at the moment it computes a score. The released hook for lm-evaluation-harness reads it from the objects the harness returns and writes one flat record per task. It is <a href="https://github.com/psychias/EvalSpec/blob/main/src/emission_hooks/lm_eval_to_evalspec.py"><code>lm_eval_to_evalspec.py</code></a> in the code repository.</p>
     <pre tabindex="0" aria-label="Using the hook"><code>import json
 from lm_eval import simple_evaluate
 from emission_hooks.lm_eval_to_evalspec import emit_evalspec
@@ -293,12 +293,12 @@ python evalspec.py hash prompt.txt                        # sha256 of a prompt t
     <ul>
       <li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li>
       <li><a href="article.html">Interactive article</a></li>
-      <li><a href="https://github.com/psychias/eee-eval">Code</a></li>
+      <li><a href="https://github.com/psychias/EvalSpec">Code</a></li>
       <li><a href="https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset">EvalSpec datastore</a></li>
     </ul>
     <ul>
       <li><a href="index.html#paper">Cite</a></li>
-      <li><a href="https://github.com/psychias/eee-eval/issues">Report a problem</a></li>
+      <li><a href="https://github.com/psychias/EvalSpec/issues">Report a problem</a></li>
       <li><a href="https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/">Every Eval Ever</a></li>
       <li><a href="data.html#cite">Licences</a></li>
     </ul>

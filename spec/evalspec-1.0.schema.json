@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://psychias.github.io/eee-eval/spec/evalspec-1.0.schema.json",
+  "$id": "https://psychias.github.io/EvalSpec/spec/evalspec-1.0.schema.json",
   "title": "EvalSpec 1.0 record (flat view)",
   "description": "A well-formed record. Use #/$defs/required_tier, recommended_tier or full_tier to test conformance to a tier.",
   "type": "object",

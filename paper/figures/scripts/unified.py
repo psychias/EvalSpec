@@ -2,7 +2,7 @@
 Unified three-column case-study comparison — CoT visual register.
 Generates 6 variants: 2 middle columns × 3 score display styles.
 
-Outputs (LLM_Evaluation_Report/figures/):
+Outputs (paper/figures/):
   case_studies_unified_{hellaswag,belebele}_{S1,S2,S3}.pdf/png
 
 Score display styles:

@@ -2,7 +2,7 @@
 Parser-flow diagram for §5.1 (Case Study 1) — CoT visual register.
 Generates 3 variants with different score display styles.
 
-Outputs (LLM_Evaluation_Report/figures/):
+Outputs (paper/figures/):
   case1_parser_flow_{S1,S2,S3}.pdf/png
 
 Score display styles:

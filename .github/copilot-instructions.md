@@ -55,11 +55,11 @@ Read the metadata documentation rates printed at the end.
 
 ### Stage 4 — Generate figures
 ```powershell
-python LLM_Evaluation_Report/figures/scripts/coverage_bars.py   # Figure 6 (§4.3)
-python LLM_Evaluation_Report/figures/scripts/unified.py         # Figure 5 (§5)
-python LLM_Evaluation_Report/figures/scripts/case1.py           # Figure 4 (§5.1)
+python paper/figures/scripts/coverage_bars.py   # Figure 6 (§4.3)
+python paper/figures/scripts/unified.py         # Figure 5 (§5)
+python paper/figures/scripts/case1.py           # Figure 4 (§5.1)
 ```
-Produces the paper figures in `LLM_Evaluation_Report/figures/`.
+Produces the paper figures in `paper/figures/`.
 
 ---
 
@@ -93,11 +93,11 @@ Common causes:
 
 ### Zero data points extracted for a paper
 This means both LLM and Docling found nothing. Steps:
-1. Check if the PDF downloaded: `src/scrapers/raw/papers/<arxiv_id>.pdf`
+1. Check if the PDF downloaded: `data/raw/papers/<arxiv_id>.pdf`
 2. Run with `--no-llm` flag to test Docling alone
 3. Check if the paper has machine-readable text (not scanned):
    ```powershell
-   python -c "from docling.document_converter import DocumentConverter; r = DocumentConverter().convert('src/scrapers/raw/papers/<id>.pdf'); print(r.document.export_to_markdown()[:500])"
+   python -c "from docling.document_converter import DocumentConverter; r = DocumentConverter().convert('data/raw/papers/<id>.pdf'); print(r.document.export_to_markdown()[:500])"
    ```
 4. If scanned PDF: Docling needs OCR enabled. Edit `DoclingParser.__init__` in
    `src/extraction/extract_paper.py` and set `pipeline_options.do_ocr = True`
@@ -182,7 +182,7 @@ has a bug — read that function and fix it.
 - **Maximum 3 fix attempts per stage.** If a stage fails 3 times with
   different errors, report what you tried and ask the user for guidance.
 - **LLM cache is your friend.** Already-processed chunks cost nothing to
-  re-run — the cache in `src/scrapers/raw/llm_cache/` is always used.
+  re-run — the cache in `data/raw/llm_cache/` is always used.
 - **After fixing a script**, always show the diff of what you changed and why.
 
 ---

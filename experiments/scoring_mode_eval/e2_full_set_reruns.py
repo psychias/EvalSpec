@@ -1,5 +1,5 @@
 """E2 uniformity pass: full-set log-likelihood for the three smaller models, so all
-four E2 rows are ll@full vs gen@full (the 14B is in finish_missing_cells_e2_e3.py).
+four E2 rows are ll@full vs gen@full (the 14B is in finish_missing_cells_e2_e3.py, in this folder).
 
 Motivation: the original ll values used limit=500/subject, which carries subset-
 composition noise. For the 14B this mattered (ll@500=81.72 vs ll@full=79.97); for the

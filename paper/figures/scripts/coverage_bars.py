@@ -1,7 +1,7 @@
 """
 Metadata-coverage horizontal bar chart — §4.3 (replaces tab:coverage in body).
 
-Output: LLM_Evaluation_Report/figures/coverage_bars.pdf
+Output: paper/figures/coverage_bars.pdf
 
 Visual takeaway: harness, prompt_template, and temperature have zero valid
 coverage in the 10-source leaderboard subset (bars flush at 0).

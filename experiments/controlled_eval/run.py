@@ -10,7 +10,7 @@ Usage:
                                   [--benchmarks BENCH [BENCH ...]]
 
 Results are written incrementally to:
-    submission/experiments/results/controlled_eval_results.jsonl
+    experiments/controlled_eval/results/controlled_eval_results.jsonl
 
 Interrupted runs can be safely resumed: completed (model, benchmark,
 config) triples are skipped on restart.

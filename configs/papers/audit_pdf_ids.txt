@@ -1,0 +1,10 @@
+# arXiv ids (with version) of the eight papers kept as PDFs for the manual audits.
+# The PDFs are not stored in the repository: https://arxiv.org/pdf/<id>
+2307.09288v2
+2312.15166v3
+2401.02385v2
+2402.00838v4
+2404.14219v4
+2405.04434v5
+2407.14885v1
+2412.19437v2

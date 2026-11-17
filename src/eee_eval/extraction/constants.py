@@ -19,7 +19,7 @@ _PROTOCOL_CACHE_VERSION = 2
 _ARXIV_PDF_URL = "https://arxiv.org/pdf/{arxiv_id}.pdf"
 _ARXIV_ABS_URL = "https://arxiv.org/abs/{arxiv_id}"
 _TIMEOUT = 60  # seconds for HTTP
-_PDF_DOWNLOAD_DIR = Path("scripts/scrapers/raw/papers")
+_PDF_DOWNLOAD_DIR = Path("data/raw/papers")
 
 # Specific benchmark names — a single match is sufficient evidence that a
 # table contains evaluation results.

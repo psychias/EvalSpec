@@ -6,7 +6,7 @@ EEE schema (v0.2.1). extends BaseLeaderboardScraper; never modifies the
 base class.
 
 usage:
-    python scripts/scrapers/hfopenllm_v2_scraper.py [--limit N] [--dry-run]
+    python -m eee_eval.scrapers.hfopenllm_v2_scraper [--limit N] [--dry-run]
 """
 
 from __future__ import annotations
@@ -253,7 +253,7 @@ def main(limit: int | None = None, dry_run: bool = False) -> None:
         raw = raw[:limit]
         print(f"  limited to {limit} entries")
 
-    scraper.save_raw(raw, Path("scripts/scrapers/raw"))
+    scraper.save_raw(raw, Path("data/raw"))
 
     retrieved_timestamp = str(time.time())
     records = scraper.convert(raw, retrieved_timestamp)

@@ -48,27 +48,28 @@ htmlcov/
 !tests/data/
 !tests/data/**
 
-# Raw scraper output (large JSON dumps)
-src/scrapers/raw/
+# Raw scraper output and downloaded PDFs go to data/raw/, which /data/ already covers
 
 # Caches
 .cache/
 
-# Generated results / figures (reproducible)
-results/
+# Generated outputs (reproducible). The result files of the experiments under
+# experiments/**/results/ are kept in git: the reproduction scripts read them.
+/results/
 analysis_output/
 harness_experiment_output/
 
 # PDF compilation artefacts
-submission/latex/*.aux
-submission/latex/*.log
-submission/latex/*.out
-submission/latex/*.toc
-submission/latex/*.synctex.gz
-submission/latex/*.bbl
-submission/latex/*.blg
-submission/latex/*.fls
-submission/latex/*.fdb_latexmk
+paper/latex/*.aux
+paper/latex/*.log
+paper/latex/*.out
+paper/latex/*.toc
+paper/latex/*.synctex.gz
+paper/latex/*.bbl
+paper/latex/*.blg
+paper/latex/*.fls
+paper/latex/*.fdb_latexmk
+submission/
 
 # Validation reports (generated at runtime)
 VALIDATION_REPORT.json

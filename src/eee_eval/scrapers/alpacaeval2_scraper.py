@@ -449,7 +449,7 @@ def main(limit: int | None = None, dry_run: bool = False) -> None:
     if limit:
         raw = raw[:limit]
 
-    scraper.save_raw(raw, Path("scripts/scrapers/raw"))
+    scraper.save_raw(raw, Path("data/raw"))
 
     retrieved_timestamp = str(time.time())
     records = scraper.convert(raw, retrieved_timestamp)

@@ -113,7 +113,7 @@ class NoopValidator:
 
     Use this as the default *validator* argument in EEEPipeline when you want
     to skip inline validation (e.g. you are running a separate validation step
-    as a post-processing pass via ``scripts/validate_all.py``).
+    as a post-processing pass via ``eee_eval.validation.validate_all``).
     """
 
     def validate(self, records: list[dict]) -> list[dict]:
@@ -200,7 +200,7 @@ class BaseLeaderboardScraper(ABC):
         """run fetch → convert → write; return count of written files."""
         import time
 
-        raw_dir = Path("scripts/scrapers/raw")
+        raw_dir = Path("data/raw")
         retrieved_timestamp = str(time.time())
 
         print(f"[{self.eval_name}] fetching raw data...")
@@ -228,7 +228,7 @@ class BaseLeaderboardScraper(ABC):
         """
         import time
 
-        raw_dir = Path("scripts/scrapers/raw")
+        raw_dir = Path("data/raw")
         retrieved_timestamp = str(time.time())
 
         print(f"[{self.eval_name}] fetching raw data...")

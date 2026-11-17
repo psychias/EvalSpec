@@ -6,7 +6,7 @@ controlled-experiment results, then writes section5_evidence.txt —
 a human-readable appendix showing the raw data behind every numerical
 claim in Section 5 of the paper.
 
-Run from the eee-eval repo root:
+Run from the EvalSpec repo root:
     python generate_evidence_file.py
 """
 

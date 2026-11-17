@@ -4,8 +4,8 @@ Code, experiment records and paper sources for the paper of the same name, by
 Stylianos Psychias, Hanna Hubarava, Juri Opitz, Pius von Däniken and Andrianos
 Michail. Accepted to Findings of EACL 2027, to appear.
 
-- EvalSpec site: https://psychias.github.io/eee-eval/
-- Interactive article: https://psychias.github.io/eee-eval/article.html
+- EvalSpec site: https://psychias.github.io/EvalSpec/
+- Interactive article: https://psychias.github.io/EvalSpec/article.html
 - Dataset: https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset
 
 The repository is built around Every Eval Ever (EEE), a JSON schema (v0.2.1) for
@@ -84,7 +84,7 @@ EvalSpec is the reporting specification the paper proposes: 13 Required
 fields, 5 Recommended and 3 Full. A record that follows it either states the
 settings that drive score differences or shows that they were left out.
 
-The [EvalSpec site](https://psychias.github.io/eee-eval/) holds the
+The [EvalSpec site](https://psychias.github.io/EvalSpec/) holds the
 specification, a registry of the dataset's records with a page per model, a
 form that writes and checks a record for submission, and the interactive
 article. Its sources and build script are on the `gh-pages` branch of this

@@ -4,7 +4,7 @@ reproduce_case_studies.py
 Verifies every numerical claim in Section 5 (Case Studies) of the paper
 "How To Report Evaluations of your LLM" against the stored EEE dataset.
 
-Run from the eee-eval repo root:
+Run from the EvalSpec repo root:
     python reproduce_case_studies.py
 
 With live HF API verification (requires network):

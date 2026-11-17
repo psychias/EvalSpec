@@ -58,6 +58,18 @@ class JsonLines(unittest.TestCase):
         self.assertEqual(lines["stats"]["files"], 1)
 
 
+class PaperTitles(unittest.TestCase):
+    def test_a_paper_named_only_by_its_arxiv_id_gets_its_title(self):
+        doc = {"source_metadata": {"source_name": "Papers With Code", "additional_details": {"arxiv_id": "0000.00001"}}, "evaluation_results": []}
+        self.assertEqual(ingest.source_of(doc)["label"], "arXiv:0000.00001")
+        ingest.TITLES["0000.00001"] = "A looked-up title"
+        try:
+            src = ingest.source_of(doc)
+        finally:
+            del ingest.TITLES["0000.00001"]
+        self.assertEqual((src["label"], src["ref"], src["kind"]), ("A looked-up title", "arXiv:0000.00001", "Paper"))
+
+
 def paper_file(model, bench, score, arxiv="2408.00118", title="A model report"):
     """A file in the layout of the paper's extraction pipeline."""
     return {"schema_version": "0.2.1", "evaluation_id": f"arxiv_html_llm/{model}/{arxiv}/{bench}/{score}", "retrieved_timestamp": "1790000000",

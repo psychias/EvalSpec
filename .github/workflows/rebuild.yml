@@ -25,6 +25,8 @@ jobs:
       - run: pip install huggingface_hub jsonschema
       - name: Copy the datastore
         run: python tools/fetch_datastore.py --to datastore_cache
+      - name: Look up the titles of papers named only by arXiv id
+        run: python tools/paper_titles.py --datastore datastore_cache
       - name: Build
         id: build
         run: |

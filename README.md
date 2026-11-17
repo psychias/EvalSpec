@@ -30,9 +30,10 @@ Open `index.html` in a browser. Or serve the folder:
 ## Build
 
     python source/build.py                           # from the sample bundled in datastore/
-    python -m unittest discover -s tests             # 47 tests
+    python -m unittest discover -s tests             # 48 tests
 
     python tools/fetch_datastore.py                  # copy the datastore from Hugging Face into datastore_cache/
+    python tools/paper_titles.py --datastore datastore_cache   # titles for papers named only by arXiv id
     python source/build.py --datastore datastore_cache
 
 The build needs Python 3.9 or later and nothing else (tested with 3.9, 3.11 and 3.13, which
@@ -86,6 +87,9 @@ of each result.
   inferred from the kind of file (see "Provenance and tracks" on the Spec page).
 - **Sources.** Records are grouped by source: a leaderboard, a model card, a run, or a
   paper. Each paper is its own source, keyed by its arXiv id, whoever uploads its records.
+  A paper is shown by its title. Where the records give only the arXiv id, as those from
+  Papers With Code do, the title comes from `source/paper_titles.json`, which
+  `tools/paper_titles.py` fills from the arXiv API.
 - **The board.** Sources are ordered by the share of procedure fields (the Required fields
   other than `model_id` and `benchmark_id`) they report first-hand, then by the share a
   language model read from the source, then by the share a pipeline inferred. Sources with
@@ -118,6 +122,7 @@ Neither workflow has been run: they were written without access to GitHub Action
     spec/examples/              worked examples
     tools/evalspec.py           the validator and converter (command line, no dependencies)
     tools/fetch_datastore.py    copies the datastore from Hugging Face
+    tools/paper_titles.py       looks up the titles of papers named only by arXiv id
     assets/js/evalspec.js       the same validator for the browser
     assets/js/site.js           shared by all pages: data loading, lookup, drawing a record
     assets/js/registry.js, model.js, submit.js, home.js      one script per page
@@ -129,6 +134,7 @@ Neither workflow has been run: they were written without access to GitHub Action
     source/pages/               page templates; article.src.html is the article
     source/figs.py, refs.json   the article's figures and references
     source/aliases.json         name normalisation
+    source/paper_titles.json    arXiv id -> paper title
     source/snapshot/            writes the bundled sample
     datastore/                  the bundled sample
     tests/                      tests

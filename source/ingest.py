@@ -23,6 +23,8 @@ sys.path.insert(0, str(HERE.parent / "tools"))
 import evalspec as E  # noqa: E402
 
 ALIASES = json.loads((HERE / "aliases.json").read_text(encoding="utf-8"))
+# arXiv id -> title, for papers the datastore names only by id (tools/paper_titles.py writes it)
+TITLES = json.loads((HERE / "paper_titles.json").read_text(encoding="utf-8")) if (HERE / "paper_titles.json").exists() else {}
 SKIP_DIRS = {"aggregated", "samples", "naive"}          # folders the paper's own pipeline leaves out
 TIER_ORDER = ["none", *E.TIERS]
 # the fields that decide whether two scores were produced the same way
@@ -60,7 +62,7 @@ def source_of(doc: dict) -> dict:
     links = [u for u in (E._first_url(r) for r in doc.get("evaluation_results") or [] if isinstance(r, dict)) if u]
     if details.get("paper_title") or details.get("arxiv_id"):       # the layout of the paper's own extraction pipeline
         arxiv = details.get("arxiv_id")
-        label = details.get("paper_title") or f"arXiv:{arxiv}"
+        label = TITLES.get(str(arxiv)) or details.get("paper_title") or f"arXiv:{arxiv}"
         return {"key": flat(arxiv or label), "label": label, "kind": "Paper", "ref": f"arXiv:{arxiv}" if arxiv else "",
                 "url": details.get("paper_url") or (f"https://arxiv.org/abs/{arxiv}" if arxiv else "")}
     label = sm.get("source_name") or "Unnamed source"

@@ -68,170 +68,170 @@ rank,source,kind,reference,records,models,benchmarks,author_reported,predicted,s
 67,Open LLM Leaderboard v2,Leaderboard,,26790,4456,6,0,26790,0,214320,53580,0,0,53580
 67,BigCodeBench,Leaderboard,,280,156,2,0,280,0,2240,560,0,0,560
 67,SWE-bench Verified,Leaderboard,,117,117,1,0,117,0,936,234,0,0,234
-67,arXiv:2407.13690,Paper,arXiv:2407.13690,16,8,2,0,16,0,128,32,0,0,32
-67,arXiv:2303.17564,Paper,arXiv:2303.17564,12,7,3,0,12,0,96,24,0,0,24
-67,arXiv:2307.09288,Paper,arXiv:2307.09288,9,4,3,0,9,0,72,18,0,0,18
-67,arXiv:2112.11446,Paper,arXiv:2112.11446,8,6,4,0,8,0,64,16,0,0,16
-67,arXiv:2005.14165,Paper,arXiv:2005.14165,7,3,4,0,7,0,56,14,0,0,14
-67,arXiv:2403.00799,Paper,arXiv:2403.00799,6,3,2,0,6,0,48,12,0,0,12
-67,arXiv:2304.01373,Paper,arXiv:2304.01373,4,3,2,0,4,0,32,8,0,0,8
-67,arXiv:2109.01652,Paper,arXiv:2109.01652,3,1,3,0,3,0,24,6,0,0,6
-67,arXiv:2203.15556,Paper,arXiv:2203.15556,3,2,3,0,3,0,24,6,0,0,6
-67,arXiv:2306.17806,Paper,arXiv:2306.17806,3,3,1,0,3,0,24,6,0,0,6
-67,arXiv:2401.10225,Paper,arXiv:2401.10225,2,2,1,0,2,0,16,4,0,0,4
-67,arXiv:2402.10949,Paper,arXiv:2402.10949,2,2,1,0,2,0,16,4,0,0,4
-67,arXiv:2406.18629,Paper,arXiv:2406.18629,2,1,2,0,2,0,16,4,0,0,4
-67,arXiv:2407.02485,Paper,arXiv:2407.02485,2,2,1,0,2,0,16,4,0,0,4
-67,arXiv:2203.11171,Paper,arXiv:2203.11171,1,1,1,0,1,0,8,2,0,0,2
-67,arXiv:2204.05999,Paper,arXiv:2204.05999,1,1,1,0,1,0,8,2,0,0,2
-67,arXiv:2206.02336,Paper,arXiv:2206.02336,1,1,1,0,1,0,8,2,0,0,2
-67,arXiv:2305.15769,Paper,arXiv:2305.15769,1,1,1,0,1,0,8,2,0,0,2
-88,arXiv:2305.10403,Paper,arXiv:2305.10403,16,4,7,0,16,0,128,30,0,0,30
-88,arXiv:2303.08774,Paper,arXiv:2303.08774,8,2,5,0,8,0,64,15,0,0,15
-90,arXiv:2203.06850,Paper,arXiv:2203.06850,10,5,2,0,10,0,80,18,0,0,18
-90,arXiv:2401.02731,Paper,arXiv:2401.02731,10,2,6,0,10,0,80,18,0,0,18
-92,arXiv:2309.05463,Paper,arXiv:2309.05463,3,1,3,0,3,0,24,5,0,0,5
-92,arXiv:2312.11805,Paper,arXiv:2312.11805,3,2,2,0,3,0,24,5,0,0,5
-92,arXiv:2401.04088,Paper,arXiv:2401.04088,3,1,3,0,3,0,24,5,0,0,5
-95,arXiv:2204.02311,Paper,arXiv:2204.02311,7,4,4,0,7,0,56,11,0,0,11
-96,arXiv:2302.13971,Paper,arXiv:2302.13971,36,8,8,0,36,0,288,54,0,0,54
-96,arXiv:2211.09085,Paper,arXiv:2211.09085,16,15,3,0,16,0,128,24,0,0,24
-96,arXiv:1907.10641,Paper,arXiv:1907.10641,4,4,1,0,4,0,32,6,0,0,6
-96,arXiv:2112.06905,Paper,arXiv:2112.06905,2,2,2,0,2,0,16,3,0,0,3
-96,arXiv:2302.08468,Paper,arXiv:2302.08468,2,2,2,0,2,0,16,3,0,0,3
-101,arXiv:2205.11916,Paper,arXiv:2205.11916,3,2,1,0,3,0,24,4,0,0,4
-102,arXiv:2206.14858,Paper,arXiv:2206.14858,13,8,2,0,13,0,104,16,0,0,16
+67,DART-Math: Difficulty-Aware Rejection Tuning for Mathematical Problem-Solving,Paper,arXiv:2407.13690,16,8,2,0,16,0,128,32,0,0,32
+67,BloombergGPT: A Large Language Model for Finance,Paper,arXiv:2303.17564,12,7,3,0,12,0,96,24,0,0,24
+67,Llama 2: Open Foundation and Fine-Tuned Chat Models,Paper,arXiv:2307.09288,9,4,3,0,9,0,72,18,0,0,18
+67,"Scaling Language Models: Methods, Analysis & Insights from Training Gopher",Paper,arXiv:2112.11446,8,6,4,0,8,0,64,16,0,0,16
+67,Language Models are Few-Shot Learners,Paper,arXiv:2005.14165,7,3,4,0,7,0,56,14,0,0,14
+67,An Empirical Study of Data Ability Boundary in LLMs' Math Reasoning,Paper,arXiv:2403.00799,6,3,2,0,6,0,48,12,0,0,12
+67,Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling,Paper,arXiv:2304.01373,4,3,2,0,4,0,32,8,0,0,8
+67,Finetuned Language Models Are Zero-Shot Learners,Paper,arXiv:2109.01652,3,1,3,0,3,0,24,6,0,0,6
+67,Stay on topic with Classifier-Free Guidance,Paper,arXiv:2306.17806,3,3,1,0,3,0,24,6,0,0,6
+67,Training Compute-Optimal Large Language Models,Paper,arXiv:2203.15556,3,2,3,0,3,0,24,6,0,0,6
+67,ChatQA: Surpassing GPT-4 on Conversational QA and RAG,Paper,arXiv:2401.10225,2,2,1,0,2,0,16,4,0,0,4
+67,RankRAG: Unifying Context Ranking with Retrieval-Augmented Generation in LLMs,Paper,arXiv:2407.02485,2,2,1,0,2,0,16,4,0,0,4
+67,Step-DPO: Step-wise Preference Optimization for Long-chain Reasoning of LLMs,Paper,arXiv:2406.18629,2,1,2,0,2,0,16,4,0,0,4
+67,The Unreasonable Effectiveness of Eccentric Automatic Prompts,Paper,arXiv:2402.10949,2,2,1,0,2,0,16,4,0,0,4
+67,InCoder: A Generative Model for Code Infilling and Synthesis,Paper,arXiv:2204.05999,1,1,1,0,1,0,8,2,0,0,2
+67,Making Large Language Models Better Reasoners with Step-Aware Verifier,Paper,arXiv:2206.02336,1,1,1,0,1,0,8,2,0,0,2
+67,MERGE: Fast Private Text Generation,Paper,arXiv:2305.15769,1,1,1,0,1,0,8,2,0,0,2
+67,Self-Consistency Improves Chain of Thought Reasoning in Language Models,Paper,arXiv:2203.11171,1,1,1,0,1,0,8,2,0,0,2
+88,PaLM 2 Technical Report,Paper,arXiv:2305.10403,16,4,7,0,16,0,128,30,0,0,30
+88,GPT-4 Technical Report,Paper,arXiv:2303.08774,8,2,5,0,8,0,64,15,0,0,15
+90,Efficient Language Modeling with Sparse all-MLP,Paper,arXiv:2203.06850,10,5,2,0,10,0,80,18,0,0,18
+90,Parameter-Efficient Sparsity Crafting from Dense to Mixture-of-Experts for Instruction Tuning on General Tasks,Paper,arXiv:2401.02731,10,2,6,0,10,0,80,18,0,0,18
+92,Gemini: A Family of Highly Capable Multimodal Models,Paper,arXiv:2312.11805,3,2,2,0,3,0,24,5,0,0,5
+92,Mixtral of Experts,Paper,arXiv:2401.04088,3,1,3,0,3,0,24,5,0,0,5
+92,Textbooks Are All You Need II: phi-1.5 technical report,Paper,arXiv:2309.05463,3,1,3,0,3,0,24,5,0,0,5
+95,PaLM: Scaling Language Modeling with Pathways,Paper,arXiv:2204.02311,7,4,4,0,7,0,56,11,0,0,11
+96,LLaMA: Open and Efficient Foundation Language Models,Paper,arXiv:2302.13971,36,8,8,0,36,0,288,54,0,0,54
+96,Galactica: A Large Language Model for Science,Paper,arXiv:2211.09085,16,15,3,0,16,0,128,24,0,0,24
+96,WinoGrande: An Adversarial Winograd Schema Challenge at Scale,Paper,arXiv:1907.10641,4,4,1,0,4,0,32,6,0,0,6
+96,GLaM: Efficient Scaling of Language Models with Mixture-of-Experts,Paper,arXiv:2112.06905,2,2,2,0,2,0,16,3,0,0,3
+96,LEVER: Learning to Verify Language-to-Code Generation with Execution,Paper,arXiv:2302.08468,2,2,2,0,2,0,16,3,0,0,3
+101,Large Language Models are Zero-Shot Reasoners,Paper,arXiv:2205.11916,3,2,1,0,3,0,24,4,0,0,4
+102,Solving Quantitative Reasoning Problems with Language Models,Paper,arXiv:2206.14858,13,8,2,0,13,0,104,16,0,0,16
 103,HuggingFace Model Card,Model card,,207,7,153,0,207,0,1656,213,0,0,213
 104,AlpacaEval 2.0,Leaderboard,,446,223,2,0,446,0,3568,446,0,0,446
 104,BFCL v3,Leaderboard,,327,109,3,0,327,0,2616,327,0,0,327
 104,EvalPlus Leaderboard,Leaderboard,,214,125,2,0,214,0,1712,214,0,0,214
-104,arXiv:2304.14402,Paper,arXiv:2304.14402,12,6,2,0,12,0,96,12,0,0,12
-104,arXiv:2310.03731,Paper,arXiv:2310.03731,12,7,2,0,12,0,96,12,0,0,12
-104,arXiv:2402.10176,Paper,arXiv:2402.10176,12,6,2,0,12,0,96,12,0,0,12
-104,arXiv:2309.17452,Paper,arXiv:2309.17452,11,7,2,0,11,0,88,11,0,0,11
-104,arXiv:2211.16490,Paper,arXiv:2211.16490,10,10,1,0,10,0,80,10,0,0,10
-104,arXiv:1905.07830,Paper,arXiv:1905.07830,9,9,1,0,9,0,72,9,0,0,9
-104,arXiv:2404.15159,Paper,arXiv:2404.15159,9,3,3,0,9,0,72,9,0,0,9
-104,arXiv:2308.09583,Paper,arXiv:2308.09583,8,4,2,0,8,0,64,8,0,0,8
-104,arXiv:2104.08161,Paper,arXiv:2104.08161,7,7,1,0,7,0,56,7,0,0,7
-104,arXiv:2309.12284,Paper,arXiv:2309.12284,7,4,2,0,7,0,56,7,0,0,7
-104,arXiv:2210.06277,Paper,arXiv:2210.06277,6,3,2,0,6,0,48,6,0,0,6
-104,arXiv:2310.05506,Paper,arXiv:2310.05506,6,3,2,0,6,0,48,6,0,0,6
-104,arXiv:2401.14196,Paper,arXiv:2401.14196,6,6,1,0,6,0,48,6,0,0,6
-104,arXiv:2207.10397,Paper,arXiv:2207.10397,5,5,1,0,5,0,40,5,0,0,5
-104,arXiv:2312.08935,Paper,arXiv:2312.08935,5,2,2,0,5,0,40,5,0,0,5
-104,arXiv:2403.07816,Paper,arXiv:2403.07816,5,2,4,0,5,0,40,5,0,0,5
-104,arXiv:2103.03874,Paper,arXiv:2103.03874,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2109.03502,Paper,arXiv:2109.03502,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2109.07958,Paper,arXiv:2109.07958,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2202.08906,Paper,arXiv:2202.08906,4,2,2,0,4,0,32,4,0,0,4
-104,arXiv:2307.12488,Paper,arXiv:2307.12488,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2403.02333,Paper,arXiv:2403.02333,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2407.03618,Paper,arXiv:2407.03618,4,4,1,0,4,0,32,4,0,0,4
-104,arXiv:2410.01560,Paper,arXiv:2410.01560,4,2,2,0,4,0,32,4,0,0,4
-104,arXiv:2210.11610,Paper,arXiv:2210.11610,3,1,3,0,3,0,24,3,0,0,3
-104,arXiv:2308.01825,Paper,arXiv:2308.01825,3,3,1,0,3,0,24,3,0,0,3
-104,arXiv:2309.11235,Paper,arXiv:2309.11235,3,2,2,0,3,0,24,3,0,0,3
-104,arXiv:2405.11403,Paper,arXiv:2405.11403,3,3,2,0,3,0,24,3,0,0,3
-104,arXiv:2406.11909,Paper,arXiv:2406.11909,3,2,3,0,3,0,24,3,0,0,3
-104,arXiv:2409.12122,Paper,arXiv:2409.12122,3,3,1,0,3,0,24,3,0,0,3
-104,arXiv:2410.01215,Paper,arXiv:2410.01215,3,2,2,0,3,0,24,3,0,0,3
-104,arXiv:2410.11331,Paper,arXiv:2410.11331,3,1,3,0,3,0,24,3,0,0,3
-104,arXiv:2501.05366,Paper,arXiv:2501.05366,3,1,3,0,3,0,24,3,0,0,3
-104,arXiv:2504.16005,Paper,arXiv:2504.16005,3,3,1,0,3,0,24,3,0,0,3
-104,arXiv:1907.11692,Paper,arXiv:1907.11692,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2005.00700,Paper,arXiv:2005.00700,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2005.13837,Paper,arXiv:2005.13837,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2007.01282,Paper,arXiv:2007.01282,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2103.13009,Paper,arXiv:2103.13009,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2205.05131,Paper,arXiv:2205.05131,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2205.14318,Paper,arXiv:2205.14318,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2210.02969,Paper,arXiv:2210.02969,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2210.11522,Paper,arXiv:2210.11522,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2210.16433,Paper,arXiv:2210.16433,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2301.00774,Paper,arXiv:2301.00774,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2301.12652,Paper,arXiv:2301.12652,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2302.03202,Paper,arXiv:2302.03202,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2303.12712,Paper,arXiv:2303.12712,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2304.05128,Paper,arXiv:2304.05128,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2305.14045,Paper,arXiv:2305.14045,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2308.07921,Paper,arXiv:2308.07921,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2310.01405,Paper,arXiv:2310.01405,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2310.04406,Paper,arXiv:2310.04406,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2311.07911,Paper,arXiv:2311.07911,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2311.09724,Paper,arXiv:2311.09724,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2311.11045,Paper,arXiv:2311.11045,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2312.09241,Paper,arXiv:2312.09241,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2312.11514,Paper,arXiv:2312.11514,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2312.13010,Paper,arXiv:2312.13010,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2402.03300,Paper,arXiv:2402.03300,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2402.17811,Paper,arXiv:2402.17811,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2403.17359,Paper,arXiv:2403.17359,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2404.12253,Paper,arXiv:2404.12253,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2406.07496,Paper,arXiv:2406.07496,2,2,1,0,2,0,16,2,0,0,2
-104,arXiv:2406.13542,Paper,arXiv:2406.13542,2,1,1,0,2,0,16,2,0,0,2
-104,arXiv:2407.10671,Paper,arXiv:2407.10671,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2408.15300,Paper,arXiv:2408.15300,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2411.14503,Paper,arXiv:2411.14503,2,2,2,0,2,0,16,2,0,0,2
-104,arXiv:2501.13117,Paper,arXiv:2501.13117,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2501.17167,Paper,arXiv:2501.17167,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:2506.10948,Paper,arXiv:2506.10948,2,1,2,0,2,0,16,2,0,0,2
-104,arXiv:1910.14087,Paper,arXiv:1910.14087,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2002.08909,Paper,arXiv:2002.08909,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2004.04906,Paper,arXiv:2004.04906,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2004.11546,Paper,arXiv:2004.11546,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2005.11401,Paper,arXiv:2005.11401,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2006.03654,Paper,arXiv:2006.03654,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2007.00808,Paper,arXiv:2007.00808,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2009.08553,Paper,arXiv:2009.08553,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2010.08191,Paper,arXiv:2010.08191,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2012.14610,Paper,arXiv:2012.14610,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2101.00178,Paper,arXiv:2101.00178,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2101.11038,Paper,arXiv:2101.11038,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2106.00882,Paper,arXiv:2106.00882,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2106.05346,Paper,arXiv:2106.05346,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2107.13602,Paper,arXiv:2107.13602,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2110.06918,Paper,arXiv:2110.06918,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2112.04426,Paper,arXiv:2112.04426,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2201.11990,Paper,arXiv:2201.11990,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2204.11454,Paper,arXiv:2204.11454,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2205.10625,Paper,arXiv:2205.10625,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2208.03299,Paper,arXiv:2208.03299,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.02441,Paper,arXiv:2210.02441,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.03493,Paper,arXiv:2210.03493,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.11399,Paper,arXiv:2210.11399,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.12478,Paper,arXiv:2210.12478,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.16257,Paper,arXiv:2210.16257,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2210.16495,Paper,arXiv:2210.16495,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2211.10147,Paper,arXiv:2211.10147,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2211.10435,Paper,arXiv:2211.10435,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2211.14275,Paper,arXiv:2211.14275,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2212.02027,Paper,arXiv:2212.02027,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2303.17568,Paper,arXiv:2303.17568,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2304.09797,Paper,arXiv:2304.09797,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2305.07922,Paper,arXiv:2305.07922,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2305.10601,Paper,arXiv:2305.10601,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2308.00304,Paper,arXiv:2308.00304,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2308.04371,Paper,arXiv:2308.04371,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2310.02003,Paper,arXiv:2310.02003,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2310.07488,Paper,arXiv:2310.07488,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2311.07961,Paper,arXiv:2311.07961,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2311.09868,Paper,arXiv:2311.09868,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2312.05571,Paper,arXiv:2312.05571,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2312.08901,Paper,arXiv:2312.08901,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2401.09003,Paper,arXiv:2401.09003,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2402.16906,Paper,arXiv:2402.16906,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2404.04735,Paper,arXiv:2404.04735,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2404.07220,Paper,arXiv:2404.07220,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2404.14963,Paper,arXiv:2404.14963,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2405.03553,Paper,arXiv:2405.03553,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2406.12585,Paper,arXiv:2406.12585,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2406.12644,Paper,arXiv:2406.12644,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2406.18676,Paper,arXiv:2406.18676,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2410.10762,Paper,arXiv:2410.10762,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2412.15115,Paper,arXiv:2412.15115,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2502.05664,Paper,arXiv:2502.05664,1,1,1,0,1,0,8,1,0,0,1
-104,arXiv:2506.14234,Paper,arXiv:2506.14234,1,1,1,0,1,0,8,1,0,0,1
+104,LaMini-LM: A Diverse Herd of Distilled Models from Large-Scale Instructions,Paper,arXiv:2304.14402,12,6,2,0,12,0,96,12,0,0,12
+104,MathCoder: Seamless Code Integration in LLMs for Enhanced Mathematical Reasoning,Paper,arXiv:2310.03731,12,7,2,0,12,0,96,12,0,0,12
+104,OpenMathInstruct-1: A 1.8 Million Math Instruction Tuning Dataset,Paper,arXiv:2402.10176,12,6,2,0,12,0,96,12,0,0,12
+104,ToRA: A Tool-Integrated Reasoning Agent for Mathematical Problem Solving,Paper,arXiv:2309.17452,11,7,2,0,11,0,88,11,0,0,11
+104,Coder Reviewer Reranking for Code Generation,Paper,arXiv:2211.16490,10,10,1,0,10,0,80,10,0,0,10
+104,HellaSwag: Can a Machine Really Finish Your Sentence?,Paper,arXiv:1905.07830,9,9,1,0,9,0,72,9,0,0,9
+104,MixLoRA: Enhancing Large Language Models Fine-Tuning with LoRA-based Mixture of Experts,Paper,arXiv:2404.15159,9,3,3,0,9,0,72,9,0,0,9
+104,WizardMath: Empowering Mathematical Reasoning for Large Language Models via Reinforced Evol-Instruct,Paper,arXiv:2308.09583,8,4,2,0,8,0,64,8,0,0,8
+104,"Back to Square One: Artifact Detection, Training and Commonsense Disentanglement in the Winograd Schema",Paper,arXiv:2104.08161,7,7,1,0,7,0,56,7,0,0,7
+104,MetaMath: Bootstrap Your Own Mathematical Questions for Large Language Models,Paper,arXiv:2309.12284,7,4,2,0,7,0,56,7,0,0,7
+104,DeepSeek-Coder: When the Large Language Model Meets Programming -- The Rise of Code Intelligence,Paper,arXiv:2401.14196,6,6,1,0,6,0,48,6,0,0,6
+104,MuggleMath: Assessing the Impact of Query and Response Augmentation on Math Reasoning,Paper,arXiv:2310.05506,6,3,2,0,6,0,48,6,0,0,6
+104,Task Compass: Scaling Multi-task Pre-training with Task Prefix,Paper,arXiv:2210.06277,6,3,2,0,6,0,48,6,0,0,6
+104,Branch-Train-MiX: Mixing Expert LLMs into a Mixture-of-Experts LLM,Paper,arXiv:2403.07816,5,2,4,0,5,0,40,5,0,0,5
+104,CodeT: Code Generation with Generated Tests,Paper,arXiv:2207.10397,5,5,1,0,5,0,40,5,0,0,5
+104,Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human Annotations,Paper,arXiv:2312.08935,5,2,2,0,5,0,40,5,0,0,5
+104,BM25S: Orders of magnitude faster lexical search via eager sparse scoring,Paper,arXiv:2407.03618,4,4,1,0,4,0,32,4,0,0,4
+104,How Does Naming Affect LLMs on Code Analysis Tasks?,Paper,arXiv:2307.12488,4,4,1,0,4,0,32,4,0,0,4
+104,Key-Point-Driven Data Synthesis with its Enhancement on Mathematical Reasoning,Paper,arXiv:2403.02333,4,4,1,0,4,0,32,4,0,0,4
+104,Measuring Mathematical Problem Solving With the MATH Dataset,Paper,arXiv:2103.03874,4,4,1,0,4,0,32,4,0,0,4
+104,OpenMathInstruct-2: Accelerating AI for Math with Massive Open-Source Instruction Data,Paper,arXiv:2410.01560,4,2,2,0,4,0,32,4,0,0,4
+104,R2-D2: A Modular Baseline for Open-Domain Question Answering,Paper,arXiv:2109.03502,4,4,1,0,4,0,32,4,0,0,4
+104,ST-MoE: Designing Stable and Transferable Sparse Expert Models,Paper,arXiv:2202.08906,4,2,2,0,4,0,32,4,0,0,4
+104,TruthfulQA: Measuring How Models Mimic Human Falsehoods,Paper,arXiv:2109.07958,4,4,1,0,4,0,32,4,0,0,4
+104,CAPO: Cost-Aware Prompt Optimization,Paper,arXiv:2504.16005,3,3,1,0,3,0,24,3,0,0,3
+104,From Code to Correctness: Closing the Last Mile of Code Generation with Hierarchical Debugging,Paper,arXiv:2410.01215,3,2,2,0,3,0,24,3,0,0,3
+104,Large Language Models Can Self-Improve,Paper,arXiv:2210.11610,3,1,3,0,3,0,24,3,0,0,3
+104,MapCoder: Multi-Agent Code Generation for Competitive Problem Solving,Paper,arXiv:2405.11403,3,3,2,0,3,0,24,3,0,0,3
+104,Mixture-of-Subspaces in Low-Rank Adaptation,Paper,arXiv:2406.11909,3,2,3,0,3,0,24,3,0,0,3
+104,OpenChat: Advancing Open-source Language Models with Mixed-Quality Data,Paper,arXiv:2309.11235,3,2,2,0,3,0,24,3,0,0,3
+104,Qwen2.5-Math Technical Report: Toward Mathematical Expert Model via Self-Improvement,Paper,arXiv:2409.12122,3,3,1,0,3,0,24,3,0,0,3
+104,Scaling Relationship on Learning Mathematical Reasoning with Large Language Models,Paper,arXiv:2308.01825,3,3,1,0,3,0,24,3,0,0,3
+104,Search-o1: Agentic Search-Enhanced Large Reasoning Models,Paper,arXiv:2501.05366,3,1,3,0,3,0,24,3,0,0,3
+104,SHAKTI: A 2.5 Billion Parameter Small Language Model Optimized for Edge AI and Low-Resource Environments,Paper,arXiv:2410.11331,3,1,3,0,3,0,24,3,0,0,3
+104,AgentCoder: Multi-Agent-based Code Generation with Iterative Testing and Optimisation,Paper,arXiv:2312.13010,2,2,1,0,2,0,16,2,0,0,2
+104,Chain-of-Action: Faithful and Multimodal Question Answering through Large Language Models,Paper,arXiv:2403.17359,2,2,1,0,2,0,16,2,0,0,2
+104,Composing Ensembles of Pre-trained Models via Iterative Consensus,Paper,arXiv:2210.11522,2,2,1,0,2,0,16,2,0,0,2
+104,DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models,Paper,arXiv:2402.03300,2,1,2,0,2,0,16,2,0,0,2
+104,Execution Guided Line-by-Line Code Generation,Paper,arXiv:2506.10948,2,1,2,0,2,0,16,2,0,0,2
+104,Exploring the Benefits of Training Expert Language Models over Instruction Tuning,Paper,arXiv:2302.03202,2,1,2,0,2,0,16,2,0,0,2
+104,Generating Diverse and Consistent QA pairs from Contexts with Information-Maximizing Hierarchical Conditional VAEs,Paper,arXiv:2005.13837,2,2,1,0,2,0,16,2,0,0,2
+104,GIFT-SW: Gaussian noise Injected Fine-Tuning of Salient Weights for LLMs,Paper,arXiv:2408.15300,2,1,2,0,2,0,16,2,0,0,2
+104,Guess the Instruction! Flipped Learning Makes Language Models Stronger Zero-Shot Learners,Paper,arXiv:2210.02969,2,1,2,0,2,0,16,2,0,0,2
+104,Instruction-Following Evaluation for Large Language Models,Paper,arXiv:2311.07911,2,2,1,0,2,0,16,2,0,0,2
+104,Knowledge-in-Context: Towards Knowledgeable Semi-Parametric Language Models,Paper,arXiv:2210.16433,2,1,2,0,2,0,16,2,0,0,2
+104,Language Agent Tree Search Unifies Reasoning Acting and Planning in Language Models,Paper,arXiv:2310.04406,2,2,1,0,2,0,16,2,0,0,2
+104,Learning Math Reasoning from Self-Sampled Correct and Partially-Correct Solutions,Paper,arXiv:2205.14318,2,2,1,0,2,0,16,2,0,0,2
+104,Leveraging Passage Retrieval with Generative Models for Open Domain Question Answering,Paper,arXiv:2007.01282,2,2,1,0,2,0,16,2,0,0,2
+104,LLM in a flash: Efficient Large Language Model Inference with Limited Memory,Paper,arXiv:2312.11514,2,2,1,0,2,0,16,2,0,0,2
+104,MyGO Multiplex CoT: A Method for Self-Reflection in Large Language Models via Double Chain of Thought Thinking,Paper,arXiv:2501.13117,2,1,2,0,2,0,16,2,0,0,2
+104,Orca 2: Teaching Small Language Models How to Reason,Paper,arXiv:2311.11045,2,2,1,0,2,0,16,2,0,0,2
+104,"OVM, Outcome-supervised Value Models for Planning in Mathematical Reasoning",Paper,arXiv:2311.09724,2,2,1,0,2,0,16,2,0,0,2
+104,Planning-Driven Programming: A Large Language Model Programming Workflow,Paper,arXiv:2411.14503,2,2,2,0,2,0,16,2,0,0,2
+104,QualityFlow: An Agentic Workflow for Program Synthesis Controlled by LLM Quality Checks,Paper,arXiv:2501.17167,2,1,2,0,2,0,16,2,0,0,2
+104,Qwen2 Technical Report,Paper,arXiv:2407.10671,2,1,2,0,2,0,16,2,0,0,2
+104,REPLUG: Retrieval-Augmented Black-Box Language Models,Paper,arXiv:2301.12652,2,2,1,0,2,0,16,2,0,0,2
+104,Representation Engineering: A Top-Down Approach to AI Transparency,Paper,arXiv:2310.01405,2,2,1,0,2,0,16,2,0,0,2
+104,RoBERTa: A Robustly Optimized BERT Pretraining Approach,Paper,arXiv:1907.11692,2,2,1,0,2,0,16,2,0,0,2
+104,Self-play with Execution Feedback: Improving Instruction-following Capabilities of Large Language Models,Paper,arXiv:2406.13542,2,1,1,0,2,0,16,2,0,0,2
+104,Solving Challenging Math Word Problems Using GPT-4 Code Interpreter with Code-based Self-Verification,Paper,arXiv:2308.07921,2,2,1,0,2,0,16,2,0,0,2
+104,Sparks of Artificial General Intelligence: Early experiments with GPT-4,Paper,arXiv:2303.12712,2,1,2,0,2,0,16,2,0,0,2
+104,SparseGPT: Massive Language Models Can Be Accurately Pruned in One-Shot,Paper,arXiv:2301.00774,2,2,1,0,2,0,16,2,0,0,2
+104,Teaching Large Language Models to Self-Debug,Paper,arXiv:2304.05128,2,2,1,0,2,0,16,2,0,0,2
+104,"TextGrad: Automatic ""Differentiation"" via Text",Paper,arXiv:2406.07496,2,2,1,0,2,0,16,2,0,0,2
+104,The CoT Collection: Improving Zero-shot and Few-shot Learning of Language Models via Chain-of-Thought Fine-Tuning,Paper,arXiv:2305.14045,2,1,2,0,2,0,16,2,0,0,2
+104,TinyGSM: achieving >80% on GSM8k with small language models,Paper,arXiv:2312.09241,2,2,1,0,2,0,16,2,0,0,2
+104,"Toward Self-Improvement of LLMs via Imagination, Searching, and Criticizing",Paper,arXiv:2404.12253,2,1,2,0,2,0,16,2,0,0,2
+104,TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space,Paper,arXiv:2402.17811,2,2,1,0,2,0,16,2,0,0,2
+104,UL2: Unifying Language Learning Paradigms,Paper,arXiv:2205.05131,2,1,2,0,2,0,16,2,0,0,2
+104,UNICORN on RAINBOW: A Universal Commonsense Reasoning Model on a New Multitask Benchmark,Paper,arXiv:2103.13009,2,1,2,0,2,0,16,2,0,0,2
+104,UnifiedQA: Crossing Format Boundaries With a Single QA System,Paper,arXiv:2005.00700,2,2,1,0,2,0,16,2,0,0,2
+104,Achieving >97% on GSM8K: Deeply Understanding the Problems Makes LLMs Better Solvers for Math Word Problems,Paper,arXiv:2404.14963,1,1,1,0,1,0,8,1,0,0,1
+104,AFlow: Automating Agentic Workflow Generation,Paper,arXiv:2410.10762,1,1,1,0,1,0,8,1,0,0,1
+104,AlphaMath Almost Zero: Process Supervision without Process,Paper,arXiv:2405.03553,1,1,1,0,1,0,8,1,0,0,1
+104,Approximate Nearest Neighbor Negative Contrastive Learning for Dense Text Retrieval,Paper,arXiv:2007.00808,1,1,1,0,1,0,8,1,0,0,1
+104,Ask Me Anything: A simple strategy for prompting language models,Paper,arXiv:2210.02441,1,1,1,0,1,0,8,1,0,0,1
+104,Atlas: Few-shot Learning with Retrieval Augmented Language Models,Paper,arXiv:2208.03299,1,1,1,0,1,0,8,1,0,0,1
+104,Augmenting Math Word Problems via Iterative Question Composing,Paper,arXiv:2401.09003,1,1,1,0,1,0,8,1,0,0,1
+104,Automatic Chain of Thought Prompting in Large Language Models,Paper,arXiv:2210.03493,1,1,1,0,1,0,8,1,0,0,1
+104,Blended RAG: Improving RAG (Retriever-Augmented Generation) Accuracy with Semantic Search and Hybrid Query-Based Retrievers,Paper,arXiv:2404.07220,1,1,1,0,1,0,8,1,0,0,1
+104,Breaking the Ceiling of the LLM Community by Treating Token Generation as a Classification for Ensembling,Paper,arXiv:2406.12585,1,1,1,0,1,0,8,1,0,0,1
+104,CodeGeeX: A Pre-Trained Model for Code Generation with Multilingual Benchmarking on HumanEval-X,Paper,arXiv:2303.17568,1,1,1,0,1,0,8,1,0,0,1
+104,CODESIM: Multi-Agent Code Generation and Problem Solving through Simulation-Driven Planning and Debugging,Paper,arXiv:2502.05664,1,1,1,0,1,0,8,1,0,0,1
+104,CodeT5+: Open Code Large Language Models for Code Understanding and Generation,Paper,arXiv:2305.07922,1,1,1,0,1,0,8,1,0,0,1
+104,Cumulative Reasoning with Large Language Models,Paper,arXiv:2308.04371,1,1,1,0,1,0,8,1,0,0,1
+104,DeBERTa: Decoding-enhanced BERT with Disentangled Attention,Paper,arXiv:2006.03654,1,1,1,0,1,0,8,1,0,0,1
+104,Debug like a Human: A Large Language Model Debugger via Verifying Runtime Execution Step-by-step,Paper,arXiv:2402.16906,1,1,1,0,1,0,8,1,0,0,1
+104,Dense Passage Retrieval for Open-Domain Question Answering,Paper,arXiv:2004.04906,1,1,1,0,1,0,8,1,0,0,1
+104,DiscoSense: Commonsense Reasoning with Discourse Connectives,Paper,arXiv:2210.12478,1,1,1,0,1,0,8,1,0,0,1
+104,Domain-matched Pre-training Tasks for Dense Retrieval,Paper,arXiv:2107.13602,1,1,1,0,1,0,8,1,0,0,1
+104,Efficient Passage Retrieval with Hashing for Open-domain Question Answering,Paper,arXiv:2106.00882,1,1,1,0,1,0,8,1,0,0,1
+104,End-to-End Training of Multi-Document Reader and Retriever for Open-Domain Question Answering,Paper,arXiv:2106.05346,1,1,1,0,1,0,8,1,0,0,1
+104,Fewer is More: Boosting LLM Reasoning with Reinforced Context Pruning,Paper,arXiv:2312.08901,1,1,1,0,1,0,8,1,0,0,1
+104,FiE: Building a Global Probability Space by Leveraging Early Fusion in Encoder for Open-Domain Question Answering,Paper,arXiv:2211.10147,1,1,1,0,1,0,8,1,0,0,1
+104,Frugal LMs Trained to Invoke Symbolic Solvers Achieve Parameter-Efficient Arithmetic Reasoning,Paper,arXiv:2312.05571,1,1,1,0,1,0,8,1,0,0,1
+104,Generation-Augmented Retrieval for Open-domain Question Answering,Paper,arXiv:2009.08553,1,1,1,0,1,0,8,1,0,0,1
+104,Generative Data Augmentation for Commonsense Reasoning,Paper,arXiv:2004.11546,1,1,1,0,1,0,8,1,0,0,1
+104,Hierarchical Prompting Taxonomy: A Universal Evaluation Framework for Large Language Models Aligned with Human Cognitive Principles,Paper,arXiv:2406.12644,1,1,1,0,1,0,8,1,0,0,1
+104,Improving language models by retrieving from trillions of tokens,Paper,arXiv:2112.04426,1,1,1,0,1,0,8,1,0,0,1
+104,INTERVENOR: Prompting the Coding Ability of Large Language Models with the Interactive Chain of Repair,Paper,arXiv:2311.09868,1,1,1,0,1,0,8,1,0,0,1
+104,KwaiYiiMath: Technical Report,Paper,arXiv:2310.07488,1,1,1,0,1,0,8,1,0,0,1
+104,L2MAC: Large Language Model Automatic Computer for Extensive Code Generation,Paper,arXiv:2310.02003,1,1,1,0,1,0,8,1,0,0,1
+104,Least-to-Most Prompting Enables Complex Reasoning in Large Language Models,Paper,arXiv:2205.10625,1,1,1,0,1,0,8,1,0,0,1
+104,MACM: Utilizing a Multi-Agent System for Condition Mining in Solving Complex Mathematical Problems,Paper,arXiv:2404.04735,1,1,1,0,1,0,8,1,0,0,1
+104,Muppet: Massive Multi-task Representations with Pre-Finetuning,Paper,arXiv:2101.11038,1,1,1,0,1,0,8,1,0,0,1
+104,Natural Language to Code Translation with Execution,Paper,arXiv:2204.11454,1,1,1,0,1,0,8,1,0,0,1
+104,PAL: Program-aided Language Models,Paper,arXiv:2211.10435,1,1,1,0,1,0,8,1,0,0,1
+104,Progressive-Hint Prompting Improves Reasoning in Large Language Models,Paper,arXiv:2304.09797,1,1,1,0,1,0,8,1,0,0,1
+104,Qwen2.5 Technical Report,Paper,arXiv:2412.15115,1,1,1,0,1,0,8,1,0,0,1
+104,REALM: Retrieval-Augmented Language Model Pre-Training,Paper,arXiv:2002.08909,1,1,1,0,1,0,8,1,0,0,1
+104,Retrieval as Attention: End-to-end Learning of Retrieval and Reading within a Single Transformer,Paper,arXiv:2212.02027,1,1,1,0,1,0,8,1,0,0,1
+104,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,Paper,arXiv:2005.11401,1,1,1,0,1,0,8,1,0,0,1
+104,RocketQA: An Optimized Training Approach to Dense Passage Retrieval for Open-Domain Question Answering,Paper,arXiv:2010.08191,1,1,1,0,1,0,8,1,0,0,1
+104,Salient Phrase Aware Dense Retrieval: Can a Dense Retriever Imitate a Sparse One?,Paper,arXiv:2110.06918,1,1,1,0,1,0,8,1,0,0,1
+104,Skills-in-Context Prompting: Unlocking Compositionality in Large Language Models,Paper,arXiv:2308.00304,1,1,1,0,1,0,8,1,0,0,1
+104,Solving Math Word Problems via Cooperative Reasoning induced Language Models,Paper,arXiv:2210.16257,1,1,1,0,1,0,8,1,0,0,1
+104,Solving math word problems with process- and outcome-based feedback,Paper,arXiv:2211.14275,1,1,1,0,1,0,8,1,0,0,1
+104,"The ART of LLM Refinement: Ask, Refine, and Trust",Paper,arXiv:2311.07961,1,1,1,0,1,0,8,1,0,0,1
+104,Towards Generalizable Neuro-Symbolic Systems for Commonsense Question Answering,Paper,arXiv:1910.14087,1,1,1,0,1,0,8,1,0,0,1
+104,Transcending Scaling Laws with 0.1% Extra Compute,Paper,arXiv:2210.11399,1,1,1,0,1,0,8,1,0,0,1
+104,Tree of Thoughts: Deliberate Problem Solving with Large Language Models,Paper,arXiv:2305.10601,1,1,1,0,1,0,8,1,0,0,1
+104,Two is Better than Many? Binary Classification as an Effective Approach to Multi-Choice Question Answering,Paper,arXiv:2210.16495,1,1,1,0,1,0,8,1,0,0,1
+104,Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation,Paper,arXiv:2406.18676,1,1,1,0,1,0,8,1,0,0,1
+104,UniK-QA: Unified Representations of Structured and Unstructured Knowledge for Open-Domain Question Answering,Paper,arXiv:2012.14610,1,1,1,0,1,0,8,1,0,0,1
+104,UnitedQA: A Hybrid Approach for Open Domain Question Answering,Paper,arXiv:2101.00178,1,1,1,0,1,0,8,1,0,0,1
+104,"Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B, A Large-Scale Generative Language Model",Paper,arXiv:2201.11990,1,1,1,0,1,0,8,1,0,0,1
+104,Xolver: Multi-Agent Reasoning with Holistic Experience Learning Just Like an Olympiad Team,Paper,arXiv:2506.14234,1,1,1,0,1,0,8,1,0,0,1
 234,Orca-Math: Unlocking the potential of SLMs in Grade School Math,Paper,arXiv:2402.14830,53,40,7,0,53,0,424,1,0,0,1
 235,Mamba: Linear-Time Sequence Modeling with Selective State Spaces,Paper,arXiv:2312.00752,255,51,11,0,255,0,2040,2,0,0,2
 236,ShortGPT: Layers in Large Language Models are More Redundant Than You Expect,Paper,arXiv:2403.03853,470,44,14,0,470,0,3760,0,0,0,0
@@ -244,7 +244,7 @@ rank,source,kind,reference,records,models,benchmarks,author_reported,predicted,s
 236,Llama-Nemotron: Efficient Reasoning Models,Paper,arXiv:2505.00949,152,22,17,0,152,0,1216,0,0,0,0
 236,CodeGemma: Open Code Models Based on Gemma,Paper,arXiv:2406.11409,151,18,28,0,151,0,1208,0,0,0,0
 236,Phi-4-reasoning-vision-15B Technical Report,Paper,arXiv:2603.03975,150,15,10,0,150,0,1200,0,0,0,0
-236,"1 DeepConf@512 (, ) average results over AIME24, AIME25, AMO-Bench, and GPQA-Diamond (Detailed results in Table ). Falcon-H1R-7B achieves exceptional performance by pushing the reasoning frontiers in 3 dimensions: higher accuracy, token efficiency and fast inference in the parallel thinking setting.",Paper,arXiv:2601.02346,140,9,14,0,140,0,1120,0,0,0,0
+236,Falcon-H1R: Pushing the Reasoning Frontiers with a Hybrid Model for Efficient Test-Time Scaling,Paper,arXiv:2601.02346,140,9,14,0,140,0,1120,0,0,0,0
 236,Marco-o1 v2: Towards Widening The Distillation Bottleneck for Reasoning Models,Paper,arXiv:2503.01461,135,27,5,0,135,0,1080,0,0,0,0
 236,Sapiens2,Paper,arXiv:2604.21681,133,31,7,0,133,0,1064,0,0,0,0
 236,WildBench v2,Leaderboard,,122,61,1,0,122,0,976,0,0,0,0

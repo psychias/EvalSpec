@@ -20,6 +20,9 @@ score. Section and appendix numbers refer to the paper.
 `harness_reeval/` also holds an earlier cross-harness comparison that the final
 paper does not use; its README says which files belong to it.
 
+Analysis scripts that need a result file which is not on disk stop with a message
+naming the file.
+
 ## Running them
 
 GPU experiments use lm-evaluation-harness 0.4.11, with vLLM for the factorial grid and
@@ -71,7 +74,9 @@ Two more things to know before reusing the grid:
 - `controlled_eval/run.py` is an earlier runner. Its defaults (models, temperatures,
   format names, benchmarks) are not those of the grid in the paper, which was run from
   a Colab notebook that is not in the repository. The design of the paper's grid is
-  written out below, and the scripts in `controlled_eval/scripts/` use it.
+  written out below, and the scripts in `controlled_eval/scripts/` use it. Notebooks
+  under `experiments/` are tracked by git, so the grid notebook can be added next to
+  `run.py`.
 - The quantisation experiment (`configs/experiment/quantisation_e4.yaml`,
   `harness_reeval/version_compare/run_e4.sh`) was started and is not in the paper.
 

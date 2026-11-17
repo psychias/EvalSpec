@@ -54,7 +54,7 @@ OUTPUT_TEX = Path(__file__).parent / "results" / "controlled_summary.tex"
 def load_results(path: Path) -> list[dict]:
     records = []
     if not path.exists():
-        raise FileNotFoundError(f"Results file not found: {path}")
+        raise SystemExit(f"{path} is not in the repository. See experiments/README.md for the run that writes it.")
     with path.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()

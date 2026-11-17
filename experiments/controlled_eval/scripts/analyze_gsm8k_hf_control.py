@@ -33,6 +33,8 @@ def anova_oneway(groups):
 
 
 def main():
+    if not os.path.exists(RESULTS):
+        raise SystemExit(f"{os.path.normpath(RESULTS)} is not in the repository. See experiments/README.md for the run that writes it.")
     rows = [json.loads(l) for l in open(RESULTS, encoding="utf-8") if l.strip()]
     rows = [r for r in rows if r.get("status", "ok") == "ok" and r.get("n_shot") == 5]
     by_model = defaultdict(dict)

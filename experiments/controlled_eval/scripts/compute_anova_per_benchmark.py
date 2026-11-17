@@ -43,6 +43,8 @@ BENCHMARKS  = ("gsm8k", "mmlu", "gpqa",
 
 
 def load_rows(path):
+    if not os.path.exists(path):
+        raise SystemExit(f"{os.path.normpath(path)} is not in the repository. See experiments/README.md for the run that writes it.")
     with open(path, "r", encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 

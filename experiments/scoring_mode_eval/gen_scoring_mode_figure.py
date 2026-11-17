@@ -11,7 +11,7 @@ Usage:
 Defaults:
     --results experiments/scoring_mode_eval/scoring_mode_results.jsonl
              (or from Google Drive path if available)
-    --output  paper/figures/fig_scoring_mode
+    --output  figures/fig_scoring_mode
 """
 
 import argparse
@@ -129,7 +129,7 @@ def main():
     # Find results file
     candidates = [
         args.results,
-        'experiments/scoring_mode_eval/scoring_mode_results.jsonl',
+        str(Path(__file__).resolve().parent / 'scoring_mode_results.jsonl'),
         '/content/drive/MyDrive/eee_eval_results_scoring_mode/scoring_mode_results.jsonl',
     ]
     results_path = None
@@ -143,7 +143,7 @@ def main():
         print('Run the scoring_mode_eval notebook first.', file=sys.stderr)
         sys.exit(1)
 
-    output_base = args.output or 'paper/figures/fig_scoring_mode'
+    output_base = args.output or str(Path(__file__).resolve().parents[2] / 'figures' / 'fig_scoring_mode')
     Path(output_base).parent.mkdir(parents=True, exist_ok=True)
 
     records = load_results(results_path)

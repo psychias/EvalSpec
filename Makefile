@@ -1,5 +1,5 @@
 # Task runner. One target per task.
-.PHONY: install data repro test lint format clean help
+.PHONY: install data repro figures test lint format clean help
 
 help:  ## list targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -13,6 +13,12 @@ data:  ## download the published dataset into data/ (needs a Hugging Face login)
 
 repro:  ## regenerate every paper number -> analysis_output/paper_numbers.json
 	python scripts/reproduce_paper.py
+
+figures:  ## redraw the figures in figures/ (run `make repro` first)
+	python figures/scripts/coverage_bars.py
+	python figures/scripts/unified.py
+	python figures/scripts/case1.py
+	python experiments/scoring_mode_eval/gen_scoring_mode_figure.py
 
 test:  ## run the test suite
 	python -m pytest -q

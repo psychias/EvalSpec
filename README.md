@@ -138,9 +138,8 @@ eval.schema.json         the EEE JSON Schema, v0.2.1
 scripts/                 fetch the dataset, recompute the paper's numbers
 experiments/             the controlled experiments, one folder each, with their records
 configs/                 paper lists for the extraction, experiment settings
-paper/                   LaTeX sources, figures and the scripts that draw them
+figures/                 the figures, and in figures/scripts/ the scripts that draw them
 tests/                   unit and integration tests
-archive/                 earlier analyses that the final paper does not use
 
 data/                    the dataset, written by scripts/fetch_data.py (not in git)
 analysis_output/         numbers written by the reproduction scripts (not in git)
@@ -161,7 +160,8 @@ pip install -e ".[dev]"            # the package, pytest and ruff
 pip install -r requirements.txt    # optional: the exact versions the paper was run with
 ```
 
-`make install`, `make data`, `make repro` and `make test` run the same steps.
+With the environment active, `make install`, `make data`, `make repro`, `make figures`
+and `make test` run the same steps.
 
 ## The dataset
 
@@ -192,10 +192,25 @@ None of these needs an API key. From the published dataset they reproduce the da
 totals (46,559 records, 7,398 models, 1,954 benchmarks), the coverage table, the score
 audit (97.5% precision, 81.4% recall), the harness audit and the case-study scores.
 
-The experiment numbers are recomputed from the raw result files under
-`experiments/*/results/`. Some of those files are not in the repository; the scripts list
-the ones they could not find and skip those checks. See
-[`experiments/README.md`](experiments/README.md).
+```bash
+make figures      # redraws every file in figures/ from the data and the experiment logs
+```
+
+### What reproduces from a clone
+
+| Part | Status |
+|---|---|
+| Dataset totals, per-source counts, metadata coverage | Reproduces from the published dataset |
+| Score audit and harness audit | Reproduces from the audit files of the dataset |
+| Case-study scores of Section 5 | Reproduces: 19 of 19 checks pass |
+| Figures in `figures/` | Redrawn by `make figures` |
+| Exp2 (scoring mode) | Reproduces from `experiments/scoring_mode_eval/scoring_mode_results.jsonl` |
+| Factorial grid, Exp3, BBH re-run, judge model | The analysis runs once the raw result files are added; they are not in the repository yet |
+| Re-running the experiments | Scripts are in `experiments/`; they need a GPU or an OpenRouter key |
+
+The scripts list the result files they could not find and skip the checks that need
+them. [`experiments/README.md`](experiments/README.md) names each missing file and the
+run that writes it.
 
 ## Using the pipeline
 

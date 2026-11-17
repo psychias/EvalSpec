@@ -40,6 +40,8 @@ htmlcov/
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
+# ...except the notebooks that run the experiments
+!experiments/**/*.ipynb
 
 # Data directory — large; not committed to git
 # (upload to Hugging Face Hub instead)
@@ -59,16 +61,7 @@ htmlcov/
 analysis_output/
 harness_experiment_output/
 
-# PDF compilation artefacts
-paper/latex/*.aux
-paper/latex/*.log
-paper/latex/*.out
-paper/latex/*.toc
-paper/latex/*.synctex.gz
-paper/latex/*.bbl
-paper/latex/*.blg
-paper/latex/*.fls
-paper/latex/*.fdb_latexmk
+# Local working copy of the paper sources
 submission/
 
 # Validation reports (generated at runtime)

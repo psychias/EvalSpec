@@ -9,6 +9,8 @@ import os
 from collections import defaultdict
 
 D = os.path.join(os.path.dirname(__file__), "results", "judge_runs.jsonl")
+if not os.path.exists(D):
+    raise SystemExit(f"{D} is not in the repository. See experiments/README.md for the run that writes it.")
 rows = [json.loads(l) for l in open(D, encoding="utf-8") if l.strip()]
 rows = [r for r in rows if r.get("raw_ok") and r.get("rating") is not None]
 

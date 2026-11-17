@@ -4,8 +4,9 @@ Code, experiment records and paper sources for the paper of the same name, by
 Stylianos Psychias, Hanna Hubarava, Juri Opitz, Pius von Däniken and Andrianos
 Michail. Accepted to Findings of EACL 2027, to appear.
 
-- Interactive article: https://psychias.github.io/eee-eval/
-- Dataset: https://huggingface.co/datasets/evaleval/EEE_datastore
+- EvalSpec site: https://psychias.github.io/eee-eval/
+- Interactive article: https://psychias.github.io/eee-eval/article.html
+- Dataset: https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset
 
 The repository is built around Every Eval Ever (EEE), a JSON schema (v0.2.1) for
 LLM evaluation results, and a pipeline that collects published results into it.
@@ -82,6 +83,12 @@ The arXiv extraction was checked by hand against the source papers.
 EvalSpec is the reporting specification the paper proposes: 13 Required
 fields, 5 Recommended and 3 Full. A record that follows it either states the
 settings that drive score differences or shows that they were left out.
+
+The [EvalSpec site](https://psychias.github.io/eee-eval/) holds the
+specification, a registry of the dataset's records with a page per model, a
+form that writes and checks a record for submission, and the interactive
+article. Its sources and build script are on the `gh-pages` branch of this
+repository.
 
 ## Experiment outcomes
 
@@ -313,8 +320,18 @@ Reproducing the paper's numbers needs no keys.
 ## Reproducing the paper's numbers
 
 The scripts read the aggregated records from `data/`. That directory is not
-tracked in git; the records are published as the HuggingFace dataset linked at
-the top.
+tracked in git. The records are published as the HuggingFace dataset linked at
+the top, which holds:
+
+```
+all_results.csv      one row per source, model, benchmark and score
+data/<source>.jsonl  the full records of each of the 12 sources, one per line
+annotations/         the hand-checked audit sets (scores, harness, metadata fields)
+eval.schema.json     the record schema
+```
+
+The dataset is gated, so downloading it needs a HuggingFace account that has
+accepted its terms.
 
 `reproduce_paper.py` recomputes every number in the paper from the raw data
 files and writes the results to `analysis_output/paper_numbers.json`:

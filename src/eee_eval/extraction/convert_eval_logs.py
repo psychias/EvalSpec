@@ -6,10 +6,10 @@ HELM) behind a single entry point so they plug into the same pipeline as
 paper extraction.
 
 Usage:
-    python scripts/convert_eval_logs.py --framework lm_eval   --log_path results.json
-    python scripts/convert_eval_logs.py --framework inspect   --log_path data.eval
-    python scripts/convert_eval_logs.py --framework helm      --log_path run_dir/
-    python scripts/convert_eval_logs.py --framework auto      --log_path path/
+    python -m eee_eval.extraction.convert_eval_logs --framework lm_eval   --log_path results.json
+    python -m eee_eval.extraction.convert_eval_logs --framework inspect   --log_path data.eval
+    python -m eee_eval.extraction.convert_eval_logs --framework helm      --log_path run_dir/
+    python -m eee_eval.extraction.convert_eval_logs --framework auto      --log_path path/
 """
 
 from __future__ import annotations

@@ -29,6 +29,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import dataset_access as ds
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 ANALYSIS_OUT = ROOT / "analysis_output"
@@ -74,6 +76,8 @@ def load_aggregate(rebuild: bool) -> list[dict]:
         from eee_eval.analysis import aggregate_results
         aggregate_results.main()
     path = DATA / "aggregated" / "all_results.csv"
+    if not path.exists():
+        sys.exit(ds.FETCH_HINT)
     with open(path, encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
 
@@ -127,15 +131,7 @@ def coverage_numbers(rows: list[dict]) -> dict:
 def arxiv_score_presence() -> dict:
     """§4.1 structural-presence check over the canonical ArXiv extraction."""
     n = nn = 0
-    for f in (DATA / "archiv_paper_extraction" / "llm").rglob("*.json"):
-        if f.name in ("summary.json", "metric_configs_from_llm.json", "extraction_results.json"):
-            continue
-        try:
-            rec = json.loads(f.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if not isinstance(rec, dict):
-            continue
+    for rec in ds.arxiv_records():
         for er in rec.get("evaluation_results", []):
             n += 1
             if (er.get("score_details") or {}).get("score") not in ("", None):
@@ -162,7 +158,7 @@ def _truthy(v) -> bool:
 
 
 def score_audit() -> dict:
-    rows = _read_csv_rows(DATA / "archiv_paper_extraction" / "samples" / "annotation_score_verification.csv")
+    rows = _read_csv_rows(ds.annotation_file("annotation_score_verification.csv"))
     # §4.1 score-verification audit. The verdict_type column separates the two
     # axes: 'score' rows are the pipeline's extractions (the precision basis);
     # 'recall' rows are paper-reported scores the pipeline missed (appended as
@@ -189,16 +185,19 @@ def harness_audit() -> dict:
         ok = sum(1 for r in rows if _truthy(r.get("correct")))
         return {"rows": len(rows), "correct": ok,
                 "pct": round(100 * ok / len(rows), 1) if rows else 0.0}
-    base = DATA / "archiv_paper_extraction" / "samples"
-    return {"with_harness": precision(base / "annotation_eval_harness_WITH.csv", "harness"),
-            "without_harness": precision(base / "annotation_eval_harness_WITHOUT.csv", "abstention")}
+    return {"with_harness": precision(ds.annotation_file("annotation_eval_harness_WITH.csv"), "harness"),
+            "without_harness": precision(ds.annotation_file("annotation_eval_harness_WITHOUT.csv"), "abstention")}
 
 
 # --------------------------------------------------------------------------- #
 # §5 / Appendix G — experiments
 # --------------------------------------------------------------------------- #
+MISSING_RESULTS: list[str] = []      # experiment result files that are not on disk
+
+
 def _read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
+        MISSING_RESULTS.append(str(path.relative_to(ROOT)))
         return []
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
@@ -289,9 +288,12 @@ def main():
                     help="skip rebuilding data/aggregated/all_results.csv (use the existing file)")
     args = ap.parse_args()
 
+    # The aggregate can only be rebuilt from the pipeline's per-record tree. With the
+    # published dataset (scripts/fetch_data.py) the shipped all_results.csv is used as is.
+    rebuild = not args.no_rebuild and (DATA / "open_llm_leaderboard_v2").is_dir()
     print("[reproduce_paper] loading canonical aggregate "
-          f"({'using existing' if args.no_rebuild else 'rebuilding from data/'})...")
-    rows = load_aggregate(rebuild=not args.no_rebuild)
+          f"({'rebuilding from data/' if rebuild else 'using data/aggregated/all_results.csv'})...")
+    rows = load_aggregate(rebuild=rebuild)
 
     numbers = {
         "dataset": dataset_numbers(rows),
@@ -304,6 +306,7 @@ def main():
         "harness_version_e3": harness_version_e3(),
         "judge_sensitivity": judge_sensitivity(),
         "bbh_protocol": bbh_protocol(),
+        "missing_result_files": sorted(set(MISSING_RESULTS)),
     }
 
     ANALYSIS_OUT.mkdir(exist_ok=True)
@@ -332,6 +335,11 @@ def main():
     print(f"§4.2 harness with: {ha['with_harness']['correct']}/{ha['with_harness']['rows']} = "
           f"{ha['with_harness']['pct']}% | without abstention: "
           f"{ha['without_harness']['correct']}/{ha['without_harness']['rows']}")
+    if MISSING_RESULTS:
+        print("\nExperiment numbers left empty, because these result files are not on disk:")
+        for path in sorted(set(MISSING_RESULTS)):
+            print(f"  {path}")
+        print("See experiments/README.md for which run writes each file.")
     print(f"\nWrote {out_path}")
 
 

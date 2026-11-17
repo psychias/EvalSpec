@@ -19,8 +19,9 @@ import textwrap
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT  = ROOT / "section5_evidence.txt"
 
-OLV2_DIR   = ROOT / "data" / "open_llm_leaderboard_v2"
-ARXIV_DIR  = ROOT / "data" / "archiv_paper_extraction" / "llm"
+# Record files of the pipeline tree, or the same records in data/records/*.jsonl
+# when only the published dataset is on disk (see dataset_access.py).
+from dataset_access import ARXIV_DIR, OLV2_DIR  # noqa: E402
 CE_DIR     = ROOT / "experiments" / "controlled_eval" / "5-shot-GSM8K"
 OLV2_API   = ("https://open-llm-leaderboard-open-llm-leaderboard.hf.space"
                "/api/leaderboard/formatted")
@@ -480,7 +481,7 @@ def main() -> None:
     ev.h2("ArXiv extraction — Falcon2 paper: Mistral-7B Belebele = 79.42")
     ev.note("5-shot, English only. Same paper also reports 0-shot English = 32.48.")
     f_falcon = (ARXIV_DIR / "Falcon2-11B_Technical_Report"
-                / "Mistral-7B" / "Belebele"
+                / "Mistral-7B" / "Belebele (English, 5-shot)"
                 / "6b60d80a-7b8c-4131-a7a0-986b87837e65.json")
     if f_falcon.exists():
         raw = json.loads(f_falcon.read_bytes().decode("utf-8", errors="replace"))

@@ -25,8 +25,9 @@ import pandas as pd
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_CSV = ROOT / "data" / "aggregated" / "all_results.csv"
-OLV2_DIR = ROOT / "data" / "open_llm_leaderboard_v2"
-ARXIV_DIR = ROOT / "data" / "archiv_paper_extraction" / "llm"
+# Record files of the pipeline tree, or the same records in data/records/*.jsonl
+# when only the published dataset is on disk (see dataset_access.py).
+from dataset_access import ARXIV_DIR, OLV2_DIR, FETCH_HINT  # noqa: E402
 CONTROLLED_RESULTS = ROOT / "experiments" / "controlled_eval" / "results" / "controlled_eval_results.jsonl"
 SCORING_MODE_RESULTS = ROOT / "experiments" / "scoring_mode_eval" / "scoring_mode_results.jsonl"
 
@@ -158,7 +159,7 @@ def main(live_api: bool = False) -> None:
     print("Date    : 2026-05-20")
 
     if not DATA_CSV.exists():
-        sys.exit(f"ERROR: dataset not found at {DATA_CSV}")
+        sys.exit(f"ERROR: dataset not found at {DATA_CSV}\n{FETCH_HINT}")
 
     df = pd.read_csv(DATA_CSV, low_memory=False)
     df_olv2 = df[df["source"] == "open_llm_leaderboard_v2"]
@@ -168,18 +169,22 @@ def main(live_api: bool = False) -> None:
     section("SECTION 5 INTRO — Controlled Factorial Experiment")
     print(f"  File: {CONTROLLED_RESULTS}")
 
-    ce_records = read_jsonl(CONTROLLED_RESULTS)
-    ce_all = pd.DataFrame(ce_records)
-    ce = ce_all[ce_all["status"] == "ok"]   # 306 successful runs (312 total incl. failures)
+    ce = pd.DataFrame(columns=["model_id", "benchmark", "prompt_format", "n_shot", "temperature", "score", "status"])
+    if not CONTROLLED_RESULTS.exists():
+        print("  [SKIP] the result file of the factorial grid is not on disk (see experiments/README.md)")
+    else:
+        ce_records = read_jsonl(CONTROLLED_RESULTS)
+        ce_all = pd.DataFrame(ce_records)
+        ce = ce_all[ce_all["status"] == "ok"]   # 306 successful runs (312 total incl. failures)
 
-    check("Total controlled-eval runs (status=ok)", 306, len(ce),
-          str(CONTROLLED_RESULTS))
+        check("Total controlled-eval runs (status=ok)", 306, len(ce),
+              str(CONTROLLED_RESULTS))
 
-    n_models = ce["model_id"].nunique()
-    check("Number of models", 4, n_models, str(CONTROLLED_RESULTS))
+        n_models = ce["model_id"].nunique()
+        check("Number of models", 4, n_models, str(CONTROLLED_RESULTS))
 
-    n_benches = ce["benchmark"].nunique()
-    check("Number of benchmarks", 3, n_benches, str(CONTROLLED_RESULTS))
+        n_benches = ce["benchmark"].nunique()
+        check("Number of benchmarks", 3, n_benches, str(CONTROLLED_RESULTS))
 
     # ── Case Study 1a: BBH ────────────────────────────────────────────────
     section("CASE STUDY 1a — BBH: Log-Likelihood vs CoT")
@@ -385,7 +390,7 @@ def main(live_api: bool = False) -> None:
         ARXIV_DIR
         / "Falcon2-11B_Technical_Report"
         / "Mistral-7B"
-        / "Belebele"
+        / "Belebele (English, 5-shot)"
         / "6b60d80a-7b8c-4131-a7a0-986b87837e65.json"
     )
     if falcon_bel_file.exists():

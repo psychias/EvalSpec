@@ -1,5 +1,5 @@
-# every-eval-ever — task runner. One target per task.
-.PHONY: install repro test lint format clean help
+# Task runner. One target per task.
+.PHONY: install data repro test lint format clean help
 
 help:  ## list targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -7,6 +7,9 @@ help:  ## list targets
 
 install:  ## editable install + pinned runtime + dev tools (ruff, pytest)
 	python -m pip install -e ".[dev]" && python -m pip install -r requirements.txt
+
+data:  ## download the published dataset into data/ (needs a Hugging Face login)
+	python scripts/fetch_data.py
 
 repro:  ## regenerate every paper number -> analysis_output/paper_numbers.json
 	python scripts/reproduce_paper.py

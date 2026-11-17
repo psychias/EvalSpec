@@ -25,12 +25,12 @@ Three data sources, no PDF extraction required:
 
 Usage
 -----
-  python run_hf_pipeline.py                    # full run
-  python run_hf_pipeline.py --refresh         # bypass all caches
-  python run_hf_pipeline.py --skip-leaderboards
-  python run_hf_pipeline.py --skip-cards
-  python run_hf_pipeline.py --skip-pwc
-  python run_hf_pipeline.py --conflicts-only  # re-run conflict detection only
+  python -m eee_eval.extraction.run_hf_pipeline                    # full run
+  python -m eee_eval.extraction.run_hf_pipeline --refresh         # bypass all caches
+  python -m eee_eval.extraction.run_hf_pipeline --skip-leaderboards
+  python -m eee_eval.extraction.run_hf_pipeline --skip-cards
+  python -m eee_eval.extraction.run_hf_pipeline --skip-pwc
+  python -m eee_eval.extraction.run_hf_pipeline --conflicts-only  # re-run conflict detection only
 
 Requirements
 ------------

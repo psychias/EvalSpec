@@ -17,8 +17,8 @@ without --fix the script runs in report-only mode: it validates every file,
 identifies what could be fixed, but does NOT modify any file on disk.
 
 usage:
-    python scripts/validate_all.py [--data-dir data/] [--schema eval.schema.json]
-    python scripts/validate_all.py --fix  # apply auto-fixes and write back
+    python -m eee_eval.validation.validate_all [--data-dir data/] [--schema eval.schema.json]
+    python -m eee_eval.validation.validate_all --fix  # apply auto-fixes and write back
 """
 
 from __future__ import annotations

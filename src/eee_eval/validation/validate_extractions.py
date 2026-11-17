@@ -8,10 +8,10 @@ HTML text. Stores results in source_metadata.additional_details:
 
 Usage:
     # Validate all existing data
-    python src/validation/validate_extractions.py
+    python -m eee_eval.validation.validate_extractions
 
     # Validate a single paper
-    python src/validation/validate_extractions.py --arxiv-id 2305.13048
+    python -m eee_eval.validation.validate_extractions --arxiv-id 2305.13048
 
     # Programmatic use from extraction pipeline
     from eee_eval.validation.validate_extractions import validate_record

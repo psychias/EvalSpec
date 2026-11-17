@@ -1,7 +1,7 @@
 [project]
 name = "every-eval-ever"
 version = "0.2.1"
-description = "Unified schema and extraction pipeline for LLM evaluation results — ACL 2026 EvalEval Shared Task submission"
+description = "Schema, extraction pipeline and experiments for the paper 'LLM Evaluation Discrepancies And How To Prevent Them'"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"

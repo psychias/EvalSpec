@@ -116,7 +116,7 @@ Controlled experiments isolate *how much* each undocumented choice moves a score
 
 ## Dataset
 The aggregated dataset is available on HuggingFace:
-- Dataset: https://huggingface.co/datasets/evaleval/EEE_datastore
+- Dataset: https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset
 
 ## Repository layout
 

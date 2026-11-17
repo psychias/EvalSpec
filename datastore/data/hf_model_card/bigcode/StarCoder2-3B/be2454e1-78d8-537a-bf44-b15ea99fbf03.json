@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "hf_model_card/bigcode_StarCoder2-3B/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "HuggingFace Model Card",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co",
+    "evaluator_relationship": "first_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "transformers",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "StarCoder2-3B",
+    "id": "bigcode/StarCoder2-3B",
+    "developer": "bigcode"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "HumanEval+",
+      "source_data": {
+        "dataset_name": "HumanEval+",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "pass@1",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 27.4
+      },
+      "generation_config": {
+        "generation_args": {},
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "transformers"
+        }
+      }
+    }
+  ]
+}

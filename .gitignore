@@ -1,0 +1,5 @@
+# a local copy of the datastore (tools/fetch_datastore.py)
+datastore_cache/
+__pycache__/
+*.pyc
+.DS_Store

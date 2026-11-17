@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "papers_with_code/Qwen_Qwen2.5-72B-Instruct/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "Papers With Code",
+    "source_type": "documentation",
+    "source_organization_name": "Papers With Code",
+    "source_organization_url": "https://paperswithcode.com",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "unknown",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Qwen2.5-72B-Instruct",
+    "id": "Qwen/Qwen2.5-72B-Instruct",
+    "developer": "Qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "GPQA",
+      "source_data": {
+        "dataset_name": "GPQA",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "Accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 49.0
+      },
+      "generation_config": {
+        "generation_args": {},
+        "additional_details": {
+          "source": "papers_with_code"
+        }
+      }
+    }
+  ]
+}

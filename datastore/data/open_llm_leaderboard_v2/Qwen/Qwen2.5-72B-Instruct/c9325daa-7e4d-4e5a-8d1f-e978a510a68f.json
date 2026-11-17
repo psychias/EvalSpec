@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "open_llm_leaderboard_v2/Qwen_Qwen2.5-72B-Instruct/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "Open LLM Leaderboard v2",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "lm_eval",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Qwen2.5-72B-Instruct",
+    "id": "Qwen/Qwen2.5-72B-Instruct",
+    "developer": "Qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "GPQA",
+      "source_data": {
+        "dataset_name": "GPQA",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 16.67
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    }
+  ]
+}

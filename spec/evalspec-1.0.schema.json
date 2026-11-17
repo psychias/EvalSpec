@@ -1,0 +1,1241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://psychias.github.io/eee-eval/spec/evalspec-1.0.schema.json",
+  "title": "EvalSpec 1.0 record (flat view)",
+  "description": "A well-formed record. Use #/$defs/required_tier, recommended_tier or full_tier to test conformance to a tier.",
+  "type": "object",
+  "required": [
+    "model_id",
+    "benchmark_id",
+    "score"
+  ],
+  "properties": {
+    "model_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Model identifier",
+      "not": {
+        "pattern": "^\\s*([uU][nN][kK][nN][oO][wW][nN])?\\s*$"
+      }
+    },
+    "benchmark_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Benchmark name and release version",
+      "not": {
+        "pattern": "^\\s*([uU][nN][kK][nN][oO][wW][nN])?\\s*$"
+      }
+    },
+    "scoring_mode": {
+      "anyOf": [
+        {
+          "enum": [
+            "log-likelihood",
+            "generation",
+            "preference",
+            "execution"
+          ],
+          "description": "E.g., log-likelihood, generation, preference, or execution"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "harness_name": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Software or eval. framework used to run the benchmark"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "harness_version": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exact immutable harness version",
+          "not": {
+            "enum": [
+              "latest",
+              "main",
+              "master",
+              "dev",
+              "nightly",
+              "head",
+              "n/a",
+              "none"
+            ]
+          }
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "n_shot": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of in-context examples"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "benchmark_variant": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Sub-task or configuration key"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "judge_model": {
+      "anyOf": [
+        {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Scorer model (null if not applicable)"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "evaluation_timestamp": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9]{4})-([0-9]{2})-([0-9]{2})([T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:?[0-9]{2})?)?$",
+          "description": "Date and time at which the evaluation was run (ISO 8601)"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "prompt_template_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "SHA-256 of the fully rendered prompt (task template, system instruction, chat template)"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "answer_parser_version": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Answer-extractor or parser id and version"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "judge_prompt_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "SHA-256 of the canonicalized judge prompt + rubric"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "judge_score_rule": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Procedure for converting judge response into score"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "temperature": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "description": "Sampling temperature"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "top_p": {
+      "anyOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "Cumulative-probability threshold for nucleus sampling"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "quantization": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Weight-quantization method used for inference"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "hardware": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "GPU type and count"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "random_seed": {
+      "anyOf": [
+        {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            }
+          ],
+          "description": "Random number generator seed"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "provenance_url": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^https?://\\S+$",
+          "description": "Link to raw outputs, log or eval. artifacts"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "contamination_check": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Decontamination method and execution date"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "compute_hours": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total GPU time, measured in device-hours"
+        },
+        {
+          "enum": [
+            "unknown",
+            "",
+            null
+          ]
+        }
+      ]
+    },
+    "score": {
+      "type": "number"
+    },
+    "metric_name": {
+      "type": "string"
+    },
+    "min_score": {
+      "type": "number"
+    },
+    "max_score": {
+      "type": "number"
+    },
+    "lower_is_better": {
+      "type": "boolean"
+    },
+    "evidence_source": {
+      "description": "A provenance tag for the whole record, or an object mapping field names (and 'default') to tags.",
+      "anyOf": [
+        {
+          "enum": [
+            "source-reported",
+            "API-exposed",
+            "LLM-extracted",
+            "documentation-inferred",
+            "pipeline-default"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "source-reported",
+              "API-exposed",
+              "LLM-extracted",
+              "documentation-inferred",
+              "pipeline-default"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "required_tier": {
+      "description": "A record that reaches the Required tier.",
+      "allOf": [
+        {
+          "$ref": "#"
+        },
+        {
+          "required": [
+            "model_id",
+            "benchmark_id",
+            "scoring_mode",
+            "harness_name",
+            "harness_version",
+            "n_shot",
+            "benchmark_variant",
+            "evaluation_timestamp",
+            "prompt_template_hash"
+          ],
+          "properties": {
+            "model_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "scoring_mode": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_name": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_version": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null,
+                  "latest",
+                  "main",
+                  "master",
+                  "dev",
+                  "nightly",
+                  "head",
+                  "n/a",
+                  "none"
+                ]
+              }
+            },
+            "n_shot": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_variant": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "evaluation_timestamp": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "prompt_template_hash": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "enum": [
+                  "log-likelihood",
+                  "generation",
+                  "execution"
+                ]
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "judge_model"
+            ],
+            "properties": {
+              "judge_model": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    ""
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "const": "generation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "answer_parser_version"
+            ],
+            "properties": {
+              "answer_parser_version": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "scoring_mode"
+                ],
+                "properties": {
+                  "scoring_mode": {
+                    "const": "preference"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "judge_model"
+                ],
+                "properties": {
+                  "judge_model": {
+                    "type": "string",
+                    "not": {
+                      "enum": [
+                        "unknown",
+                        ""
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "judge_prompt_hash",
+              "judge_score_rule"
+            ],
+            "properties": {
+              "judge_prompt_hash": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              },
+              "judge_score_rule": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "recommended_tier": {
+      "description": "A record that reaches the Recommended tier.",
+      "allOf": [
+        {
+          "$ref": "#"
+        },
+        {
+          "required": [
+            "model_id",
+            "benchmark_id",
+            "scoring_mode",
+            "harness_name",
+            "harness_version",
+            "n_shot",
+            "benchmark_variant",
+            "evaluation_timestamp",
+            "prompt_template_hash"
+          ],
+          "properties": {
+            "model_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "scoring_mode": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_name": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_version": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null,
+                  "latest",
+                  "main",
+                  "master",
+                  "dev",
+                  "nightly",
+                  "head",
+                  "n/a",
+                  "none"
+                ]
+              }
+            },
+            "n_shot": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_variant": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "evaluation_timestamp": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "prompt_template_hash": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "enum": [
+                  "log-likelihood",
+                  "generation",
+                  "execution"
+                ]
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "judge_model"
+            ],
+            "properties": {
+              "judge_model": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    ""
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "const": "generation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "answer_parser_version"
+            ],
+            "properties": {
+              "answer_parser_version": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "scoring_mode"
+                ],
+                "properties": {
+                  "scoring_mode": {
+                    "const": "preference"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "judge_model"
+                ],
+                "properties": {
+                  "judge_model": {
+                    "type": "string",
+                    "not": {
+                      "enum": [
+                        "unknown",
+                        ""
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "judge_prompt_hash",
+              "judge_score_rule"
+            ],
+            "properties": {
+              "judge_prompt_hash": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              },
+              "judge_score_rule": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "required": [
+            "temperature",
+            "top_p",
+            "quantization",
+            "hardware",
+            "random_seed"
+          ],
+          "properties": {
+            "temperature": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "top_p": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "quantization": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "hardware": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "random_seed": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "full_tier": {
+      "description": "A record that reaches the Full tier.",
+      "allOf": [
+        {
+          "$ref": "#"
+        },
+        {
+          "required": [
+            "model_id",
+            "benchmark_id",
+            "scoring_mode",
+            "harness_name",
+            "harness_version",
+            "n_shot",
+            "benchmark_variant",
+            "evaluation_timestamp",
+            "prompt_template_hash"
+          ],
+          "properties": {
+            "model_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_id": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "scoring_mode": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_name": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "harness_version": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null,
+                  "latest",
+                  "main",
+                  "master",
+                  "dev",
+                  "nightly",
+                  "head",
+                  "n/a",
+                  "none"
+                ]
+              }
+            },
+            "n_shot": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "benchmark_variant": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "evaluation_timestamp": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "prompt_template_hash": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "enum": [
+                  "log-likelihood",
+                  "generation",
+                  "execution"
+                ]
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "judge_model"
+            ],
+            "properties": {
+              "judge_model": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    ""
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "scoring_mode"
+            ],
+            "properties": {
+              "scoring_mode": {
+                "const": "generation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "answer_parser_version"
+            ],
+            "properties": {
+              "answer_parser_version": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "scoring_mode"
+                ],
+                "properties": {
+                  "scoring_mode": {
+                    "const": "preference"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "judge_model"
+                ],
+                "properties": {
+                  "judge_model": {
+                    "type": "string",
+                    "not": {
+                      "enum": [
+                        "unknown",
+                        ""
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "judge_prompt_hash",
+              "judge_score_rule"
+            ],
+            "properties": {
+              "judge_prompt_hash": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              },
+              "judge_score_rule": {
+                "not": {
+                  "enum": [
+                    "unknown",
+                    "",
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "required": [
+            "temperature",
+            "top_p",
+            "quantization",
+            "hardware",
+            "random_seed"
+          ],
+          "properties": {
+            "temperature": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "top_p": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "quantization": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "hardware": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "random_seed": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        },
+        {
+          "required": [
+            "provenance_url",
+            "contamination_check",
+            "compute_hours"
+          ],
+          "properties": {
+            "provenance_url": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "contamination_check": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            },
+            "compute_hours": {
+              "not": {
+                "enum": [
+                  "unknown",
+                  "",
+                  null
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

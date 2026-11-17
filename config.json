@@ -1,0 +1,53 @@
+{
+  "_comment": "Single place for everything that may change: the datastore link, the paper link, the site address. Edit, then run: python source/build.py",
+
+  "site": {
+    "name": "EvalSpec",
+    "tagline": "A minimum reporting standard for LLM evaluation results",
+    "url": "https://psychias.github.io/eee-eval/"
+  },
+
+  "datastore": {
+    "_comment": "The Hugging Face dataset that holds every record. When the dataset is renamed, change hf_repo only; every link and command on the site is derived from it.",
+    "name": "EvalSpec",
+    "hf_repo": "evaleval/EEE_datastore",
+    "revision": "main",
+    "data_dir": "data"
+  },
+
+  "home": {
+    "_comment": "The model and benchmark shown in the box at the top of the home page. When the datastore has no such pair, the pair with the most sources is shown.",
+    "featured": {"model_id": "google/gemma-2-9b", "benchmark_id": "BBH"}
+  },
+
+  "paper": {
+    "title": "LLM Evaluation Discrepancies And How To Prevent Them",
+    "venue": "Findings of EACL 2027",
+    "venue_long": "Findings of the Association for Computational Linguistics: EACL 2027",
+    "year": "2027",
+    "status": "Accepted, to appear",
+    "_url_comment": "arXiv or ACL Anthology address. While empty, the site shows the paper link as pending.",
+    "url": "",
+    "pdf_url": "",
+    "authors": [
+      {"name": "Stylianos Psychias", "affiliation": "University of Zurich", "url": "https://openreview.net/profile?id=~Stylianos_Psychias1"},
+      {"name": "Hanna Hubarava", "affiliation": "University of Bern", "url": "https://openreview.net/profile?id=~Hanna_Hubarava1"},
+      {"name": "Juri Opitz", "affiliation": "University of Zurich", "url": "https://openreview.net/profile?id=~Juri_Opitz2"},
+      {"name": "Pius von Däniken", "affiliation": "University of Zurich", "url": "https://openreview.net/profile?id=~Pius_von_D%C3%A4niken1"},
+      {"name": "Andrianos Michail", "affiliation": "University of Zurich", "url": "https://openreview.net/profile?id=~Andrianos_Michail1"}
+    ],
+    "cite_short": "Psychias, et al., \"LLM Evaluation Discrepancies And How To Prevent Them\", Findings of EACL, 2027.",
+    "bibtex": "@inproceedings{psychias2027discrepancies,\n  title     = {{LLM} Evaluation Discrepancies And How To Prevent Them},\n  author    = {Psychias, Stylianos and Hubarava, Hanna and Opitz, Juri and von D{\\\"a}niken, Pius and Michail, Andrianos},\n  booktitle = {Findings of the Association for Computational Linguistics: EACL 2027},\n  year      = {2027},\n  note      = {To appear}\n}"
+  },
+
+  "links": {
+    "code": "https://github.com/psychias/eee-eval",
+    "issues": "https://github.com/psychias/eee-eval/issues",
+    "eee": "https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/"
+  },
+
+  "licences": {
+    "data": {"name": "CC-BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/"},
+    "code": {"name": "MIT", "url": "https://github.com/psychias/eee-eval/blob/main/LICENSE"}
+  }
+}

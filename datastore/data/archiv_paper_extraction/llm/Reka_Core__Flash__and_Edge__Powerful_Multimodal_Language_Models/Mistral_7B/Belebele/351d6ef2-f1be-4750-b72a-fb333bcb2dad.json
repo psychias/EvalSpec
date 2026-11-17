@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "arxiv_html_llm/Mistral_7B/2404.12387/Belebele/0_32.8",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "arxiv_html_llm",
+    "source_type": "documentation",
+    "source_organization_name": "arXiv",
+    "source_organization_url": "https://arxiv.org",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "LLM-extracted",
+      "sample_origin": "Section 5 and Appendices G and H of the paper",
+      "paper_url": "https://arxiv.org/abs/2404.12387",
+      "arxiv_id": "2404.12387",
+      "paper_title": "Reka Core, Flash, and Edge: A Series of Powerful Multimodal Language Models",
+      "extraction_approach": "llm",
+      "extractor_model": "anthropic/claude-haiku-4.5"
+    }
+  },
+  "eval_library": {
+    "name": "unknown",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Mistral 7B",
+    "id": "Mistral_7B",
+    "developer": "Mistral AI"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "Belebele",
+      "source_data": {
+        "dataset_name": "Belebele",
+        "source_type": "url",
+        "url": [
+          "https://arxiv.org/abs/2404.12387"
+        ]
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 32.8
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "arxiv_html_llm",
+          "note": "The paper's case study: an average over 150 language variants. The record has no field for the language scope."
+        }
+      }
+    }
+  ]
+}

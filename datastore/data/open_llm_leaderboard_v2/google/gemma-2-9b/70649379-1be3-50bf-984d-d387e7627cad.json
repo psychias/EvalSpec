@@ -1,0 +1,195 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "open_llm_leaderboard_v2/google_gemma-2-9b/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "Open LLM Leaderboard v2",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "Appendix E of the paper: the leaderboard's API row for google/gemma-2-9b, retrieved 2026-07-30"
+    }
+  },
+  "eval_library": {
+    "name": "lm_eval",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "gemma-2-9b",
+    "id": "google/gemma-2-9b",
+    "developer": "google"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "IFEval",
+      "source_data": {
+        "dataset_name": "IFEval",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "prompt_level_strict_acc",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 20.4,
+        "details": {
+          "raw_score": "20.4"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "BBH",
+      "source_data": {
+        "dataset_name": "BBH",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 34.1,
+        "details": {
+          "raw_score": "53.77"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 3
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MATH Lvl 5",
+      "source_data": {
+        "dataset_name": "MATH Lvl 5",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 13.44,
+        "details": {
+          "raw_score": "13.44"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 4
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "GPQA",
+      "source_data": {
+        "dataset_name": "GPQA",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 10.51,
+        "details": {
+          "raw_score": "32.89"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MuSR",
+      "source_data": {
+        "dataset_name": "MuSR",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 14.3,
+        "details": {
+          "raw_score": "44.61"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MMLU-Pro",
+      "source_data": {
+        "dataset_name": "MMLU-Pro",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 34.48,
+        "details": {
+          "raw_score": "41.03"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    }
+  ]
+}

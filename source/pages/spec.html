@@ -1,0 +1,212 @@
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>EvalSpec {{spec_version}}</h1>
+    <p class="es-lead">The minimum a reported benchmark score has to carry for a reader to determine what was measured. One record describes one score: one model, on one benchmark, reported by one source.</p>
+  </header>
+
+  <div class="es-spec">
+    <nav class="es-toc" aria-label="Sections">
+      <ol>
+        <li><a href="#status">Status</a></li>
+        <li><a href="#eee">Relation to Every Eval Ever</a></li>
+        <li><a href="#fields">Fields</a></li>
+        <li><a href="#modes">Scoring modes</a></li>
+        <li><a href="#provenance">Provenance and tracks</a></li>
+        <li><a href="#conformance">Conformance</a></li>
+        <li><a href="#formats">Record formats</a></li>
+        <li><a href="#score">Score and scale</a></li>
+        <li><a href="#paper">Reporting in a paper</a></li>
+        <li><a href="#reference">Reference tables</a></li>
+        <li><a href="#versions">Versions and open questions</a></li>
+      </ol>
+    </nav>
+
+    <div class="es-spec-body">
+
+      <section id="status">
+        <h2>Status</h2>
+        <div class="es-status">
+          <div><b>Version</b>{{spec_version}}</div>
+          <div><b>Defined in</b>Table 2 and Appendix J of the paper</div>
+          <div><b>Extends</b>Every Eval Ever {{eee_version}}, plus eight fields</div>
+          <div><b>Machine-readable</b><a href="spec/fields.json">fields.json</a>, <a href="spec/evalspec-{{spec_version}}.schema.json">JSON Schema</a></div>
+        </div>
+        <p>EvalSpec is a proposal. It has not been validated as a standard: no record collected from public sources for the paper satisfies the Required tier, and what it costs a harness or a leaderboard to adopt it has not been measured. It applies to results published from now on and cannot repair historical records.</p>
+        <p>EvalSpec makes protocols visible. It does not make them the same: two fully documented scores produced by different procedures are still not comparable, and the record only lets a reader see that.</p>
+      </section>
+
+      <section id="eee">
+        <h2>Relation to Every Eval Ever</h2>
+        <p>EvalSpec is an extended version of the <a href="{{eee_url}}">Every Eval Ever</a> (EEE) schema. EEE stores a model's result on a benchmark, together with its source and its evaluation library, as one JSON file. The records behind the paper use EEE {{eee_version}} with eight additional fields: <code>shots</code>, <code>chain_of_thought</code> and <code>reasoning_mode</code> in <code>generation_args</code>; <code>parameter_count</code>, <code>quantization</code> and <code>model_alignment</code> in <code>model_info</code>; <code>dataset_split</code> and <code>sample_size</code> in <code>source_data</code>.</p>
+        <p>EvalSpec is a conformance profile over that schema, not a competing format.</p>
+        <ul>
+          <li>Every EvalSpec record is a valid EEE file. A tool that reads EEE reads an EvalSpec record unchanged.</li>
+          <li>Where EEE has a slot for a field, EvalSpec names that slot and makes it mandatory.</li>
+          <li>Where EEE has none, the field is written as text in <code>generation_config.additional_details</code> of the result it describes. EEE reserves that object for further key and value pairs, so the file stays valid.</li>
+          <li><code>scoring_mode</code> is the field the paper adds in substance. Base EEE leaves the scoring mode implicit in the metric name at best, as in <code>acc_norm</code> against <code>exact_match</code>.</li>
+        </ul>
+        <p>The schema file the tools check against is <a href="spec/eee-{{eee_version}}-extended.schema.json">eee-{{eee_version}}-extended.schema.json</a>, copied from the paper's code repository.</p>
+      </section>
+
+      <section id="fields">
+        <h2>Fields</h2>
+        <p>The fields come in three cumulative tiers. Where the paper has evidence, the tiers follow it: prompt and shot count moved scores by tens of points and are Required, while temperature barely moved them and is Recommended.</p>
+        <p>The literal <code>unknown</code>, an empty text and <code>null</code> all mean that a field is not on record. <code>judge_model</code> is the exception: there <code>null</code> states that no judge was involved.</p>
+        {{field_tables}}
+      </section>
+
+      <section id="modes">
+        <h2>Scoring modes</h2>
+        <p><code>scoring_mode</code> takes one of four values, set by how the reported number is produced.</p>
+        {{scoring_modes}}
+        <p>A pipeline with several stages is labelled by the stage that produces the reported number, and the composite is recorded in <code>benchmark_variant</code>.</p>
+        <ul>
+          <li>Ranking candidates by log-likelihood and then generating a rationale is <code>log-likelihood</code> if the ranked selection is scored, and <code>generation</code> if the generated text is scored.</li>
+          <li>A judge applied to a short answer extracted from free text is <code>preference</code> when the rating is the score, and <code>generation</code> when the extracted answer is matched against a key.</li>
+          <li>Chain-of-thought followed by a multiple-choice post-check is labelled by the final selection mechanism.</li>
+          <li>When two stages contribute to one merged score, the primary stage goes in <code>scoring_mode</code> and the secondary stage is named in <code>benchmark_variant</code>.</li>
+        </ul>
+        <p>For human raters, write <code>preference</code> and describe the raters in <code>judge_model</code>, for example <code>human, three raters per item</code>.</p>
+      </section>
+
+      <section id="provenance">
+        <h2>Provenance and tracks</h2>
+        <p>A populated field may have been reported by the source, or inferred and supplied by someone else. Every value therefore carries one of five provenance tags.</p>
+        {{provenance_tags}}
+        <p>A record states its tag once, for all its values, in <code>source_metadata.additional_details.evidence_source</code>. A single field can differ: <code>evidence_source.n_shot</code> next to it overrides the tag for <code>n_shot</code>. In a flat record, <code>evidence_source</code> is either one tag or an object that maps <code>default</code> and field names to tags.</p>
+        <p>The tag decides which of two tracks a record is shown in.</p>
+        {{tracks}}
+        <p>A record read from a paper by a language model also names the model that read it, in <code>source_metadata.additional_details.extractor_model</code>, in the same way a judged score names its judge.</p>
+        <p>Records written before the tags existed are read as follows. A file whose <code>source_type</code> is <code>evaluation_run</code> is source-reported. A file extracted from an arXiv paper is LLM-extracted. Anything else is documentation-inferred, except that the names of the model and the benchmark count as API-exposed: a source always states those itself.</p>
+      </section>
+
+      <section id="conformance">
+        <h2>Conformance</h2>
+        <p>A record reaches the Required tier when every Required field that applies to it holds a valid value. Recommended and Full are cumulative: Recommended needs all Required and all Recommended fields, Full needs all three.</p>
+        <p>Ten Required fields apply to every result. <code>answer_parser_version</code> applies when <code>scoring_mode</code> is <code>generation</code>. <code>judge_prompt_hash</code> and <code>judge_score_rule</code> apply when <code>scoring_mode</code> is <code>preference</code> or <code>judge_model</code> names a scorer; a judge name alone does not fix the measurement. <code>judge_model</code> may be left out when the scoring mode is <code>log-likelihood</code>, <code>generation</code> or <code>execution</code>, and is then read as <code>null</code>.</p>
+        <p>Below the Required tier, a record is described by its coverage: the number of Required fields on record out of the number that apply. The registry's board counts procedure fields only, which are the Required fields other than <code>model_id</code> and <code>benchmark_id</code>, and it counts a field as first-hand when its tag is source-reported or API-exposed.</p>
+        <p>A record is well formed when it names a model and a benchmark, has a numeric score, and holds no malformed value, such as a hash that is not 64 hexadecimal digits or a harness version of <code>latest</code>. The datastore accepts every well-formed record, whatever its tier.</p>
+        <p>The validator checks form, not truth. It cannot tell whether a hash covers the system instruction, or whether a shot count is the one that was used.</p>
+        <p class="es-actions"><a class="es-btn is-plain" href="submit.html#check">Check a record in the browser</a></p>
+        <p>The same rules are available as one Python file without dependencies: download <a href="tools/evalspec.py" download>evalspec.py</a> and <a href="spec/fields.json" download>fields.json</a> into one folder.</p>
+        <pre tabindex="0" aria-label="Command-line validator"><code>python evalspec.py check my_records/ --verbose
+python evalspec.py check record.json --require-tier required</code></pre>
+      </section>
+
+      <section id="formats">
+        <h2>Record formats</h2>
+        <p>The datastore holds EEE files. A harness, or a person filling in a form, more easily produces a flat record: one JSON object whose keys are the EvalSpec field names. The tools read both, and convert a flat record into an EEE file.</p>
+        <pre tabindex="0" aria-label="Convert a flat record into a datastore file"><code>python evalspec.py to-eee flat_records.json --output my_submission/</code></pre>
+        {{examples}}
+        <h3>Other keys of a flat record</h3>
+        <p>Besides the 21 fields, a flat record carries the score and says where it was published. Only <code>score</code> is required. Each key has its place in the EEE file.</p>
+        {{record_keys}}
+      </section>
+
+      <section id="score">
+        <h2>Score and scale</h2>
+        <p>The score is not among the 21 fields: every EEE record already carries it, with the name and the range of its metric in <code>metric_config</code>. EEE requires <code>min_score</code> and <code>max_score</code> for a continuous score, so 0.585 and 58.5 cannot be confused. A flat record gives them as <code>min_score</code> and <code>max_score</code>.</p>
+        <p>A score that was rescaled after it was measured should say so in <code>metric_config.evaluation_description</code>, and can keep the measured value in <code>score_details.details.raw_score</code>. This matters: of the 34.1 points between the two published scores for Gemma-2-9B on BBH, 19.7 are the leaderboard's rescaling of 53.77 to 34.10.</p>
+      </section>
+
+      <section id="paper">
+        <h2>Reporting in a paper</h2>
+        <p>State the version and the tier, and link the records.</p>
+        <pre tabindex="0" aria-label="Statement for a paper"><code>Evaluation results are reported as EvalSpec {{spec_version}} records at the Required tier.
+The records are available at &lt;address&gt; and in the {{datastore_name}} datastore.</code></pre>
+        <p>A table of the Required fields, one column per reported configuration, fits in an appendix.</p>
+        <pre tabindex="0" aria-label="LaTeX table of Required fields"><code>% EvalSpec {{spec_version}}, Required tier
+\begin{tabular}{ll}
+\toprule
+\texttt{model\_id}               &amp; example-org/example-model-7b \\
+\texttt{benchmark\_id}           &amp; gsm8k \\
+\texttt{scoring\_mode}           &amp; generation \\
+\texttt{harness\_name}           &amp; lm-evaluation-harness \\
+\texttt{harness\_version}        &amp; 0.4.11 \\
+\texttt{n\_shot}                 &amp; 5 \\
+\texttt{benchmark\_variant}      &amp; gsm8k \\
+\texttt{judge\_model}            &amp; none \\
+\texttt{evaluation\_timestamp}   &amp; 2026-10-02 \\
+\texttt{prompt\_template\_hash}  &amp; sha256:2e90c48d\ldots \\
+\texttt{answer\_parser\_version} &amp; lm-eval strict-match, task version 3 \\
+\bottomrule
+\end{tabular}</code></pre>
+        <p>To cite EvalSpec, cite the paper.</p>
+        <pre id="bibtex" tabindex="0" aria-label="BibTeX citation">{{bibtex}}</pre>
+        <button class="es-btn is-plain is-small" type="button" data-copy="bibtex" hidden>Copy BibTeX</button>
+      </section>
+
+      <section id="reference">
+        <h2>Reference tables</h2>
+        <h3>How common benchmarks are usually scored</h3>
+        <p>These are usual defaults, not definitions. A benchmark can be run under another mode, which is why <code>scoring_mode</code> has to be recorded and cannot be inferred from the benchmark's name.</p>
+        <div class="es-scroll">
+        <table class="es-table">
+          <thead><tr><th scope="col">Benchmark</th><th scope="col">Typical scoring mode</th><th scope="col">Variants that change scores</th></tr></thead>
+          <tbody>
+            <tr><td>MMLU</td><td>log-likelihood, multiple choice</td><td><code>acc</code> or <code>acc_norm</code>; letter or full option; shot count</td></tr>
+            <tr><td>ARC, OpenBookQA, WinoGrande</td><td>log-likelihood, multiple choice</td><td><code>acc</code> or length-normalized <code>acc_norm</code>; shot count</td></tr>
+            <tr><td>HellaSwag</td><td>log-likelihood, continuation</td><td>raw or length-normalized; shot count</td></tr>
+            <tr><td>GSM8K</td><td>generation with a numeric parser</td><td>answer-extraction pattern; chain-of-thought or plain; flexible or strict match</td></tr>
+            <tr><td>BBH</td><td>generation with chain-of-thought</td><td>chain-of-thought or direct; answer-extraction rule</td></tr>
+            <tr><td>TruthfulQA</td><td>log-likelihood (MC1, MC2) or a model judge</td><td>multiple choice or judge; which judge</td></tr>
+            <tr><td>HumanEval, MBPP</td><td>execution (pass@<i>k</i>)</td><td><i>k</i>; test harness; prompt wrapping</td></tr>
+            <tr><td>AlpacaEval, MT-Bench, Chatbot Arena</td><td>model judge or preference</td><td>judge model; rubric; length control</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <h3>What three evaluation platforms already expose</h3>
+        <p>How HELM, LightEval and OpenCompass expose the Required fields that apply to every result. "Field" means a first-class field that can be queried; "implicit" means present only by convention or as an ad hoc run parameter. The platforms log the execution context and leave the scoring contract implicit. The table doubles as an adapter target: a platform produces a conformant record by mapping its own configuration keys onto these fields.</p>
+        <div class="es-scroll">
+        <table class="es-table es-ticks">
+          <thead><tr><th scope="col">Required field</th><th scope="col">HELM</th><th scope="col">LightEval</th><th scope="col">OpenCompass</th></tr></thead>
+          <tbody>
+            <tr><td><code>harness_name</code>, <code>harness_version</code></td><td>field</td><td>field</td><td>implicit</td></tr>
+            <tr><td><code>n_shot</code></td><td>field</td><td>field</td><td>implicit</td></tr>
+            <tr><td><code>prompt_template_hash</code></td><td>implicit</td><td>field</td><td>implicit</td></tr>
+            <tr><td><code>scoring_mode</code></td><td>implicit</td><td>implicit</td><td><span class="es-hollow">absent</span></td></tr>
+            <tr><td><code>model_id</code></td><td>field</td><td>field</td><td>field</td></tr>
+            <tr><td><code>benchmark_id</code></td><td>field</td><td>field</td><td>implicit</td></tr>
+            <tr><td><code>benchmark_variant</code></td><td>implicit</td><td>field</td><td><span class="es-hollow">absent</span></td></tr>
+            <tr><td><code>judge_model</code></td><td>implicit</td><td><span class="es-hollow">absent</span></td><td><span class="es-hollow">absent</span></td></tr>
+            <tr><td><code>evaluation_timestamp</code></td><td>implicit</td><td>implicit</td><td><span class="es-hollow">absent</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <section id="versions">
+        <h2>Versions and open questions</h2>
+        <h3>1.0</h3>
+        <p>The field set of Table 2 of the paper, with the rules needed to check a record by machine. Relative to the examples printed in the paper, this version settles five details.</p>
+        <ul>
+          <li>The benchmark is named in <code>benchmark_id</code>. The released hook writes <code>benchmark</code>; the tools accept it and say so.</li>
+          <li>The run time is <code>evaluation_timestamp</code>, not <code>eval_timestamp</code>.</li>
+          <li>Hashes are written in full: <code>sha256:</code> and 64 hexadecimal digits.</li>
+          <li>The score's range travels with the score, so that 0.585 and 58.5 are told apart.</li>
+          <li>Provenance is one tag per record with per-field overrides, in <code>evidence_source</code>.</li>
+        </ul>
+        <h3>Open questions</h3>
+        <ul>
+          <li><b>EEE paths.</b> The paper fixes the path of <code>judge_model</code> and states that <code>scoring_mode</code> has none. The remaining paths in the tables above are this version's reading and may change.</li>
+          <li><b>Rescaled scores.</b> Whether a score is raw or rescaled is recorded in free text today. A dedicated field is a candidate for the next version.</li>
+          <li><b>What a prompt hash covers.</b> The released hook hashes the task template only. A conformant hash also covers the system instruction and the chat template, and the exact canonical form is not yet fixed.</li>
+          <li><b>Newer EEE versions.</b> EEE has moved on since {{eee_version}}. The profile will need to be restated over a later version.</li>
+        </ul>
+        <p>Changes are proposed through <a href="{{issues_url}}">issues on the code repository</a>. A released version does not change; a revision gets a new number and its own schema file.</p>
+        <h3>Files</h3>
+        <ul>
+          <li><a href="spec/fields.json">fields.json</a>: every field, its tier, type, rule and EEE path. The validators are driven by this file.</li>
+          <li><a href="spec/evalspec-{{spec_version}}.schema.json">evalspec-{{spec_version}}.schema.json</a>: JSON Schema of the flat record, with one definition per tier.</li>
+          <li><a href="spec/eee-{{eee_version}}-extended.schema.json">eee-{{eee_version}}-extended.schema.json</a>: the EEE schema the datastore files follow.</li>
+          <li>The records shown on this page: {{example_links}}.</li>
+          <li><a href="spec/CHANGELOG.md">CHANGELOG.md</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+</div>
+</main>

@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/allenai_Llama-3.1-Tulu-3-8B/grid/gpqa_main_n_shot/cot/5",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "experiments/controlled_eval/collision_model_results.jsonl in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.11"
+  },
+  "model_info": {
+    "name": "Llama-3.1-Tulu-3-8B",
+    "id": "allenai/Llama-3.1-Tulu-3-8B",
+    "developer": "allenai"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "gpqa_main",
+      "source_data": {
+        "dataset_name": "gpqa_main",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 30.0
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5,
+          "temperature": 0.0
+        },
+        "additional_details": {
+          "scoring_mode": "log-likelihood",
+          "benchmark_variant": "gpqa_main_n_shot, cot prompt, first 200 items",
+          "random_seed": "42",
+          "hardware": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/controlled_eval"
+        }
+      }
+    }
+  ]
+}

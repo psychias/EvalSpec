@@ -1,0 +1,20 @@
+{
+  "model_id": "example-org/example-model-7b",
+  "benchmark_id": "mt-bench",
+  "score": 7.9,
+  "metric_name": "mean judge rating",
+  "min_score": 1,
+  "max_score": 10,
+  "scoring_mode": "preference",
+  "harness_name": "example-judge-pipeline",
+  "harness_version": "1.2.0",
+  "n_shot": 0,
+  "benchmark_variant": "turn 1, single-answer grading",
+  "judge_model": "example-org/example-judge-70b",
+  "evaluation_timestamp": "2026-10-02",
+  "prompt_template_hash": "sha256:2e90c48dd0bf533c61e34b40784c88f10ed0036df7243b3c6607fffaf6244453",
+  "judge_prompt_hash": "sha256:d407afba6614e43320f3a18f2f84d6bbd932474d06a648450bae517a83379c5d",
+  "judge_score_rule": "rating parsed from the [[n]] marker, mean over 80 questions",
+  "evidence_source": "source-reported",
+  "source_name": "Illustrative example, not a real result"
+}

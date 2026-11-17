@@ -1,0 +1,114 @@
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>Registry</h1>
+    <p class="es-lead">Every record in the {{datastore_name}} datastore, with the fields it carries and who filled them in. Scores are never ranked across procedures here. What is ranked is how much each source says about its own procedure.</p>
+  </header>
+  {{sample_note}}
+
+  <div class="es-toolbar">
+    <div class="es-grow">
+      <form class="es-lookup" action="model.html" method="get" role="search" aria-label="Evaluation reports for a model" data-lookup>
+        <label class="es-label" for="lookup">Find the evaluation reports for a model</label>
+        <div class="es-lookup-row">
+          <input class="es-input" id="lookup" name="id" type="search" placeholder="Hugging Face id, for example google/gemma-2-9b" autocomplete="off" spellcheck="false">
+          <button class="es-btn" type="submit">Find reports</button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <span class="es-label" id="track-label">Records shown</span>
+      <div class="es-seg" role="group" aria-labelledby="track-label" id="track">
+        <button type="button" data-track="all" aria-pressed="true">All</button>
+        <button type="button" data-track="author" aria-pressed="false">Author-reported</button>
+        <button type="button" data-track="predicted" aria-pressed="false">Predicted</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="es-tabs" role="tablist" aria-label="Views of the registry">
+    <button type="button" role="tab" id="tab-board" aria-controls="view-board" aria-selected="true">Transparency board <span class="es-count" id="count-board"></span></button>
+    <button type="button" role="tab" id="tab-records" aria-controls="view-records" aria-selected="false">Records <span class="es-count" id="count-records"></span></button>
+    <button type="button" role="tab" id="tab-cells" aria-controls="view-cells" aria-selected="false">Same model, same benchmark <span class="es-count" id="count-cells"></span></button>
+  </div>
+
+  <section id="view-board" role="tabpanel" aria-labelledby="tab-board" tabindex="0">
+    <p class="es-prose">Each row is a source. The bar shows, over all its records, how many of the Required fields that describe the procedure are on record, and who put them there. Sources are ordered by the share they reported first-hand. A source moves up by submitting its own records; a value guessed for it by a model or a pipeline does not count as its own.</p>
+    {{provenance_key}}
+    <div class="es-scroll" style="margin-top:14px">
+      <table class="es-table" id="board">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="rank">Rank</button></th>
+          <th scope="col"><button type="button" data-sort="label">Source</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="n">Records</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="models">Models</button></th>
+          <th scope="col">Procedure fields on record</th>
+          <th scope="col" class="es-num"><button type="button" data-sort="first">First-hand</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="have">On record</button></th>
+          <th scope="col"><span class="sr">Fields</span></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="es-small" style="margin-top:12px">Procedure fields are the Required fields other than <code>model_id</code> and <code>benchmark_id</code>. Select a row to see the fields one by one. <a href="data/board.csv">Board as CSV</a>.</p>
+  </section>
+
+  <section id="view-records" role="tabpanel" aria-labelledby="tab-records" tabindex="0" hidden>
+    <div class="es-toolbar">
+      <div class="es-grow">
+        <label class="es-label" for="q">Filter</label>
+        <input class="es-input" id="q" type="search" placeholder="Model, benchmark or source" autocomplete="off" spellcheck="false">
+      </div>
+      <div>
+        <label class="es-label" for="f-mode">Scoring mode</label>
+        <select class="es-select" id="f-mode"><option value="">Any</option></select>
+      </div>
+      <div>
+        <label class="es-label" for="f-source">Source</label>
+        <select class="es-select" id="f-source"><option value="">Any</option></select>
+      </div>
+    </div>
+    <p class="es-small" id="records-status" role="status"></p>
+    <div class="es-scroll">
+      <table class="es-table" id="records">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="model">Model</button></th>
+          <th scope="col"><button type="button" data-sort="bench">Benchmark</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="score">Score</button></th>
+          <th scope="col">Scoring mode</th>
+          <th scope="col">Harness</th>
+          <th scope="col" class="es-num">Shots</th>
+          <th scope="col"><button type="button" data-sort="source">Source</button></th>
+          <th scope="col"><button type="button" data-sort="have">Required fields</button></th>
+          <th scope="col"><span class="sr">Record</span></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="es-pager" id="records-pager"></div>
+    <p class="es-small" style="margin-top:12px">Select a row to see the whole record. <a href="data/records.csv">All records as CSV</a>.</p>
+  </section>
+
+  <section id="view-cells" role="tabpanel" aria-labelledby="tab-cells" tabindex="0" hidden>
+    <p class="es-prose">A model and benchmark pair that more than one source reports is the only place where published scores can be checked against each other. For each pair the registry answers two questions from the records alone: were the scores produced the same way, and are they independent measurements? Most of the time the records do not say.</p>
+    <p class="es-small" id="cells-status" role="status"></p>
+    <div class="es-scroll">
+      <table class="es-table" id="cells">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="model">Model</button></th>
+          <th scope="col"><button type="button" data-sort="bench">Benchmark</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="sources">Sources</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="spread">Spread</button></th>
+          <th scope="col">Produced the same way?</th>
+          <th scope="col">Independent?</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="es-pager" id="cells-pager"></div>
+    <p class="es-small" style="margin-top:12px">Spread is the distance between the highest and the lowest score, in percentage points, for scores on a 0 to 1 or 0 to 100 scale. Pairs are matched by normalized names, as in the paper: a missed match hides a pair, and a wrong merge would create a disagreement that is not there.</p>
+  </section>
+
+  <noscript><p class="es-note">The registry views need JavaScript. The records are also available as <a href="data/records.csv">CSV</a>.</p></noscript>
+</div>
+</main>

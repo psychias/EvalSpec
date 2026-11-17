@@ -109,174 +109,30 @@ def pipeline():
     return '\n'.join(out)
 
 
-# ------------------------------------------------------------------ rulers
-def _ticks(x_of, edge_y, direction, lo=0, hi=100, every=1, label_dy=None, cls='rt'):
-    """Ruler marks from lo to hi on a scale mapped by x_of. direction -1 draws up from edge_y, +1 down."""
-    out = []
-    v = lo
-    while v <= hi:
-        L = 14 if v % 10 == 0 else 9 if v % 5 == 0 else 5
-        out.append(f'<line class="{cls}" x1="{x_of(v):.1f}" y1="{edge_y}" x2="{x_of(v):.1f}" y2="{edge_y + direction * L}"/>')
-        if v % 10 == 0 and label_dy is not None:
-            out.append(f'<text class="rn" x="{x_of(v):.1f}" y="{edge_y + label_dy}" text-anchor="middle">{v}</text>')
-        v += every
-    return ''.join(out)
-
-
+# ------------------------------------------------------------------ rescaling as a stretch
 def rescale():
-    """A slide rule: the upper ruler is measured accuracy, the lower one starts at the chance level."""
-    W, H, x0, x1 = 704, 190, 44, 660
+    W, H = 704, 216
+    x0, x1, yt, yb_ = 46, 658, 70, 160
     X = lambda v: x0 + (x1 - x0) * v / 100
     raw, k = 32.8859, 4
     base = 100 / k
     shown = max(0, (raw - base) / (100 - base) * 100)
-    XL = lambda v: X(base + (100 - base) * v / 100)
-    out = [f'<svg viewBox="0 0 {W} {H}" role="group" aria-label="Two rulers lying against each other. The upper one measures accuracy from 0 to 100. The lower one has its 0 at the chance level and its 100 at the same place as the upper one. A cursor reads one position off both.">']
-    out.append(f'<text class="rname" x="32" y="14">accuracy, as the harness measured it</text>')
-    out.append(f'<text class="rname" x="32" y="182">score, as the leaderboard shows it</text>')
-    out.append(f'<rect class="ruler up" x="32" y="52" width="640" height="42"/>')
-    out.append('<g class="marks">' + _ticks(X, 94, -1, label_dy=-19) + '</g>')
-    out.append(f'<g id="rs-lower"><rect class="ruler low" x="{X(base) - 12:.1f}" y="94" width="{672 - X(base) + 12:.1f}" height="42"/>'
-               + _ticks(XL, 94, 1, every=1, label_dy=29)
-               + f'<text class="rchance" x="{X(base) - 18:.1f}" y="119" text-anchor="end">chance {base:g}</text></g>')
-    out.append(f'<rect id="rs-hit" class="hit" x="32" y="46" width="640" height="96"/>')
-    out.append(f'<g id="rs-cursor" class="cursor" transform="translate({X(raw):.1f},0)" tabindex="0" role="slider" aria-label="Measured accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{raw:.2f}">'
-               '<rect class="win" x="-13" y="46" width="26" height="96" rx="2"/><line class="hair" x1="0" y1="46" x2="0" y2="142"/>'
-               f'<text id="rs-traw" class="read" x="0" y="38" text-anchor="middle">{raw:.2f}</text>'
-               f'<text id="rs-tshown" class="read" x="0" y="160" text-anchor="middle">{shown:.2f}</text></g>')
+    out = [f'<svg viewBox="0 0 {W} {H}" role="group" aria-label="Two number lines: measured accuracy on top, the score shown underneath, with lines showing how the range above chance is stretched to 0 to 100">']
+    out.append(f'<rect id="rs-below" class="below" x="{x0}" y="{yt - 9}" width="{X(base) - x0:.1f}" height="18"/>')
+    out.append(f'<line class="ax" x1="{x0}" y1="{yt}" x2="{x1}" y2="{yt}"/><line class="ax" x1="{x0}" y1="{yb_}" x2="{x1}" y2="{yb_}"/>')
+    for v in (0, 100):
+        out.append(f'<text class="end" x="{X(v)}" y="{yt - 16}" text-anchor="middle">{v}</text><text class="end" x="{X(v)}" y="{yb_ + 26}" text-anchor="middle">{v}</text>')
+        out.append(f'<line class="tick" x1="{X(v)}" y1="{yt - 5}" x2="{X(v)}" y2="{yt + 5}"/><line class="tick" x1="{X(v)}" y1="{yb_ - 5}" x2="{X(v)}" y2="{yb_ + 5}"/>')
+    out.append(f'<text class="axt" x="{x0}" y="{yt - 36}">measured accuracy</text><text class="axt" x="{x0}" y="{yb_ + 46}">score shown</text>')
+    out.append('<g id="rs-fan">' + ''.join(f'<line class="fan" x1="{X(base + (100 - base) * t / 5):.1f}" y1="{yt}" x2="{X(100 * t / 5):.1f}" y2="{yb_}"/>' for t in range(6)) + '</g>')
+    out.append(f'<line id="rs-chance" class="chance" x1="{X(base):.1f}" y1="{yt - 12}" x2="{X(base):.1f}" y2="{yt + 12}"/><text id="rs-chancet" class="chancet" x="{X(base):.1f}" y="{yt + 27}" text-anchor="middle">chance {base:g}</text>')
+    out.append(f'<line id="rs-map" class="map" x1="{X(raw):.1f}" y1="{yt}" x2="{X(shown):.1f}" y2="{yb_}"/>')
+    out.append(f'<circle id="rs-dshown" class="node shown" cx="{X(shown):.1f}" cy="{yb_}" r="9"/><text id="rs-tshown" class="val" x="{X(shown):.1f}" y="{yb_ + 27}" text-anchor="middle">{shown:.2f}</text>')
+    out.append(f'<text id="rs-traw" class="val" x="{X(raw):.1f}" y="{yt - 17}" text-anchor="middle">{raw:.2f}</text>')
+    out.append(f'<rect id="rs-hit" class="hit" x="{x0 - 10}" y="{yt - 16}" width="{x1 - x0 + 20}" height="32"/>')
+    out.append(f'<circle id="rs-draw" class="node raw" cx="{X(raw):.1f}" cy="{yt}" r="10" tabindex="0" role="slider" aria-label="Measured accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{raw:.2f}"/>')
     out.append('</svg>')
     return '\n'.join(out)
-
-
-def gapruler():
-    """The two published scores and the leaderboard's unrescaled value on one ruler, with what separates them."""
-    W, H, x0, x1 = 888, 150, 50, 838
-    X = lambda v: x0 + (x1 - x0) * v / 100
-    a, m, b = 34.10, 53.77, 68.20
-
-    def brace(xa, xb, y):
-        c = (xa + xb) / 2
-        return f'M{xa:.1f},{y} q0,6 6,6 H{c - 6:.1f} q6,0 6,6 q0,-6 6,-6 H{xb - 6:.1f} q6,0 6,-6'
-    out = [f'<svg viewBox="0 0 {W} {H}" role="group" aria-label="A ruler from 0 to 100 with three marks: 34.10, the score the leaderboard shows; 53.77, the same score before rescaling; 68.20, the score in the report. Rescaling accounts for 19.7 points of the distance and everything else for 14.4.">']
-    out.append(f'<rect class="ruler up" x="{x0 - 14}" y="46" width="{x1 - x0 + 28}" height="38"/>')
-    out.append(f'<rect class="band lb" data-part="rescale" x="{X(a):.1f}" y="46" width="{X(m) - X(a):.1f}" height="38"/>')
-    out.append(f'<rect class="band rp" data-part="mode" x="{X(m):.1f}" y="46" width="{X(b) - X(m):.1f}" height="38"/>')
-    out.append('<g class="marks">' + _ticks(X, 84, -1, label_dy=-18) + '</g>')
-    for v, cls, lab in [(a, 'lb', '34.10'), (m, 'lbraw', '53.77'), (b, 'rp', '68.20')]:
-        out.append(f'<line class="pin" x1="{X(v):.1f}" y1="34" x2="{X(v):.1f}" y2="84"/><circle class="nd {cls}" cx="{X(v):.1f}" cy="34" r="7"/>'
-                   f'<text class="val {cls}" x="{X(v):.1f}" y="18" text-anchor="middle">{lab}</text>')
-    for part, xa, xb, l1, l2 in [('rescale', X(a), X(m), 'rescaling', '19.7 pp'), ('mode', X(m), X(b), 'everything else', '14.4 pp')]:
-        c = (xa + xb) / 2
-        out.append(f'<g class="part" data-part="{part}" tabindex="0"><rect class="hitp" x="{xa:.1f}" y="46" width="{xb - xa:.1f}" height="96"/>'
-                   f'<path class="brace" d="{brace(xa + 2, xb - 2, 92)}"/>'
-                   f'<text class="bl" x="{c:.1f}" y="120" text-anchor="middle">{l1}</text><text class="bl" x="{c:.1f}" y="136" text-anchor="middle">{l2}</text></g>')
-    out.append('</svg>')
-    return '\n'.join(out)
-
-
-# ------------------------------------------------------------------ two protocol variants under one benchmark label
-# The paper's Figures 5 and 7, set as HTML from figures/fig_style.tex. Text is the paper's.
-# {d:key|text} marks a part that differs between the two variants; [..] in italics is a placeholder; lines starting "!" are red notes.
-_COLS = {
- 'gsm8k': dict(head='GSM8K', sub='Qwen2.5-14B-Instruct · lm-evaluation-harness 0.4.11 · 5-shot',
-   a=dict(tab='Plain few-shot (direct answer)', instr='{d:instr|[system] You are Qwen, created by Alibaba Cloud.}',
-          prompt=['Q: [few-shot question 1] A: #### 12', '… [4 more exemplars, each ending #### n] …', 'Q: [target question]', 'A: 16-3-4 = 9; 9 × 2 = 18. {d:out|#### 18}'], bar='58.5%'),
-   delta='↓ Δ = −56.0 pp',
-   b=dict(tab='Chain-of-thought few-shot', instr='{d:instr|[system] You are an expert problem solver. Think step by step, then state the answer.}',
-          prompt=['Q: [same 5 exemplars]', 'Q: [target question]', 'A: Janet uses 3 + 4 = 7 eggs each day. 16 − 7 = 9 remain. 9 × 2 = 18.', '!{d:out|The answer is $18 per day.}', '!{d:out|#### delimiter absent}'], bar='2.5%'),
-   foot='Same model · same harness · same 5-shot context. CoT prompt elicits prose; the #### regex finds nothing; parser records 0 for correctly-answered items.'),
- 'belebele': dict(head='Belebele', sub='Mistral-7B · two papers · two evaluation regimes',
-   a=dict(tab='Reka report · 0-shot · multilingual', instr='[canonical reconstruction; template not published]',
-          prompt=['Passage: [reading-comprehension context]', 'Question: [question]', 'A) [option] B) [option] C) [option] D) [option]', 'Answer:', '!{d:shot|0-shot, no exemplars in context}', '!{d:lang|averaged over 150 language variants}'], bar='32.80'),
-   delta='↓ Δ = +46.6 pp',
-   b=dict(tab='Falcon2 report · 5-shot · English', instr='[canonical reconstruction; template not published]',
-          prompt=['{d:shot|Example 1: [English passage + question] Answer: B}', '{d:shot|… [4 more exemplars] …}', 'Passage: {d:lang|[English passage]}', 'Question: [question]', 'A) [option] B) [option]', 'Answer:', '!{d:shot|5-shot} · {d:lang|English only}'], bar='79.42'),
-   foot="One benchmark label · two dimensions differ (n-shot, language scope). Falcon2's own 0-shot English score = 32.48 ≈ Reka's 32.80 ⇒ n-shot, not language scope, drives the gap."),
- 'bbh': dict(head='BBH · Gemma-2-9B', sub='Five sources · two score clusters · two protocols',
-   a=dict(tab='OLv2 & SEA-LION · 3-shot · log-lik.', instr='[lighteval BBH protocol, per OLv2 documentation]',
-          prompt=['Q: Which statement is logically false?', 'Given: all mammals breathe air; whales are mammals.', '(A) Whales breathe air. (B) Whales swim.', '(C) Whales are reptiles. (D) Whales have lungs.', '{d:mode|rank: argmax log P(choice | context)}', '!3-shot · {d:mode|log-likelihood ranking}', '!OLv2 = 34.10 = SEA-LION = 34.10 (exact match)'], bar='34.10'),
-   delta='↓ Δ = +34.8 pp',
-   b=dict(tab='Gemma 2 / Gemma 3 reports · CoT', instr='[CoT generation protocol, Suzgun et al. 2023]',
-          prompt=["Q: Which statement is logically false? {d:mode|Let's think step by step.}", '{d:mode|A: All mammals breathe air; whales are mammals, therefore whales breathe air, true. Whales are not reptiles, false. The answer is (C).}', '!Gemma 2 = 68.20 · Gemma 3 = 69.00 · Gemma 3 = 69.40'], bar='68.87 (mean)'),
-   foot='Two score clusters · two protocols. OLv2 & SEA-LION: exact 2-decimal match ⇒ shared pipeline, not independent evidence.'),
- 'hellaswag': dict(head='HellaSwag', sub='Gemma-7B · two papers · two protocols',
-   a=dict(tab='Phi-3 report · 5-shot · generation', instr='[canonical reconstruction; prompt not published]',
-          prompt=['Context: She bopped along, but the music was really loud, so she turned it down. Now, how does the next sentence go?', 'A) She turned it up more. B) She left the store.', 'C) She decreased the volume. D) She plugged her ears.', '{d:mode|Answer: C}', '!{d:mode|free-text generation} · {d:shot|5-shot}'], bar='49.80'),
-   delta='↓ Δ = +31.4 pp',
-   b=dict(tab='Gemma report · 0-shot · log-lik.', instr='[canonical reconstruction; prompt not published]',
-          prompt=['Context: She bopped along, but the music was really loud, so she turned it down.', 'Completion A: She turned it up more.', 'Completion B: She left the store.', 'Completion C: She decreased the volume.', 'Completion D: She plugged her ears.', '{d:mode|rank by log P(completion | context)}', '!{d:mode|log-likelihood ranking} · {d:shot|0-shot}'], bar='81.20'),
-   foot='One benchmark label · two dimensions differ. Scoring mode: generation vs. log-likelihood. N-shot: 5 vs. 0. Primary driver: scoring mode, not n-shot.'),
-}
-
-
-def _ptext(t):
-    import re
-    t = e(t)
-    t = re.sub(r'\[(?!system\])([^\]]+)\]', r'<i>[\1]</i>', t)
-    t = re.sub(r'\{d:(\w+)\|', r'<span class="df" data-d="\1" tabindex="0">', t).replace('}', '</span>')
-    return t
-
-
-def _pcol(key):
-    c = _COLS[key]
-
-    def panel(v):
-        lines = ''.join(f'<span class="{"rd" if l.startswith("!") else "ln"}">{_ptext(l.lstrip("!"))}</span>' for l in v['prompt'])
-        return (f'<div class="ppanel"><span class="ptab">{e(v["tab"])}</span>'
-                f'<p class="plab">Instruction</p><p class="pmono">{_ptext(v["instr"])}</p>'
-                f'<p class="plab">Prompt</p><p class="pmono">{lines}</p></div>')
-    return (f'<section class="pcol" aria-label="{e(c["head"])}"><h4 class="phead">{e(c["head"])}</h4><p class="psub">{e(c["sub"])}</p>'
-            f'{panel(c["a"])}<p class="pbar">{e(c["a"]["bar"])}</p><p class="pdelta">{e(c["delta"])}</p>'
-            f'{panel(c["b"])}<p class="pbar">{e(c["b"]["bar"])}</p><p class="pfoot">{e(c["foot"])}</p></section>')
-
-
-def gemmaflow():
-    """The two Gemma-2-9B scores on BBH in the style of the paper's parser-flow figure (Figure 10):
-       tabbed panels in two rows, protocol -> score scale -> published score, with the difference at the right."""
-    def panel(tab, instr, lines, cls=''):
-        body = ''
-        if instr is not None:
-            body += f'<p class="plab">Instruction</p><p class="pmono">{_ptext(instr)}</p><p class="plab">Prompt</p>'
-        body += '<p class="pmono">' + ''.join(f'<span class="{"rd" if l.startswith("!") else "ln"}">{_ptext(l.lstrip("!"))}</span>' for l in lines) + '</p>'
-        return f'<div class="ppanel {cls}"><span class="ptab">{e(tab)}</span>{body}</div>'
-    arrow = '<span class="parrow" aria-hidden="true"><svg viewBox="0 0 34 12"><path d="M0,6 H26"/><path class="hd" d="M34,6 l-9,-4 v8 z"/></svg></span>'
-    rows = [
-        ('lb',
-         panel('OLv2 · 3-shot · log-lik.', '[BBH protocol, per OLv2 documentation]',
-               ['Q: Which statement is logically false?', 'Given: all mammals breathe air; whales are mammals.', '(A) Whales breathe air. (B) Whales swim.', '(C) Whales are reptiles. (D) Whales have lungs.',
-                '{d:mode|rank: argmax log P(choice | context)}', '!3-shot · {d:mode|log-likelihood ranking}', '!{d:harness|lm-eval, OLv2 fork}']),
-         panel('Leaderboard-normalised', None,
-               ['{d:scale|(raw − chance) / (100 − chance) × 100}', 'per subtask, then averaged', '!{d:scale|raw = 53.77}', '!{d:scale|shown = 34.10}']),
-         '↓ Δ = −19.7 pp (normalisation)',
-         panel('OLv2', None, ['gemma-2-9b', 'BBH'], 'tiny'), '34.10'),
-        ('rp',
-         panel('Gemma 2 report · 3-shot · CoT', '[CoT generation protocol, Suzgun et al. 2023]',
-               ["Q: Which statement is logically false? {d:mode|Let's think step by step.}",
-                '{d:mode|A: All mammals breathe air; whales are mammals, therefore whales breathe air, true. Whales are not reptiles, false. The answer is (C).}',
-                '!3-shot · {d:mode|CoT generation}', "!{d:harness|the model's own pipeline}"]),
-         panel('Raw scale', None, ['{d:scale|accuracy as measured}', '!{d:scale|no rescaling}']),
-         None,
-         panel('Gemma 2 report', None, ['gemma-2-9b', 'BBH'], 'tiny'), '68.20'),
-    ]
-    out = ['<div class="pflow">',
-           '<p class="pfh c1">Protocol (input)</p><p class="pfh c3">Score scale</p><p class="pfh c5">Published score</p>']
-    for n, (key, p1, p2, d2, p3, score) in enumerate(rows, start=1):
-        out.append(f'<div class="pf c1 r{n}">{p1}</div><div class="pf c2 r{n}">{arrow}</div>'
-                   f'<div class="pf c3 r{n}">{p2}' + (f'<p class="pdelta">{e(d2)}</p>' if d2 else '') + '</div>'
-                   f'<div class="pf c4 r{n}">{arrow}</div><div class="pf c5 r{n}">{p3}<p class="pbar">{score}</p></div>')
-    out.append('<div class="pbracket" aria-hidden="true"><span>Δ = +34.1 pp (report − OLv2)</span></div>')
-    out.append('<p class="pdelta between">↓ Δ = +34.1 pp (report − OLv2)</p>')
-    out.append("<p class=\"pfoot\">Same model · same benchmark · same 3-shot context. Of the 34.1 pp, 19.7 is the leaderboard's normalisation (53.77 raw, 34.10 shown) and 14.4 is everything else: log-likelihood ranking vs. CoT generation, in two different pipelines. Neither source records scoring mode or harness as a field.</p>")
-    out.append('</div>')
-    return '\n'.join(out)
-
-
-def protocols():
-    return '<div class="protos">' + '\n'.join(_pcol(k) for k in ('gsm8k', 'belebele', 'bbh')) + '</div>'
-
-
-def hellaswag():
-    return '<div class="protos one">' + _pcol('hellaswag') + '</div>'
 
 
 # ------------------------------------------------------------------ coverage bars
@@ -375,4 +231,4 @@ def judges():
     return '\n'.join(out)
 
 
-FIGS = {'paths': paths, 'pipeline': pipeline, 'rescale': rescale, 'gemmaflow': gemmaflow, 'protocols': protocols, 'hellaswag': hellaswag, 'coverage': coverage, 'grid': grid, 'waffle': waffle, 'judges': judges}
+FIGS = {'paths': paths, 'pipeline': pipeline, 'rescale': rescale, 'coverage': coverage, 'grid': grid, 'waffle': waffle, 'judges': judges}

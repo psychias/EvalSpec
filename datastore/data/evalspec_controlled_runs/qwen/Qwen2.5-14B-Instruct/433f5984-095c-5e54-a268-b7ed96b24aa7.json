@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/Qwen_Qwen2.5-14B-Instruct/e1/plain",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "Section 4 and Appendix M of the paper (experiment E1)"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.11"
+  },
+  "model_info": {
+    "name": "Qwen2.5-14B-Instruct",
+    "id": "Qwen/Qwen2.5-14B-Instruct",
+    "developer": "Qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "gsm8k",
+      "source_data": {
+        "dataset_name": "gsm8k",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "exact_match",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 58.5
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5,
+          "temperature": 0.0
+        },
+        "additional_details": {
+          "scoring_mode": "generation",
+          "benchmark_variant": "gsm8k, plain prompt, first 200 problems",
+          "random_seed": "[42, 123, 7]",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/controlled_eval/5-shot-GSM8K"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "arxiv_html_llm/Gemma-2-2B/2511.10628/BBH/x_40.8",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "arxiv_html_llm",
+    "source_type": "documentation",
+    "source_organization_name": "arXiv",
+    "source_organization_url": "https://arxiv.org",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "LLM-extracted",
+      "sample_origin": "Section 5 and Appendices G and H of the paper",
+      "paper_url": "https://arxiv.org/abs/2511.10628",
+      "arxiv_id": "2511.10628",
+      "paper_title": "Instella: Fully Open Language Models with Stellar Performance",
+      "extraction_approach": "llm",
+      "extractor_model": "anthropic/claude-haiku-4.5"
+    }
+  },
+  "eval_library": {
+    "name": "unknown",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Gemma-2-2B",
+    "id": "Gemma-2-2B",
+    "developer": "Google"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "BBH",
+      "source_data": {
+        "dataset_name": "BBH",
+        "source_type": "url",
+        "url": [
+          "https://arxiv.org/abs/2511.10628"
+        ]
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 40.8
+      },
+      "generation_config": {
+        "generation_args": {},
+        "additional_details": {
+          "source": "arxiv_html_llm",
+          "note": "The paper's case study describes this score as chain-of-thought generation."
+        }
+      }
+    }
+  ]
+}

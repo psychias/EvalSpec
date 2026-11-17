@@ -1,0 +1,18 @@
+rank,source,kind,reference,records,models,benchmarks,author_reported,predicted,superseded,procedure_fields_applicable,procedure_fields_reported,reported_first_hand,read_by_llm,inferred
+1,LLM Evaluation Discrepancies: controlled runs,Evaluation run,,64,10,5,64,0,0,579,392,392,0,0
+2,Falcon2-11B Technical Report,Paper,arXiv:2407.14885,2,1,1,0,2,0,16,2,0,2,0
+2,RecurrentGemma: Moving Past Transformers for Efficient Open LMs,Paper,arXiv:2404.07839,2,1,2,0,2,0,16,2,0,2,0
+2,Code Llama: Open Foundation Models for Code,Paper,arXiv:2308.12950,1,1,1,0,1,0,8,1,0,1,0
+2,OLMo: Accelerating the Science of Language Models,Paper,arXiv:2402.00838,1,1,1,0,1,0,8,1,0,1,0
+2,Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone,Paper,arXiv:2404.14219,1,1,1,0,1,0,8,1,0,1,0
+2,"Reka Core, Flash, and Edge: A Series of Powerful Multimodal Language Models",Paper,arXiv:2404.12387,1,1,1,0,1,0,8,1,0,1,0
+8,Open LLM Leaderboard v2,Leaderboard,,20,7,6,0,20,0,160,40,0,0,40
+8,EvalPlus Leaderboard,Leaderboard,,5,4,2,0,5,0,40,10,0,0,10
+10,HuggingFace Model Card,Model card,,16,6,8,0,16,0,128,27,0,0,27
+11,Gemma 3 Technical Report,Paper,arXiv:2503.19786,2,1,1,0,2,0,16,0,0,0,0
+11,MAmmoTH2: Scaling Instructions from the Web,Paper,arXiv:2405.03548,2,2,1,0,2,0,16,0,0,0,0
+11,Gemma 2: Improving Open Language Models at a Practical Size,Paper,arXiv:2408.00118,1,1,1,0,1,0,8,0,0,0,0
+11,Instella: Fully Open Language Models with Stellar Performance,Paper,arXiv:2511.10628,1,1,1,0,1,0,8,0,0,0,0
+11,Jamba: Hybrid Transformer-Mamba Language Model,Paper,arXiv:2403.19887,1,1,1,0,1,0,8,0,0,0,0
+11,Papers With Code,Leaderboard,,1,1,1,0,1,0,8,0,0,0,0
+11,SEA-LION: Southeast Asian Languages in One Network,Paper,arXiv:2504.05747,1,1,1,0,1,0,8,0,0,0,0

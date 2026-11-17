@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/Qwen_Qwen2.5-14B-Instruct/e2/log-likelihood",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "experiments/scoring_mode_eval/scoring_mode_results.jsonl in the code repository (experiment E2)"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.11"
+  },
+  "model_info": {
+    "name": "Qwen2.5-14B-Instruct",
+    "id": "Qwen/Qwen2.5-14B-Instruct",
+    "developer": "Qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "mmlu",
+      "source_data": {
+        "dataset_name": "mmlu",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 79.97
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5,
+          "temperature": 0.0
+        },
+        "additional_details": {
+          "scoring_mode": "log-likelihood",
+          "benchmark_variant": "mmlu, plain prompt, full test set (14,042 items)",
+          "random_seed": "42",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/scoring_mode_eval"
+        }
+      },
+      "evaluation_timestamp": "2026-06-30"
+    }
+  ]
+}

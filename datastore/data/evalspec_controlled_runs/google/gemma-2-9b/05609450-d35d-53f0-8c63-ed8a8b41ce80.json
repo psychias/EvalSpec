@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/google_gemma-2-9b/rerun/leaderboard_bbh",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "experiments/harness_reeval/version_compare/sealion_provenance/olv2_gemma2_9b_bbh.json in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.11"
+  },
+  "model_info": {
+    "name": "gemma-2-9b",
+    "id": "google/gemma-2-9b",
+    "developer": "google"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "bbh",
+      "source_data": {
+        "dataset_name": "bbh",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 53.8795
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 3
+        },
+        "additional_details": {
+          "scoring_mode": "log-likelihood",
+          "benchmark_variant": "leaderboard_bbh",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/harness_reeval/version_compare/sealion_provenance",
+          "note": "A re-run of the leaderboard's configuration on revision beb0c08e. The leaderboard's own value before rescaling is 53.77."
+        }
+      }
+    }
+  ]
+}

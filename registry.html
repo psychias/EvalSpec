@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EvalSpec registry</title>
+<meta name="description" content="Every record in the EvalSpec datastore: which sources report their own evaluation procedure, the records field by field, and the model and benchmark pairs that more than one source reports.">
+<link rel="canonical" href="https://psychias.github.io/eee-eval/registry.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EvalSpec registry">
+<meta property="og:description" content="Every record in the EvalSpec datastore: which sources report their own evaluation procedure, the records field by field, and the model and benchmark pairs that more than one source reports.">
+<meta property="og:url" content="https://psychias.github.io/eee-eval/registry.html">
+<meta property="og:image" content="https://psychias.github.io/eee-eval/assets/img/og-site.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/site.css?v=a4967f39">
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="es-top">
+  <div class="es-top-in">
+    <a class="es-brand" href="index.html"><svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="2.5" width="20" height="4.6" rx="1" fill="#fff"/><rect x="1" y="8.7" width="20" height="4.6" rx="1" fill="#fff" opacity=".55"/><rect x="1.6" y="15.5" width="18.8" height="3.4" rx="1" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="2.4 1.8"/></svg>EvalSpec</a>
+    <nav aria-label="Site"><ul class="es-nav"><li><a href="registry.html" aria-current="page">Registry</a></li><li><a href="spec.html">Spec</a></li><li><a href="submit.html">Submit</a></li><li><a href="statistics.html">Statistics</a></li><li><a href="data.html">Data</a></li><li><a href="article.html">Article</a></li></ul></nav>
+    <form class="es-find" action="model.html" method="get" role="search" aria-label="Find a model" data-lookup>
+      <label class="sr" for="find">Hugging Face id of a model</label>
+      <input id="find" name="id" type="search" placeholder="organisation/model" autocomplete="off" spellcheck="false">
+      <button type="submit">Find reports</button>
+    </form>
+  </div>
+</header>
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>Registry</h1>
+    <p class="es-lead">Every record in the EvalSpec datastore, with the fields it carries and who filled them in. Scores are never ranked across procedures here. What is ranked is how much each source says about its own procedure.</p>
+  </header>
+  <div class="es-note"><p>This build reads the sample bundled with the site: 122 records that the paper and its code repository quote in full. The full corpus of the paper has 46,559 records and lives in the <a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a>; the <a href="data.html#rebuild">Data page</a> says how to build the site from it.</p></div>
+
+  <div class="es-toolbar">
+    <div class="es-grow">
+      <form class="es-lookup" action="model.html" method="get" role="search" aria-label="Evaluation reports for a model" data-lookup>
+        <label class="es-label" for="lookup">Find the evaluation reports for a model</label>
+        <div class="es-lookup-row">
+          <input class="es-input" id="lookup" name="id" type="search" placeholder="Hugging Face id, for example google/gemma-2-9b" autocomplete="off" spellcheck="false">
+          <button class="es-btn" type="submit">Find reports</button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <span class="es-label" id="track-label">Records shown</span>
+      <div class="es-seg" role="group" aria-labelledby="track-label" id="track">
+        <button type="button" data-track="all" aria-pressed="true">All</button>
+        <button type="button" data-track="author" aria-pressed="false">Author-reported</button>
+        <button type="button" data-track="predicted" aria-pressed="false">Predicted</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="es-tabs" role="tablist" aria-label="Views of the registry">
+    <button type="button" role="tab" id="tab-board" aria-controls="view-board" aria-selected="true">Transparency board <span class="es-count" id="count-board"></span></button>
+    <button type="button" role="tab" id="tab-records" aria-controls="view-records" aria-selected="false">Records <span class="es-count" id="count-records"></span></button>
+    <button type="button" role="tab" id="tab-cells" aria-controls="view-cells" aria-selected="false">Same model, same benchmark <span class="es-count" id="count-cells"></span></button>
+  </div>
+
+  <section id="view-board" role="tabpanel" aria-labelledby="tab-board" tabindex="0">
+    <p class="es-prose">Each row is a source. The bar shows, over all its records, how many of the Required fields that describe the procedure are on record, and who put them there. Sources are ordered by the share they reported first-hand. A source moves up by submitting its own records; a value guessed for it by a model or a pipeline does not count as its own.</p>
+    <ul class="es-key"><li><span class="es-mark is-first"></span>reported first-hand</li><li><span class="es-mark is-llm"></span>read from the source by an LLM</li><li><span class="es-mark is-inferred"></span>inferred by a pipeline</li><li><span class="es-mark is-missing"></span>not on record</li></ul>
+    <div class="es-scroll" style="margin-top:14px">
+      <table class="es-table" id="board">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="rank">Rank</button></th>
+          <th scope="col"><button type="button" data-sort="label">Source</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="n">Records</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="models">Models</button></th>
+          <th scope="col">Procedure fields on record</th>
+          <th scope="col" class="es-num"><button type="button" data-sort="first">First-hand</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="have">On record</button></th>
+          <th scope="col"><span class="sr">Fields</span></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="es-small" style="margin-top:12px">Procedure fields are the Required fields other than <code>model_id</code> and <code>benchmark_id</code>. Select a row to see the fields one by one. <a href="data/board.csv">Board as CSV</a>.</p>
+  </section>
+
+  <section id="view-records" role="tabpanel" aria-labelledby="tab-records" tabindex="0" hidden>
+    <div class="es-toolbar">
+      <div class="es-grow">
+        <label class="es-label" for="q">Filter</label>
+        <input class="es-input" id="q" type="search" placeholder="Model, benchmark or source" autocomplete="off" spellcheck="false">
+      </div>
+      <div>
+        <label class="es-label" for="f-mode">Scoring mode</label>
+        <select class="es-select" id="f-mode"><option value="">Any</option></select>
+      </div>
+      <div>
+        <label class="es-label" for="f-source">Source</label>
+        <select class="es-select" id="f-source"><option value="">Any</option></select>
+      </div>
+    </div>
+    <p class="es-small" id="records-status" role="status"></p>
+    <div class="es-scroll">
+      <table class="es-table" id="records">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="model">Model</button></th>
+          <th scope="col"><button type="button" data-sort="bench">Benchmark</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="score">Score</button></th>
+          <th scope="col">Scoring mode</th>
+          <th scope="col">Harness</th>
+          <th scope="col" class="es-num">Shots</th>
+          <th scope="col"><button type="button" data-sort="source">Source</button></th>
+          <th scope="col"><button type="button" data-sort="have">Required fields</button></th>
+          <th scope="col"><span class="sr">Record</span></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="es-pager" id="records-pager"></div>
+    <p class="es-small" style="margin-top:12px">Select a row to see the whole record. <a href="data/records.csv">All records as CSV</a>.</p>
+  </section>
+
+  <section id="view-cells" role="tabpanel" aria-labelledby="tab-cells" tabindex="0" hidden>
+    <p class="es-prose">A model and benchmark pair that more than one source reports is the only place where published scores can be checked against each other. For each pair the registry answers two questions from the records alone: were the scores produced the same way, and are they independent measurements? Most of the time the records do not say.</p>
+    <p class="es-small" id="cells-status" role="status"></p>
+    <div class="es-scroll">
+      <table class="es-table" id="cells">
+        <thead><tr>
+          <th scope="col"><button type="button" data-sort="model">Model</button></th>
+          <th scope="col"><button type="button" data-sort="bench">Benchmark</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="sources">Sources</button></th>
+          <th scope="col" class="es-num"><button type="button" data-sort="spread">Spread</button></th>
+          <th scope="col">Produced the same way?</th>
+          <th scope="col">Independent?</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="es-pager" id="cells-pager"></div>
+    <p class="es-small" style="margin-top:12px">Spread is the distance between the highest and the lowest score, in percentage points, for scores on a 0 to 1 or 0 to 100 scale. Pairs are matched by normalized names, as in the paper: a missed match hides a pair, and a wrong merge would create a disagreement that is not there.</p>
+  </section>
+
+  <noscript><p class="es-note">The registry views need JavaScript. The records are also available as <a href="data/records.csv">CSV</a>.</p></noscript>
+</div>
+</main>
+
+<footer class="es-foot">
+  <div class="es-foot-in">
+    <div>
+      <p><b>EvalSpec 1.0</b></p>
+      <p>A minimum reporting standard for LLM evaluation results, proposed in "LLM Evaluation Discrepancies And How To Prevent Them" (Findings of EACL 2027).</p>
+      <p>Built on 17 November 2026 from 122 records. No tracking, no external requests.</p>
+    </div>
+    <ul>
+      <li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li>
+      <li><a href="article.html">Interactive article</a></li>
+      <li><a href="https://github.com/psychias/eee-eval">Code</a></li>
+      <li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a></li>
+    </ul>
+    <ul>
+      <li><a href="index.html#paper">Cite</a></li>
+      <li><a href="https://github.com/psychias/eee-eval/issues">Report a problem</a></li>
+      <li><a href="https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/">Every Eval Ever</a></li>
+      <li><a href="data.html#cite">Licences</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="data/spec.js?v=5ad25090" defer></script>
+<script src="assets/js/site.js?v=388bdc60" defer></script>
+<script src="data/registry.js?v=ffbe7ba2" defer></script>
+<script src="assets/js/registry.js?v=fe0b242d" defer></script>
+</body>
+</html>

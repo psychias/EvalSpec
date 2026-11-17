@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit a report to EvalSpec</title>
+<meta name="description" content="Write an EvalSpec record, check it in the browser, convert it into a datastore file and open a pull request.">
+<link rel="canonical" href="https://psychias.github.io/eee-eval/submit.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Submit a report to EvalSpec">
+<meta property="og:description" content="Write an EvalSpec record, check it in the browser, convert it into a datastore file and open a pull request.">
+<meta property="og:url" content="https://psychias.github.io/eee-eval/submit.html">
+<meta property="og:image" content="https://psychias.github.io/eee-eval/assets/img/og-site.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/site.css?v=a4967f39">
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="es-top">
+  <div class="es-top-in">
+    <a class="es-brand" href="index.html"><svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="2.5" width="20" height="4.6" rx="1" fill="#fff"/><rect x="1" y="8.7" width="20" height="4.6" rx="1" fill="#fff" opacity=".55"/><rect x="1.6" y="15.5" width="18.8" height="3.4" rx="1" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="2.4 1.8"/></svg>EvalSpec</a>
+    <nav aria-label="Site"><ul class="es-nav"><li><a href="registry.html">Registry</a></li><li><a href="spec.html">Spec</a></li><li><a href="submit.html" aria-current="page">Submit</a></li><li><a href="statistics.html">Statistics</a></li><li><a href="data.html">Data</a></li><li><a href="article.html">Article</a></li></ul></nav>
+    <form class="es-find" action="model.html" method="get" role="search" aria-label="Find a model" data-lookup>
+      <label class="sr" for="find">Hugging Face id of a model</label>
+      <input id="find" name="id" type="search" placeholder="organisation/model" autocomplete="off" spellcheck="false">
+      <button type="submit">Find reports</button>
+    </form>
+  </div>
+</header>
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>Submit a report</h1>
+    <p class="es-lead">A report is one EvalSpec record for each score you publish. Records go to the <a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a> on Hugging Face as a pull request. This page writes the file and checks it in your browser. Nothing you enter here is sent anywhere.</p>
+  </header>
+
+  <div class="es-cols" style="margin-bottom:8px">
+    <div>
+      <h2 class="es-h3">You ran the evaluation</h2>
+      <p>With lm-evaluation-harness, the released hook writes the records when the run ends. Then check and upload them.</p>
+      <p><a href="#route-run">Emit records from a run</a></p>
+    </div>
+    <div>
+      <h2 class="es-h3">You published the result</h2>
+      <p>Fill in the form for a score in your paper or model card, or correct a predicted record that describes your result.</p>
+      <p><a href="#build">Write a record</a></p>
+    </div>
+    <div>
+      <h2 class="es-h3">A language model read it</h2>
+      <p>Records extracted from a publication by a model are uploaded by a person and listed as predicted.</p>
+      <p><a href="#route-llm">Upload predicted records</a></p>
+    </div>
+  </div>
+
+  <div class="es-steps">
+
+    <section class="es-step" id="build">
+      <div>
+        <h2>Write the record</h2>
+        <p class="es-prose">One record describes one score. Fill in what you know and leave the rest empty: an empty field is recorded as not on record, which is more useful to a reader than a guess. Have the records already? Go to <a href="#check">step 2</a>.</p>
+        <p class="es-note" id="builder-loaded" hidden></p>
+        <noscript><p class="es-note">The form needs JavaScript. Without it, write the record as JSON after the <a href="spec.html#formats">examples on the Spec page</a> and check it with the command-line validator.</p></noscript>
+
+        <div class="es-builder">
+          <form id="builder" novalidate autocomplete="off">
+            <fieldset class="es-formgroup" style="margin-top:8px">
+              <legend>Who is filling this in</legend>
+              <p>This decides the track the record is listed in, and the provenance tag its values carry.</p>
+              <div class="es-choice">
+                <label><input type="radio" name="who" value="author" checked><b>I ran this evaluation, or I am an author of the source</b><span>Listed as author-reported. Values are tagged <code>source-reported</code>.</span></label>
+                <label><input type="radio" name="who" value="other"><b>I am recording someone else's result</b><span>Listed as predicted, until an author confirms it.</span></label>
+              </div>
+              <div class="es-form" id="who-other" hidden>
+                <div>
+                  <label class="es-label" for="f-tag">How the values were obtained</label>
+                  <select class="es-select" id="f-tag">
+                    <option value="LLM-extracted">A language model read them from the publication</option>
+                    <option value="API-exposed">The source's own interface returned them</option>
+                    <option value="documentation-inferred">Worked out from the publication or its documentation</option>
+                    <option value="pipeline-default">Defaults of a pipeline</option>
+                  </select>
+                  <span class="es-hint">One tag for the whole record. To tag single fields differently, edit <code>evidence_source</code> in the JSON in step 2.</span>
+                </div>
+                <div id="extractor-wrap">
+                  <label class="es-label" for="f-extractor_model">Model that read the publication</label>
+                  <input class="es-input is-mono" id="f-extractor_model" data-key="extractor_model" type="text" placeholder="organisation/model-name">
+                  <span class="es-hint">Named for the same reason a judge is named.</span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="es-formgroup">
+              <legend>The result</legend>
+              <div class="es-form" id="form-result">
+                <div>
+                  <label class="es-label" for="f-score">Score</label>
+                  <input class="es-input is-mono" id="f-score" data-key="score" data-type="number" type="text" inputmode="decimal" placeholder="61.2">
+                </div>
+                <div>
+                  <label class="es-label" for="f-scale">Scale of the score</label>
+                  <select class="es-select" id="f-scale">
+                    <option value="0-100">0 to 100</option>
+                    <option value="0-1">0 to 1</option>
+                    <option value="other">Another range</option>
+                    <option value="none">Not stated</option>
+                  </select>
+                  <span class="es-hint">Tells 0.585 from 58.5.</span>
+                </div>
+                <div id="range-wrap" hidden>
+                  <label class="es-label" for="f-min_score">Lowest and highest possible score</label>
+                  <div style="display:flex;gap:8px">
+                    <input class="es-input is-mono" id="f-min_score" type="text" inputmode="decimal" placeholder="1" aria-label="Lowest possible score">
+                    <input class="es-input is-mono" id="f-max_score" type="text" inputmode="decimal" placeholder="10" aria-label="Highest possible score">
+                  </div>
+                </div>
+                <div>
+                  <label class="es-label" for="f-metric_name">Metric</label>
+                  <input class="es-input is-mono" id="f-metric_name" data-key="metric_name" type="text" placeholder="exact_match">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="es-formgroup">
+              <legend>Required <small>what a reader needs to compare two scores</small></legend>
+              <div class="es-form" id="form-required"></div>
+            </fieldset>
+
+            <details class="es-more" id="more-recommended">
+              <summary>Recommended <small>five more fields, to re-run the evaluation</small></summary>
+              <div class="es-form" id="form-recommended"></div>
+            </details>
+
+            <details class="es-more" id="more-full">
+              <summary>Full <small>three more fields, to audit it</small></summary>
+              <div class="es-form" id="form-full"></div>
+            </details>
+
+            <fieldset class="es-formgroup">
+              <legend>Where the score is published</legend>
+              <div class="es-form">
+                <div class="is-wide">
+                  <label class="es-label" for="f-source_name">Source</label>
+                  <input class="es-input" id="f-source_name" data-key="source_name" type="text" placeholder="Title of the paper, name of the leaderboard or model card">
+                  <span class="es-hint">Records with the same source are grouped on the registry's board.</span>
+                </div>
+                <div>
+                  <label class="es-label" for="f-source_kind">Kind of source</label>
+                  <select class="es-select" id="f-source_kind" data-key="source_kind">
+                    <option value="Paper">Paper</option>
+                    <option value="Model card">Model card</option>
+                    <option value="Leaderboard">Leaderboard</option>
+                    <option value="Evaluation run">Evaluation run, not published elsewhere</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="es-label" for="f-source_url">Address</label>
+                  <input class="es-input is-mono" id="f-source_url" data-key="source_url" type="url" placeholder="https://arxiv.org/abs/...">
+                </div>
+                <div>
+                  <label class="es-label" for="f-evaluator_relationship">Evaluator and model developer</label>
+                  <select class="es-select" id="f-evaluator_relationship" data-key="evaluator_relationship">
+                    <option value="">Not stated</option>
+                    <option value="first_party">The same organisation (first party)</option>
+                    <option value="third_party">Different organisations (third party)</option>
+                    <option value="collaborative">Worked together</option>
+                    <option value="other">Other or not known</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <p class="es-actions" style="margin-top:22px">
+              <button class="es-btn" type="submit">Check this record</button>
+              <button class="es-btn is-plain" type="reset">Clear the form</button>
+            </p>
+          </form>
+
+          <aside class="es-live" id="live" aria-live="polite" aria-label="The record so far"></aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="es-step" id="check">
+      <div>
+        <h2>Check it</h2>
+        <p class="es-prose">Paste a record, a list of records or a datastore file, or drop <code>.json</code> files on the box. The check runs in this page with the same rules as the command-line validator.</p>
+        <div class="es-drop" id="check-drop">
+          <label class="sr" for="check-input">Records as JSON</label>
+          <textarea class="es-textarea is-mono" id="check-input" rows="12" spellcheck="false" placeholder='{ "model_id": "organisation/model", "benchmark_id": "gsm8k", "score": 61.2, ... }'></textarea>
+        </div>
+        <p class="es-actions" style="margin-top:10px">
+          <button class="es-btn" type="button" id="check-run">Check</button>
+          <label class="es-btn is-plain" for="check-files">Choose files</label>
+          <input class="sr" type="file" id="check-files" accept=".json,application/json" multiple>
+          <button class="es-btn is-plain" type="button" id="check-clear">Clear</button>
+        </p>
+        <p class="es-small">Or load an example: <button class="es-expander" type="button" data-example="required-generation.json">a record at the Required tier</button>, <button class="es-expander" type="button" data-example="required-judge.json">a judged score</button>, <button class="es-expander" type="button" data-example="hook-output.json">what the released hook writes</button>, <button class="es-expander" type="button" data-example="predicted.json">a predicted record</button>, <button class="es-expander" type="button" data-example="full-tier.eee.json">a datastore file at the Full tier</button>.</p>
+        <div class="es-report" id="check-report" role="status" aria-live="polite"></div>
+        <noscript><p class="es-note">Without JavaScript, use the command-line validator described at the end of this page.</p></noscript>
+      </div>
+    </section>
+
+    <section class="es-step" id="file">
+      <div>
+        <h2>Save the datastore file</h2>
+        <p class="es-prose">The datastore holds Every Eval Ever files, one per record, each at its own path. The page converts every well-formed record and proposes the path.</p>
+        <div id="file-out"><p class="es-empty">Nothing to save yet. Check a record in step 2 first.</p></div>
+      </div>
+    </section>
+
+    <section class="es-step" id="upload">
+      <div>
+        <h2>Open a pull request</h2>
+        <p class="es-prose">Put the files under the proposed paths inside one folder, here <code>my_submission</code>, and upload the folder as a pull request to the datastore.</p>
+        <div class="es-cmd"><pre id="cmd-upload" tabindex="0" aria-label="Commands to open a pull request"><code>pip install -U huggingface_hub
+hf auth login
+hf upload evaleval/EEE_datastore my_submission/data data --repo-type dataset --create-pr --commit-message "Add EvalSpec records: &lt;model or paper&gt;"</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-upload" hidden>Copy</button></div>
+        <p class="es-prose">Without the command line: open the <a href="https://huggingface.co/datasets/evaleval/EEE_datastore/tree/main/data">datastore on Hugging Face</a>, choose Contribute and then Upload files, and select the option to open a pull request before you commit.</p>
+        <h3>What happens next</h3>
+        <ul class="es-prose">
+          <li>A maintainer runs the same validator on the pull request. A record has to be well formed. It does not have to reach a tier.</li>
+          <li>After the merge the site is rebuilt from the datastore. The record appears in the <a href="registry.html">registry</a> and on the page of its model, in the track its provenance tag puts it in.</li>
+          <li>A record is corrected or withdrawn with another pull request.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="es-section" id="route-run">
+    <h2>Emit records from a run</h2>
+    <p class="es-prose">A harness holds the whole configuration at the moment it computes a score. The released hook for lm-evaluation-harness reads it from the objects the harness returns and writes one flat record per task. It is <a href="https://github.com/psychias/eee-eval/blob/main/src/emission_hooks/lm_eval_to_evalspec.py"><code>lm_eval_to_evalspec.py</code></a> in the code repository.</p>
+    <pre tabindex="0" aria-label="Using the hook"><code>import json
+from lm_eval import simple_evaluate
+from emission_hooks.lm_eval_to_evalspec import emit_evalspec
+
+out = simple_evaluate(model=lm, tasks=["gsm8k"], num_fewshot=5)
+records = emit_evalspec(out, model_args={"pretrained": "meta-llama/Llama-3.1-8B"})
+with open("records.json", "w") as f:
+    json.dump(records, f, indent=2)</code></pre>
+    <p class="es-prose">As released, the hook leaves out <code>benchmark_variant</code>, <code>answer_parser_version</code> for generation tasks, and the range of the score (<code>min_score</code>, <code>max_score</code>). Its prompt hash covers the task template only. Add what is missing to each record; the validator lists it.</p>
+    <p class="es-prose">The validator is one Python file without dependencies. Download <a href="tools/evalspec.py" download>evalspec.py</a> and <a href="spec/fields.json" download>fields.json</a> into one folder.</p>
+    <div class="es-cmd"><pre id="cmd-cli" tabindex="0" aria-label="Command-line validator"><code>python evalspec.py check records.json --verbose          # tier, coverage and what is missing
+python evalspec.py to-eee records.json --output my_submission/   # writes my_submission/data/&lt;source&gt;/&lt;developer&gt;/&lt;model&gt;/&lt;uuid&gt;.json
+python evalspec.py hash prompt.txt                        # sha256 of a prompt template</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-cli" hidden>Copy</button></div>
+    <p class="es-prose">For another harness, an adapter maps its configuration keys onto the same flat record. The Spec page lists <a href="spec.html#reference">what HELM, LightEval and OpenCompass already expose</a>.</p>
+  </section>
+
+  <section class="es-section" id="route-llm">
+    <h2>Upload predicted records</h2>
+    <p class="es-prose">Many published scores will not be reported again by their authors, so records read from a publication by a language model are part of the datastore. They are uploaded by a person, who answers for them, and they are listed as predicted. In the paper's audit, 97.5% of the scores extracted from ten papers matched the publication. Where a paper attributes a harness to a result, the extractor named it in 71.5% of the cases and never named a wrong one.</p>
+    <ul class="es-prose">
+      <li>Set <code>evidence_source</code> to <code>LLM-extracted</code>, and name the model in <code>extractor_model</code>.</li>
+      <li>Where a value was not read from the publication but added from documentation or a default, tag that field on its own.</li>
+      <li>Leave out what the publication does not state. A missing field is shown as not on record; a guessed one would be shown as if it were known.</li>
+      <li><code>evaluation_timestamp</code> is the time of the evaluation. The day the publication was read goes in <code>extraction_date</code>.</li>
+      <li>Give the title of the publication in <code>source_name</code> and its address in <code>source_url</code>.</li>
+    </ul>
+    <pre tabindex="0" aria-label="A predicted record"><code>{
+  &quot;model_id&quot;: &quot;example-org/example-model-7b&quot;,
+  &quot;benchmark_id&quot;: &quot;gsm8k&quot;,
+  &quot;score&quot;: 61.2,
+  &quot;metric_name&quot;: &quot;accuracy&quot;,
+  &quot;min_score&quot;: 0,
+  &quot;max_score&quot;: 100,
+  &quot;n_shot&quot;: 8,
+  &quot;harness_name&quot;: &quot;lm-evaluation-harness&quot;,
+  &quot;evidence_source&quot;: {
+    &quot;default&quot;: &quot;LLM-extracted&quot;,
+    &quot;harness_name&quot;: &quot;documentation-inferred&quot;
+  },
+  &quot;extractor_model&quot;: &quot;example-org/example-extractor&quot;,
+  &quot;extraction_date&quot;: &quot;2026-11-02&quot;,
+  &quot;source_name&quot;: &quot;Illustrative example, not a real result&quot;,
+  &quot;source_kind&quot;: &quot;Paper&quot;,
+  &quot;source_url&quot;: &quot;https://example.org/papers/example-model&quot;
+}</code></pre>
+    <p class="es-small"><a href="submit.html?example=predicted.json#check">Open this record in the validator</a>.</p>
+    <h3 id="correct">If a predicted record describes your result</h3>
+    <p class="es-prose">Find the model in the <a href="registry.html">registry</a>, open the record and choose Correct this record. The form above opens with the predicted values. Change what is wrong, add what only you know, keep the first answer under Who is filling this in, and submit the result as a new record. Both stay in the datastore, and the author-reported one is listed first.</p>
+  </section>
+</div>
+</main>
+
+<footer class="es-foot">
+  <div class="es-foot-in">
+    <div>
+      <p><b>EvalSpec 1.0</b></p>
+      <p>A minimum reporting standard for LLM evaluation results, proposed in "LLM Evaluation Discrepancies And How To Prevent Them" (Findings of EACL 2027).</p>
+      <p>Built on 17 November 2026 from 122 records. No tracking, no external requests.</p>
+    </div>
+    <ul>
+      <li><span class="es-pending" title="The link will be added when the paper is online">Paper (link pending)</span></li>
+      <li><a href="article.html">Interactive article</a></li>
+      <li><a href="https://github.com/psychias/eee-eval">Code</a></li>
+      <li><a href="https://huggingface.co/datasets/evaleval/EEE_datastore">EvalSpec datastore</a></li>
+    </ul>
+    <ul>
+      <li><a href="index.html#paper">Cite</a></li>
+      <li><a href="https://github.com/psychias/eee-eval/issues">Report a problem</a></li>
+      <li><a href="https://evalevalai.com/infrastructure/2026/02/17/everyevalever-launch/">Every Eval Ever</a></li>
+      <li><a href="data.html#cite">Licences</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="data/spec.js?v=5ad25090" defer></script>
+<script src="assets/js/site.js?v=388bdc60" defer></script>
+<script src="assets/js/evalspec.js?v=a37a7340" defer></script>
+<script src="data/examples.js?v=10ad87dd" defer></script>
+<script src="assets/js/submit.js?v=1f4418cd" defer></script>
+</body>
+</html>

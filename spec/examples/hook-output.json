@@ -1,0 +1,14 @@
+{
+  "model_id": "Qwen/Qwen2.5-14B-Instruct",
+  "benchmark": "gsm8k",
+  "score": 0.585,
+  "scoring_mode": "generation",
+  "harness_name": "lm-evaluation-harness",
+  "harness_version": "0.4.11",
+  "n_shot": 5,
+  "random_seed": 42,
+  "evaluation_timestamp": "2026-07-03T10:00:00Z",
+  "prompt_template_hash": "sha256:870d4f8798e693591c284ad6cd087eb6b5cd80efbace2f165776b4131925c870",
+  "temperature": 0.0,
+  "evidence_source": "source-reported"
+}

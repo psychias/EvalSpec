@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/qwen_qwen-2.5-72b-instruct/judge/openai/gpt-4o-mini",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "experiments/judge_sensitivity/judge_sensitivity_report.txt in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "run_judge_sensitivity.py",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "qwen-2.5-72b-instruct",
+    "id": "qwen/qwen-2.5-72b-instruct",
+    "developer": "qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "mt-bench",
+      "source_data": {
+        "dataset_name": "mt-bench",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "mean judge rating",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 1.0,
+        "max_score": 10.0,
+        "llm_scoring": {
+          "judges": [
+            {
+              "model_info": {
+                "name": "gpt-4o-mini",
+                "id": "openai/gpt-4o-mini"
+              },
+              "temperature": 0.0
+            }
+          ],
+          "input_prompt": "MT-Bench single-answer grading prompt; see the code repository"
+        }
+      },
+      "score_details": {
+        "score": 8.32
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0,
+          "temperature": 0.0
+        },
+        "additional_details": {
+          "scoring_mode": "preference",
+          "benchmark_variant": "MT-Bench, 80 turn-1 questions, single-answer grading",
+          "judge_score_rule": "rating parsed from the [[rating]] marker of the judge's reply; mean over the rated questions",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/judge_sensitivity"
+        }
+      }
+    }
+  ]
+}

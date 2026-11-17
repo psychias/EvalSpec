@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalspec_controlled_runs/Qwen_Qwen2.5-7B-Instruct/e3/0.4.3/123",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "LLM Evaluation Discrepancies: controlled runs",
+    "source_type": "evaluation_run",
+    "source_organization_name": "University of Zurich",
+    "source_organization_url": "https://github.com/psychias/eee-eval",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "source-reported",
+      "sample_origin": "experiments/harness_reeval/version_compare/version_pairs.csv and the README of the code repository (experiment E3)"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.3"
+  },
+  "model_info": {
+    "name": "Qwen2.5-7B-Instruct",
+    "id": "Qwen/Qwen2.5-7B-Instruct",
+    "developer": "Qwen"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "gsm8k",
+      "source_data": {
+        "dataset_name": "gsm8k",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "exact_match,strict-match",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 76.35
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5
+        },
+        "additional_details": {
+          "scoring_mode": "generation",
+          "benchmark_variant": "gsm8k, full test set, hf backend",
+          "random_seed": "123",
+          "provenance_url": "https://github.com/psychias/eee-eval/tree/main/experiments/harness_reeval/version_compare"
+        }
+      }
+    }
+  ]
+}

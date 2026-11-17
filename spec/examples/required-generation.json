@@ -1,0 +1,19 @@
+{
+  "model_id": "example-org/example-model-7b",
+  "benchmark_id": "gsm8k",
+  "score": 61.2,
+  "metric_name": "exact_match",
+  "min_score": 0,
+  "max_score": 100,
+  "scoring_mode": "generation",
+  "harness_name": "lm-evaluation-harness",
+  "harness_version": "0.4.11",
+  "n_shot": 5,
+  "benchmark_variant": "gsm8k",
+  "judge_model": null,
+  "evaluation_timestamp": "2026-10-02T09:30:00Z",
+  "prompt_template_hash": "sha256:2e90c48dd0bf533c61e34b40784c88f10ed0036df7243b3c6607fffaf6244453",
+  "answer_parser_version": "lm-eval gsm8k strict-match filter, task version 3",
+  "evidence_source": "source-reported",
+  "source_name": "Illustrative example, not a real result"
+}

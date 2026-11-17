@@ -1,0 +1,60 @@
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>Statistics</h1>
+    <p class="es-lead">What the records say about how scores were produced. The first part is recomputed from the datastore each time the site is built. The second part describes the corpus analysed in the paper and does not change.</p>
+  </header>
+  {{sample_note}}
+
+  <section>
+    <h2>The datastore today</h2>
+    <p class="es-small">Built on {{built}} from {{files}} files in the {{datastore_name}} datastore.</p>
+    {{tiles}}
+
+    <div class="es-two" style="margin-top:28px">
+      <div>
+        <h3 style="margin-top:0">Fields on record</h3>
+        <p class="es-small">For each field, the records that carry a value out of the records it applies to, by who filled the value in.</p>
+        <div class="es-seg" role="group" aria-label="Records counted" id="stat-track" style="margin:4px 0 14px">
+          <button type="button" data-show="all" aria-pressed="true">All records</button>
+          <button type="button" data-show="author-reported" aria-pressed="false">Author-reported</button>
+          <button type="button" data-show="predicted" aria-pressed="false">Predicted</button>
+        </div>
+        <div data-stat="all">{{field_rows_all}}</div>
+        <div data-stat="author-reported" hidden>{{field_rows_author}}</div>
+        <div data-stat="predicted" hidden>{{field_rows_predicted}}</div>
+        {{provenance_key}}
+      </div>
+      <div>
+        <h3 style="margin-top:0">Scoring modes</h3>
+        <p class="es-small">In the paper's corpus no source records this field. Counted here over all records in the datastore.</p>
+        {{mode_rows}}
+        <h3>Who filled in the records</h3>
+        <p class="es-small">The provenance tag of each record. Only source-reported records are shown as author-reported.</p>
+        {{tag_rows}}
+        <h3>Tiers reached</h3>
+        {{tier_rows}}
+        <h3>Where sources can be checked against each other</h3>
+        {{overlap}}
+        <p class="es-small"><a href="registry.html#cells">List the pairs</a></p>
+      </div>
+    </div>
+
+    <h3>Models reported by the most sources</h3>
+    {{top_models}}
+  </section>
+
+  <section class="es-frozen" id="paper">
+    <h2 style="margin-top:28px">The paper's corpus</h2>
+    <p class="es-prose">Frozen. These figures describe the 46,559 evaluation records analysed in the paper: ten leaderboards and structured repositories, 100 arXiv papers read by a language model, and Papers With Code. They are taken from the <a href="article.html#audit">article</a> and stay as they are when records are added to the datastore.</p>
+    <div class="es-scroll">
+    <table class="es-table">
+      <thead><tr><th scope="col">Source</th><th scope="col" class="es-num">Records</th><th scope="col" class="es-num">Models</th><th scope="col" class="es-num">Benchmarks</th></tr></thead>
+      <tbody>{{paper_sources}}</tbody>
+    </table>
+    </div>
+    <p class="es-small">Model and benchmark totals are smaller than the column sums because some appear in several sources. <a href="data/paper/sources.csv">Table as CSV</a>.</p>
+    {{paper_figures}}
+  </section>
+</div>
+</main>

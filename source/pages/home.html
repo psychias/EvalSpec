@@ -1,0 +1,101 @@
+<main id="main" class="es-page">
+<div class="es-wrap">
+
+  <section class="es-hero">
+    <div>
+      <h1>A benchmark score means little without the procedure that produced it.</h1>
+      <p class="es-lead">EvalSpec is a minimum reporting standard for LLM evaluation results. It names the fields a published score has to carry so that a reader can tell what was measured: 13 Required, 5 Recommended and 3 Full. EvalSpec is an extended version of the <a href="{{eee_url}}">Every Eval Ever</a> (EEE) schema.</p>
+      <form class="es-lookup" action="model.html" method="get" role="search" aria-label="Evaluation reports for a model" data-lookup>
+        <label class="es-label" for="lookup">Find the evaluation reports for a model</label>
+        <div class="es-lookup-row">
+          <input class="es-input" id="lookup" name="id" type="search" placeholder="Hugging Face id, for example google/gemma-2-9b" autocomplete="off" spellcheck="false" aria-describedby="lookup-try">
+          <button class="es-btn" type="submit">Find reports</button>
+        </div>
+        <p class="es-tryline" id="lookup-try">In the registry now: {{try_links}}.</p>
+      </form>
+      <div class="es-actions">
+        <a class="es-btn is-plain" href="submit.html#check">Check a record</a>
+        <a class="es-btn is-plain" href="submit.html">Submit a report</a>
+      </div>
+    </div>
+    <figure class="es-specimen" id="specimen">
+      <noscript><p class="es-note">With JavaScript on, this box shows the published scores for one model on one benchmark, field by field. The same records are on the <a href="registry.html">Registry</a> page.</p></noscript>
+    </figure>
+  </section>
+
+  <section class="es-section">
+    <h2>What the paper found</h2>
+    <p class="es-prose">We harmonized 46,559 published evaluation records from 12 sources, covering 7,398 models and 1,954 benchmarks, and audited what each record says about how its score was produced. The <a href="article.html">article</a> goes through the evidence with interactive figures.</p>
+    <div class="es-findings">
+      <div class="es-finding">
+        <div class="es-scale" role="img" aria-label="291 of 41,999 pairs, drawn to scale"><i style="width:0.69%;background:var(--blue-2)"></i><i style="flex:1;background:var(--track)"></i></div>
+        <p>Only <b>0.69%</b> of model and benchmark pairs are reported by more than one source: 291 of 41,999.</p>
+        <small>The blue sliver is drawn to scale.</small>
+      </div>
+      <div class="es-finding">
+        <div class="es-scale" role="img" aria-label="Of the 291 pairs, 77 agree within 1 point, 45 differ by 1 to 5, 169 by more than 5"><i style="width:26.46%;background:var(--blue-2)"></i><i style="width:15.46%;background:var(--gold-2)"></i><i style="flex:1;background:var(--gold)"></i></div>
+        <p>Where two sources do report the same pair, <b>58%</b> differ by more than 5 percentage points.</p>
+        <small>77 pairs agree within 1 point, 45 differ by 1 to 5, 169 by more than 5.</small>
+      </div>
+      <div class="es-finding">
+        <div class="es-twobars" role="img" aria-label="Prompt format 27 percent, temperature 0.25 percent"><span>prompt format</span><i style="width:100%"></i><span>temperature</span><i style="width:0.93%"></i></div>
+        <p>Prompt format explains <b>27%</b> of the variance in GSM8K scores. Sampling temperature explains under 1%.</p>
+        <small>Five-shot GSM8K, four instruction-tuned models.</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="es-section">
+    <h2>The fields</h2>
+    <p class="es-prose">Most EvalSpec fields name a place that already exists in an EEE record and make it mandatory. The ones EEE has no slot for, such as <code>scoring_mode</code>, are added. The <a href="spec.html">Spec</a> page gives types, rules, the JSON Schema and worked examples.</p>
+    {{tier_columns}}
+  </section>
+
+  <section class="es-section">
+    <h2>The registry</h2>
+    {{sample_note}}
+    <p class="es-prose">{{registry_sentence}} Sources are ordered by how much of the procedure they report themselves, so a source moves up by publishing its own records.</p>
+    {{board_preview}}
+    <p class="es-actions" style="margin-top:16px"><a class="es-btn is-plain" href="registry.html">See the full board</a> <a class="es-btn is-plain" href="statistics.html">Statistics</a></p>
+  </section>
+
+  <section class="es-section">
+    <h2>Report a result</h2>
+    <p class="es-prose">Every record goes to the <a href="{{datastore_url}}">{{datastore_name}} datastore</a> on Hugging Face as a pull request. Records written by whoever ran the evaluation and records filled in by a language model are both welcome, and are shown separately.</p>
+    <div class="es-routes">
+      <div>
+        <h3>You ran the evaluation</h3>
+        <p>A harness holds the full configuration when it computes a score. The released hook for lm-evaluation-harness writes it out as a record when the run ends.</p>
+        <p><a href="submit.html#route-run">Emit records from a run</a></p>
+      </div>
+      <div>
+        <h3>You published the result</h3>
+        <p>Fill in the fields for a score in your paper or model card, or open the predicted record for it and correct what a model guessed.</p>
+        <p><a href="submit.html#build">Write or correct a record</a></p>
+      </div>
+      <div>
+        <h3>You extracted it with a model</h3>
+        <p>Records read from a paper by a language model are uploaded by a person and name the model that extracted them. They are listed as predicted until an author confirms them.</p>
+        <p><a href="submit.html#route-llm">Upload predicted records</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="es-section" id="paper">
+    <h2>The paper</h2>
+    <div class="es-cite">
+      <div>
+        <h3>{{paper_title}}</h3>
+        {{authors}}
+        <p>{{paper_venue}}. {{paper_status}}.</p>
+        <p class="es-actions">{{paper_button}} <a class="es-btn is-plain" href="article.html">Read the article</a> <a class="es-btn is-plain" href="{{code_url}}">Code</a></p>
+      </div>
+      <div>
+        <pre id="bibtex" tabindex="0" aria-label="BibTeX citation">{{bibtex}}</pre>
+        <button class="es-btn is-plain is-small" type="button" data-copy="bibtex" hidden>Copy BibTeX</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</main>

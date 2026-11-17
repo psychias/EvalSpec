@@ -1,0 +1,61 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "illustrative_example/example-org_example-model-7b/1790000000",
+  "retrieved_timestamp": "1790000000",
+  "source_metadata": {
+    "source_name": "Illustrative example, not a real result",
+    "source_type": "evaluation_run",
+    "source_organization_name": "Example Org",
+    "evaluator_relationship": "first_party",
+    "additional_details": {
+      "evidence_source": "source-reported"
+    }
+  },
+  "eval_library": {
+    "name": "lm-evaluation-harness",
+    "version": "0.4.11"
+  },
+  "model_info": {
+    "name": "example-model-7b",
+    "id": "example-org/example-model-7b",
+    "developer": "example-org",
+    "quantization": "bfloat16"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "mmlu",
+      "source_data": {
+        "dataset_name": "mmlu",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 100
+      },
+      "score_details": {
+        "score": 64.3
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "additional_details": {
+          "scoring_mode": "log-likelihood",
+          "benchmark_variant": "mmlu (all subjects, letter options)",
+          "prompt_template_hash": "sha256:2e90c48dd0bf533c61e34b40784c88f10ed0036df7243b3c6607fffaf6244453",
+          "hardware": "1 x NVIDIA A100 80GB",
+          "random_seed": "42",
+          "provenance_url": "https://example.org/eval-logs/example-model-7b/mmlu",
+          "contamination_check": "none performed",
+          "compute_hours": "0.4"
+        }
+      },
+      "evaluation_timestamp": "2026-10-02T11:05:00Z"
+    }
+  ]
+}

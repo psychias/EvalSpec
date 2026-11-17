@@ -1,0 +1,152 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "open_llm_leaderboard_v2/allenai_Llama-3.1-Tulu-3-70B-SFT/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "Open LLM Leaderboard v2",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "lm_eval",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Llama-3.1-Tulu-3-70B-SFT",
+    "id": "allenai/Llama-3.1-Tulu-3-70B-SFT",
+    "developer": "allenai"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "IFEval",
+      "source_data": {
+        "dataset_name": "IFEval",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "prompt_level_strict_acc",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 80.51
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "BBH",
+      "source_data": {
+        "dataset_name": "BBH",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 42.02
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 3
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "GPQA",
+      "source_data": {
+        "dataset_name": "GPQA",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 12.64
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MuSR",
+      "source_data": {
+        "dataset_name": "MuSR",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 24.49
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MMLU-Pro",
+      "source_data": {
+        "dataset_name": "MMLU-Pro",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 40.27
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    }
+  ]
+}

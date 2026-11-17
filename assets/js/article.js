@@ -99,154 +99,112 @@
     });
   })();
 
-  /* ---------- one question, marked two ways ---------- */
+  /* ---------- scoring modes ---------- */
   (function () {
     var ll = $("#mode-ll"), gen = $("#mode-gen"); if (!ll || !gen) { return; }
-    var REF = "A", MIN = 3;
-    function mark(el, ok, text) { el.className = "mark " + (ok ? "good" : "bad"); el.innerHTML = "<b>" + (ok ? "✓" : "✗") + "</b> " + text; }
-
-    /* likelihood ranking: one bar of probability, three dividers */
-    var bar = $("#ll-mass"), segs = $$(".sg", bar), grips = $$(".grip", bar), cuts = [31, 83, 94];
-    function drawBar() {
-      var edges = [0].concat(cuts, [100]), best = -1, bestI = -1, tie = false;
-      segs.forEach(function (sg, i) {
-        var w = edges[i + 1] - edges[i];
-        sg.style.left = edges[i] + "%"; sg.style.width = w + "%"; $("i", sg).textContent = w;
-        if (w > best) { best = w; bestI = i; tie = false; } else if (w === best) { tie = true; }
+    var REF = "A";
+    var badge = function (ok) { return '<span class="badge">' + (ok ? "right" : "wrong") + "</span> "; };
+    function verdict(el, ok, html) { el.className = "outcome " + (ok ? "good" : "bad"); el.innerHTML = badge(ok) + html; }
+    function updateLL() {
+      var rows = $$(".optrow", ll), best = null, bestV = -1, tie = false;
+      rows.forEach(function (r) {
+        var v = parseFloat($("input", r).value);
+        $(".lp", r).textContent = v;
+        if (v > bestV) { bestV = v; best = r; tie = false; } else if (v === bestV) { tie = true; }
       });
-      segs.forEach(function (sg, i) { sg.classList.toggle("pick", !tie && i === bestI); });
-      grips.forEach(function (g, i) { g.style.left = cuts[i] + "%"; g.setAttribute("aria-valuenow", cuts[i]); });
-      var out = $(".mark", ll);
-      if (tie) { out.className = "mark"; out.textContent = "Two options have the same share. Move a divider to break the tie."; return; }
-      var o = segs[bestI].dataset.opt;
-      mark(out, o === REF, o + " has the largest share, so " + o + " is the answer. Marked " + (o === REF ? "right." : "wrong."));
+      rows.forEach(function (r) { r.classList.toggle("pick", r === best && !tie); });
+      var out = $(".outcome", ll);
+      if (tie) { out.className = "outcome"; out.textContent = "Two options tie. Drag a handle to break the tie."; return; }
+      var o = best.dataset.opt;
+      verdict(out, o === REF, "The model picks <b>" + o + "</b>. The reference is " + REF + ".");
     }
-    function setCut(i, v) {
-      var lo = (i === 0 ? 0 : cuts[i - 1]) + MIN, hi = (i === 2 ? 100 : cuts[i + 1]) - MIN;
-      cuts[i] = Math.max(lo, Math.min(hi, Math.round(v))); drawBar();
-    }
-    grips.forEach(function (g, i) {
-      g.hidden = false;
-      var drag = false;
-      var move = function (e) { var r = bar.getBoundingClientRect(); setCut(i, (e.clientX - r.left) / r.width * 100); };
-      g.addEventListener("pointerdown", function (e) { drag = true; g.setPointerCapture(e.pointerId); e.preventDefault(); g.focus(); });
-      g.addEventListener("pointermove", function (e) { if (drag) { move(e); } });
-      g.addEventListener("pointerup", function () { drag = false; });
-      g.addEventListener("pointercancel", function () { drag = false; });
-      g.addEventListener("keydown", function (e) {
-        var d = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -10, PageUp: 10 }[e.key];
-        if (d) { setCut(i, cuts[i] + d); e.preventDefault(); }
-      });
-    });
+    $$("input[type=range]", ll).forEach(function (i) { i.disabled = false; i.addEventListener("input", updateLL); });
 
-    /* generation: what the model writes, and the little of it the parser sees */
     var OUTS = [
       "(A)",
       "One week after 3 March is 10 March. In MM/DD/YYYY that is 03/10/2021. The answer is (A).",
       "One week after 3 March is 10 March, so the date is 03/10/2021."
     ];
-    var PAT = /\(([A-D])\)/, input = $("#gen-input"), seen = $("#gen-seen"), links = $$(".try .inl", gen);
-    var bars = function (t) { return t.split(/(\s+)/).map(function (w) { return !w || /^\s+$/.test(w) ? w : '<span class="bar">' + esc(w) + "</span>"; }).join(""); };
-    function drawGen() {
-      var text = input.value, m = PAT.exec(text), res = $(".mark", gen);
-      input.style.height = "auto"; input.style.height = input.scrollHeight + "px";
-      if (m) {
-        seen.innerHTML = bars(text.slice(0, m.index)) + '<span class="found">' + esc(m[0]) + "</span>" + bars(text.slice(m.index + m[0].length));
-        mark(res, m[1] === REF, "The parser finds " + m[1] + ". Marked " + (m[1] === REF ? "right." : "wrong."));
-      } else {
-        seen.innerHTML = bars(text) || "&nbsp;";
-        mark(res, false, "The parser finds no letter. Marked wrong" + (text.indexOf("03/10/2021") >= 0 ? ", with the right date written in the answer." : "."));
-      }
+    var PAT = /\(([A-D])\)/, input = $("#gen-input"), tokens = $("#gen-tokens"), group = $(".btngroup", gen);
+    function updateGen() {
+      var text = input.value, m = PAT.exec(text), res = $(".outcome", gen), pos = 0;
+      tokens.innerHTML = text.split(/(\s+)/).map(function (w) {
+        var start = pos; pos += w.length;
+        if (!w.trim()) { return ""; }
+        var hit = m && m.index >= start && m.index < start + w.length;
+        return "<span" + (hit ? ' class="hit"' : "") + ">" + esc(w) + "</span>";
+      }).join("");
+      if (m) { verdict(res, m[1] === REF, "The parser extracts <b>" + m[1] + "</b>. The reference is " + REF + "."); }
+      else { verdict(res, false, "The parser finds no letter in brackets, so there is nothing to compare with the reference."); }
     }
-    $(".try", gen).hidden = false; input.readOnly = false; input.rows = 1;
-    links.forEach(function (b) {
+    group.hidden = false;
+    $$("button", group).forEach(function (b) {
       b.addEventListener("click", function () {
-        links.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-        input.value = OUTS[+b.dataset.out]; drawGen();
+        var own = b.dataset.out === "own";
+        press(group, b); input.hidden = !own;
+        if (own) { input.focus(); input.select(); } else { input.value = OUTS[+b.dataset.out]; }
+        updateGen();
       });
     });
-    input.addEventListener("input", function () { links.forEach(function (x) { x.setAttribute("aria-pressed", "false"); }); drawGen(); });
-    window.addEventListener("resize", drawGen);
-    drawGen();
+    input.addEventListener("input", updateGen);
   })();
 
-  /* ---------- rescaling: a second ruler that starts at chance ---------- */
+  /* ---------- rescaling: drag the measured accuracy ---------- */
   (function () {
     var fig = $("#fig-rescale"); if (!fig) { return; }
     reveal(fig);
-    var svg = $("svg", fig), cursor = $("#rs-cursor"), hit = $("#rs-hit"), lower = $("#rs-lower");
-    var NS = "http://www.w3.org/2000/svg", X0 = 44, X1 = 660, raw = 32.8859, k = 4, base = 25, exact = true;   // exact: a value with more digits than its label shows
+    var svg = $("svg", fig), dot = $("#rs-draw"), hit = $("#rs-hit");
+    var X0 = 46, X1 = 658, YT = 70, YB = 160, raw = 32.8859, k = 4, exact = true;   // exact: a starting value with more digits than its label shows
     var X = function (v) { return X0 + (X1 - X0) * v / 100; };
     var fmt = function (v) { return (Math.round(v * 100) / 100).toFixed(2).replace(/\.?0+$/, ""); };
     var fmt3 = function (v) { return exact ? (Math.round(v * 1000) / 1000).toFixed(3) : fmt(v); };
-    var el = function (name, attrs, text) { var n = document.createElementNS(NS, name); Object.keys(attrs).forEach(function (a) { n.setAttribute(a, attrs[a]); }); if (text !== undefined) { n.textContent = text; } return n; };
-    function drawLower() {
-      var XL = function (v) { return X(base + (100 - base) * v / 100); }, step = (XL(1) - XL(0)) >= 3.6 ? 1 : 5;
-      lower.textContent = "";
-      lower.appendChild(el("rect", { "class": "ruler low", x: X(base) - 12, y: 94, width: 672 - X(base) + 12, height: 42 }));
-      for (var v = 0; v <= 100; v += step) {
-        lower.appendChild(el("line", { "class": "rt", x1: XL(v), y1: 94, x2: XL(v), y2: 94 + (v % 10 === 0 ? 14 : v % 5 === 0 ? 9 : 5) }));
-        if (v % 10 === 0) { lower.appendChild(el("text", { "class": "rn", x: XL(v), y: 123, "text-anchor": "middle" }, v)); }
-      }
-      lower.appendChild(el("text", { "class": "rchance", x: X(base) - 18, y: 119, "text-anchor": "end" }, "chance " + fmt(Math.round(base * 10) / 10)));
+    var at = function (el, attrs) { Object.keys(attrs).forEach(function (a) { el.setAttribute(a, attrs[a]); }); };
+    function draw() {
+      var base = 100 / k, shown = Math.max(0, (raw - base) / (100 - base) * 100);
+      at($("#rs-below"), { width: X(base) - X0 });
+      at($("#rs-chance"), { x1: X(base), x2: X(base) });
+      var ct = $("#rs-chancet"); at(ct, { x: X(base) }); ct.textContent = "chance " + fmt(base);
+      $$("#rs-fan .fan", fig).forEach(function (l, t) { at(l, { x1: X(base + (100 - base) * t / 5), x2: X(100 * t / 5) }); });
+      at($("#rs-map"), { x1: X(raw), x2: X(shown) });
+      at(dot, { cx: X(raw), "aria-valuenow": fmt(raw), "aria-valuetext": "measured " + fmt(raw) + ", shown " + fmt(shown) });
+      at($("#rs-dshown"), { cx: X(shown) });
+      var tr = $("#rs-traw"), ts = $("#rs-tshown");
+      at(tr, { x: X(raw) }); tr.textContent = (Math.round(raw * 100) / 100).toFixed(2);
+      at(ts, { x: X(shown) }); ts.textContent = (Math.round(shown * 100) / 100).toFixed(2);
+      $("#rs-formula").innerHTML = raw <= base
+        ? fmt(raw) + " is at or below chance (" + fmt(base) + "), so the score shown is 0"
+        : "(" + fmt3(raw) + " &minus; " + fmt(base) + ") / (100 &minus; " + fmt(base) + ") &times; 100 = " + fmt(shown);
     }
-    function drawCursor() {
-      var shown = Math.max(0, (raw - base) / (100 - base) * 100);
-      cursor.setAttribute("transform", "translate(" + X(raw) + ",0)");
-      cursor.setAttribute("aria-valuenow", fmt(raw)); cursor.setAttribute("aria-valuetext", "measured " + fmt(raw) + ", shown " + fmt(shown));
-      $("#rs-traw").textContent = (Math.round(raw * 100) / 100).toFixed(2);
-      $("#rs-tshown").textContent = (Math.round(shown * 100) / 100).toFixed(2);
-      var chance = 100 / k;
-      $("#rs-formula").innerHTML = raw <= chance
-        ? fmt(raw) + " is at or below chance (" + fmt(chance) + "), so the score shown is 0"
-        : "(" + fmt3(raw) + " &minus; " + fmt(chance) + ") / (100 &minus; " + fmt(chance) + ") &times; 100 = " + fmt(Math.max(0, (raw - chance) / (100 - chance) * 100));
-    }
-    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches, anim = null;
-    function slideTo(target) {   // the lower ruler slides to its new zero
-      window.cancelAnimationFrame(anim);
-      if (still) { base = target; drawLower(); drawCursor(); return; }
-      var from = base, t0 = null;
-      anim = window.requestAnimationFrame(function tick(t) {
-        if (t0 === null) { t0 = t; }
-        var p = Math.min(1, (t - t0) / 280), e = 1 - Math.pow(1 - p, 3);
-        base = from + (target - from) * e; drawLower(); drawCursor();
-        if (p < 1) { anim = window.requestAnimationFrame(tick); } else { base = target; drawLower(); drawCursor(); }
-      });
-    }
-    var kBtns = $$("#rs-k .inl", fig), exBtns = $$("#rs-ex .inl", fig);
-    var pressOnly = function (list, test) { list.forEach(function (b) { b.setAttribute("aria-pressed", test(b) ? "true" : "false"); }); };
-    function setK(v) { k = v; pressOnly(kBtns, function (b) { return +b.dataset.k === k; }); slideTo(100 / k); }
-    function setRaw(v) { raw = Math.max(0, Math.min(100, v)); exact = false; pressOnly(exBtns, function () { return false; }); drawCursor(); }
+    var kGroup = $("#rs-k"), exGroup = $("#rs-ex");
+    function setK(v) { k = v; $$("button", kGroup).forEach(function (b) { b.setAttribute("aria-pressed", +b.dataset.k === k ? "true" : "false"); }); }
+    function setRaw(v) { raw = Math.max(0, Math.min(100, v)); exact = false; press(exGroup, null); draw(); }
     function fromPointer(e) {
       var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
       var q = p.matrixTransform(svg.getScreenCTM().inverse());
       setRaw(Math.round((q.x - X0) / (X1 - X0) * 1000) / 10);
     }
     var dragging = false;
-    [cursor, hit].forEach(function (t) {
-      t.addEventListener("pointerdown", function (e) { dragging = true; t.setPointerCapture(e.pointerId); fromPointer(e); e.preventDefault(); });
-      t.addEventListener("pointermove", function (e) { if (dragging) { fromPointer(e); } });
-      t.addEventListener("pointerup", function () { dragging = false; });
-      t.addEventListener("pointercancel", function () { dragging = false; });
+    [dot, hit].forEach(function (el) {
+      el.addEventListener("pointerdown", function (e) { dragging = true; el.setPointerCapture(e.pointerId); fromPointer(e); e.preventDefault(); });
+      el.addEventListener("pointermove", function (e) { if (dragging) { fromPointer(e); } });
+      el.addEventListener("pointerup", function () { dragging = false; });
+      el.addEventListener("pointercancel", function () { dragging = false; });
     });
-    cursor.addEventListener("keydown", function (e) {
+    dot.addEventListener("keydown", function (e) {
       var d = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -10, PageUp: 10 }[e.key];
       if (e.key === "Home") { setRaw(0); } else if (e.key === "End") { setRaw(100); } else if (d) { setRaw(Math.round(raw) + d); } else { return; }
       e.preventDefault();
     });
-    kBtns.forEach(function (b) { b.addEventListener("click", function () { pressOnly(exBtns, function () { return false; }); setK(+b.dataset.k); }); });
-    exBtns.forEach(function (b) { b.addEventListener("click", function () { raw = parseFloat(b.dataset.raw); exact = true; pressOnly(exBtns, function (x) { return x === b; }); setK(+b.dataset.k); }); });
-    drawLower(); drawCursor();
+    $$("button", kGroup).forEach(function (b) { b.addEventListener("click", function () { setK(+b.dataset.k); press(exGroup, null); draw(); }); });
+    $$("button", exGroup).forEach(function (b) { b.addEventListener("click", function () { raw = parseFloat(b.dataset.raw); exact = true; setK(+b.dataset.k); press(exGroup, b); draw(); }); });
+    draw();
   })();
 
-  /* ---------- protocol variants: a difference and its counterpart ---------- */
-  $$(".pcol, .pflow").forEach(function (col) {
-    var parts = $$(".df", col);
-    function show(k) { parts.forEach(function (p) { p.classList.toggle("on", !!k && p.dataset.d === k); }); }
-    parts.forEach(function (p) {
-      p.addEventListener("mouseenter", function () { show(p.dataset.d); }); p.addEventListener("mouseleave", function () { show(null); });
-      p.addEventListener("focus", function () { show(p.dataset.d); }); p.addEventListener("blur", function () { show(null); });
-    });
+  /* ---------- records: the sentence and the line point at each other ---------- */
+  $$(".hl[data-part]").forEach(function (t) {
+    var fig = t.closest("figure"), seg = fig && $('.seg[data-part="' + t.dataset.part + '"]', fig); if (!seg) { return; }
+    var on = function () { seg.classList.add("is-hl"); t.classList.add("is-hl"); }, off = function () { seg.classList.remove("is-hl"); t.classList.remove("is-hl"); };
+    [t, seg].forEach(function (el) { el.addEventListener("mouseenter", on); el.addEventListener("mouseleave", off); el.addEventListener("focus", on); el.addEventListener("blur", off); });
   });
 
   /* ---------- 291 pairs: pick out one band ---------- */
@@ -366,6 +324,7 @@
 
   /* ---------- copy ---------- */
   $$("[data-copy]").forEach(function (btn) {
+    if (btn.classList.contains("es-btn")) { return; }   // the site's own buttons are handled by site.js
     var target = document.getElementById(btn.dataset.copy); if (!target || !navigator.clipboard) { return; }
     var label = btn.textContent; btn.hidden = false;
     btn.addEventListener("click", function () {

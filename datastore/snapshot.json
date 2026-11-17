@@ -1,0 +1,8 @@
+{
+  "name": "EvalSpec datastore, bundled sample",
+  "kind": "sample",
+  "assembled": "2026-11-17",
+  "files": 98,
+  "records": 122,
+  "description": "The records that the paper and its code repository quote in full: the case studies of Section 5, the cross-source pairs shipped with the repository, and the authors' own controlled runs. The full corpus of the paper has 46,559 records and lives in the Hugging Face datastore."
+}

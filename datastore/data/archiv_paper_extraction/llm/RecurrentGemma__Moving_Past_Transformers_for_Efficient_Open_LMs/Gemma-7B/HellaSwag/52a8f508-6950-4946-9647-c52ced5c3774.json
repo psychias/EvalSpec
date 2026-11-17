@@ -1,0 +1,61 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "arxiv_html_llm/Gemma-7B/2404.07839/HellaSwag/0_81.2",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "arxiv_html_llm",
+    "source_type": "documentation",
+    "source_organization_name": "arXiv",
+    "source_organization_url": "https://arxiv.org",
+    "evaluator_relationship": "first_party",
+    "additional_details": {
+      "evidence_source": "LLM-extracted",
+      "sample_origin": "Section 5 and Appendices G and H of the paper",
+      "paper_url": "https://arxiv.org/abs/2404.07839",
+      "arxiv_id": "2404.07839",
+      "paper_title": "RecurrentGemma: Moving Past Transformers for Efficient Open LMs",
+      "extraction_approach": "llm",
+      "extractor_model": "anthropic/claude-haiku-4.5"
+    }
+  },
+  "eval_library": {
+    "name": "unknown",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Gemma-7B",
+    "id": "Gemma-7B",
+    "developer": "Google"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "HellaSwag",
+      "source_data": {
+        "dataset_name": "HellaSwag",
+        "source_type": "url",
+        "url": [
+          "https://arxiv.org/abs/2404.07839"
+        ]
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 81.2
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "arxiv_html_llm",
+          "note": "The value of the Gemma report's own zero-shot evaluation (arXiv:2403.08295), as quoted in this paper."
+        }
+      }
+    }
+  ]
+}

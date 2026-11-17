@@ -1,0 +1,19 @@
+{
+  "model_id": "example-org/example-model-7b",
+  "benchmark_id": "gsm8k",
+  "score": 61.2,
+  "metric_name": "accuracy",
+  "min_score": 0,
+  "max_score": 100,
+  "n_shot": 8,
+  "harness_name": "lm-evaluation-harness",
+  "evidence_source": {
+    "default": "LLM-extracted",
+    "harness_name": "documentation-inferred"
+  },
+  "extractor_model": "example-org/example-extractor",
+  "extraction_date": "2026-11-02",
+  "source_name": "Illustrative example, not a real result",
+  "source_kind": "Paper",
+  "source_url": "https://example.org/papers/example-model"
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "open_llm_leaderboard_v2/TIGER-Lab_MAmmoTH2-7B-Plus/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "Open LLM Leaderboard v2",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "Section 5.1 of the paper"
+    }
+  },
+  "eval_library": {
+    "name": "lm_eval",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "MAmmoTH2-7B-Plus",
+    "id": "TIGER-Lab/MAmmoTH2-7B-Plus",
+    "developer": "TIGER-Lab"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "BBH",
+      "source_data": {
+        "dataset_name": "BBH",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 18.93,
+        "details": {
+          "raw_score": "42.35"
+        }
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 3
+        },
+        "additional_details": {
+          "source": "open_llm_leaderboard_v2"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- The preview image of the site (assets/img/og-site.png). To change it: edit this file, open it in a browser
+     window of 1200 by 630 pixels and save a screenshot over the image. Not part of the built site. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EvalSpec preview image</title>
+<link rel="stylesheet" href="../assets/css/site.css">
+<style>
+  body { width: 1200px; height: 630px; margin: 0; overflow: hidden; background: #fff; font-family: var(--sans); display: block; }
+  .band { height: 92px; background: var(--uzh); color: #fff; display: flex; align-items: center; gap: 16px; padding: 0 72px; font-size: 38px; font-weight: 700; letter-spacing: -0.01em; }
+  .band svg { width: 44px; height: 44px; }
+  .wrap { display: grid; grid-template-columns: 1fr 470px; gap: 56px; padding: 56px 72px 0; align-items: start; }
+  h1 { font-size: 60px; line-height: 1.06; letter-spacing: -0.02em; margin: 0 0 26px; color: #000; }
+  p { font-size: 27px; line-height: 1.35; color: rgba(0, 0, 0, 0.72); margin: 0; }
+  .card { border: 1.5px solid rgba(0, 0, 0, 0.6); border-radius: 4px; }
+  .head { padding: 16px 20px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.2); font-family: var(--mono); font-weight: 700; font-size: 22px; display: flex; justify-content: space-between; align-items: baseline; }
+  .head span { font-family: var(--sans); font-weight: 400; font-size: 18px; color: rgba(0, 0, 0, 0.6); }
+  .row { display: grid; grid-template-columns: 18px 1fr auto; gap: 14px; align-items: center; padding: 11px 20px; border-top: 1px solid rgba(0, 0, 0, 0.08); font-family: var(--mono); font-size: 19px; }
+  .row:first-of-type { border-top: 0; }
+  .row b { font-family: var(--sans); font-weight: 400; font-size: 18px; color: #000; }
+  .row .es-mark { width: 17px; height: 17px; }
+  .row .es-hollow { font-family: var(--sans); font-size: 16px; padding: 1px 9px; }
+</style>
+</head>
+<body>
+<div class="band"><svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="2.5" width="20" height="4.6" rx="1" fill="#fff"/><rect x="1" y="8.7" width="20" height="4.6" rx="1" fill="#fff" opacity=".55"/><rect x="1.6" y="15.5" width="18.8" height="3.4" rx="1" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="2.4 1.8"/></svg>EvalSpec</div>
+<div class="wrap">
+  <div>
+    <h1>A benchmark score means little without the procedure that produced it.</h1>
+    <p>A minimum reporting standard for LLM evaluation results.</p>
+  </div>
+  <div class="card">
+    <div class="head">google/gemma-2-9b <span>BBH, 34.10</span></div>
+    <div class="row"><span class="es-mark is-first"></span>benchmark_id<b>BBH</b></div>
+    <div class="row"><span class="es-mark is-missing"></span>scoring_mode<span class="es-hollow">not on record</span></div>
+    <div class="row"><span class="es-mark is-inferred"></span>harness_name<b>lm_eval</b></div>
+    <div class="row"><span class="es-mark is-missing"></span>harness_version<span class="es-hollow">not on record</span></div>
+    <div class="row"><span class="es-mark is-inferred"></span>n_shot<b>3</b></div>
+    <div class="row"><span class="es-mark is-missing"></span>prompt_template_hash<span class="es-hollow">not on record</span></div>
+  </div>
+</div>
+</body>
+</html>

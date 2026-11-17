@@ -1,0 +1,182 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "hf_model_card/allenai_Llama-3.1-Tulu-3-8B/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "HuggingFace Model Card",
+    "source_type": "documentation",
+    "source_organization_name": "HuggingFace",
+    "source_organization_url": "https://huggingface.co",
+    "evaluator_relationship": "first_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository; experiments/evalspec_worked_example/records"
+    }
+  },
+  "eval_library": {
+    "name": "vllm",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Llama-3.1-Tulu-3-8B",
+    "id": "allenai/Llama-3.1-Tulu-3-8B",
+    "developer": "allenai"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "IFEval (0-Shot)",
+      "source_data": {
+        "dataset_name": "IFEval (0-Shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "averaged accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 82.55
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    },
+    {
+      "evaluation_name": "BBH (3-Shot)",
+      "source_data": {
+        "dataset_name": "BBH (3-Shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "normalized accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 16.86
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 3
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MATH Lvl 5 (4-Shot)",
+      "source_data": {
+        "dataset_name": "MATH Lvl 5 (4-Shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 18.88
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 4
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    },
+    {
+      "evaluation_name": "GPQA (0-shot)",
+      "source_data": {
+        "dataset_name": "GPQA (0-shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 6.26
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MuSR (0-shot)",
+      "source_data": {
+        "dataset_name": "MuSR (0-shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "acc_norm",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 10.52
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    },
+    {
+      "evaluation_name": "MMLU-PRO (5-shot)",
+      "source_data": {
+        "dataset_name": "MMLU-PRO (5-shot)",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "accuracy",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 20.23
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 5
+        },
+        "additional_details": {
+          "source": "hf_model_card",
+          "harness": "vllm"
+        }
+      }
+    }
+  ]
+}

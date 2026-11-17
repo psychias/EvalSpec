@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "arxiv_html_llm/Llama-2-Chat-7B/2402.00838/TruthfulQA/0_26.3",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "arxiv_html_llm",
+    "source_type": "documentation",
+    "source_organization_name": "arXiv",
+    "source_organization_url": "https://arxiv.org",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "LLM-extracted",
+      "sample_origin": "Section 5 and Appendices G and H of the paper",
+      "paper_url": "https://arxiv.org/abs/2402.00838",
+      "arxiv_id": "2402.00838",
+      "paper_title": "OLMo: Accelerating the Science of Language Models",
+      "extraction_approach": "llm",
+      "extractor_model": "anthropic/claude-haiku-4.5"
+    }
+  },
+  "eval_library": {
+    "name": "unknown",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "Llama-2-Chat-7B",
+    "id": "Llama-2-Chat-7B",
+    "developer": "Meta"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "TruthfulQA",
+      "source_data": {
+        "dataset_name": "TruthfulQA",
+        "source_type": "url",
+        "url": [
+          "https://arxiv.org/abs/2402.00838"
+        ]
+      },
+      "metric_config": {
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 26.3
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "arxiv_html_llm",
+          "note": "The paper's case study: scored by a fine-tuned Llama-2-7B judge. The record has no field for the judge."
+        }
+      }
+    }
+  ]
+}

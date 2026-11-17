@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.2.1",
+  "evaluation_id": "evalplus/bigcode_StarCoder2-7B/1794873600",
+  "retrieved_timestamp": "1794873600",
+  "source_metadata": {
+    "source_name": "EvalPlus Leaderboard",
+    "source_type": "documentation",
+    "source_organization_name": "EvalPlus",
+    "source_organization_url": "https://evalplus.github.io/leaderboard.html",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "evidence_source": "documentation-inferred",
+      "sample_origin": "experiments/harness_reeval/all_harness_pairs.csv in the code repository"
+    }
+  },
+  "eval_library": {
+    "name": "evalplus",
+    "version": "unknown"
+  },
+  "model_info": {
+    "name": "StarCoder2-7B",
+    "id": "bigcode/StarCoder2-7B",
+    "developer": "bigcode"
+  },
+  "evaluation_results": [
+    {
+      "evaluation_name": "HumanEval+",
+      "source_data": {
+        "dataset_name": "HumanEval+",
+        "source_type": "other"
+      },
+      "metric_config": {
+        "metric_name": "pass@1",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0.0,
+        "max_score": 100.0
+      },
+      "score_details": {
+        "score": 29.9
+      },
+      "generation_config": {
+        "generation_args": {
+          "shots": 0
+        },
+        "additional_details": {
+          "source": "evalplus"
+        }
+      }
+    }
+  ]
+}

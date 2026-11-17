@@ -1,0 +1,47 @@
+<main id="main" class="es-page">
+<div class="es-wrap">
+  <header class="es-head">
+    <h1>Data and releases</h1>
+    <p class="es-lead">Everything released with EvalSpec and the paper, in one place: the datastore, the corpus, the specification files, the code and the experiment records.</p>
+  </header>
+
+  <section>
+    <div class="es-scroll">
+    <table class="es-releases">
+      <thead><tr><th scope="col">Release</th><th scope="col">What it holds</th><th scope="col">Version and licence</th><th scope="col">Get it</th></tr></thead>
+      <tbody>{{releases}}</tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="es-section" id="rebuild">
+    <h2>Build the site from the datastore</h2>
+    <p class="es-prose">The site is static. Its registry pages are generated from a folder of EEE files, so pointing the build at the full datastore is all it takes to list every record.</p>
+    <div class="es-cmd"><pre id="cmd-build" tabindex="0" aria-label="Commands to rebuild the site"><code>python tools/fetch_datastore.py          # copies {{hf_repo}} into datastore_cache/
+python source/build.py --datastore datastore_cache
+python -m unittest discover -s tests     # optional: check the build</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-build" hidden>Copy</button></div>
+    <p class="es-prose">Without <code>--datastore</code>, the build reads the sample in <code>datastore/</code>. The name and address of the datastore are set once, in <code>config.json</code>:</p>
+    <pre tabindex="0" aria-label="Datastore settings in config.json"><code>"datastore": {
+  "name": "{{datastore_name}}",
+  "hf_repo": "{{hf_repo}}",
+  "revision": "{{revision}}",
+  "data_dir": "data"
+}</code></pre>
+    <p class="es-prose">When the dataset is renamed on Hugging Face, change <code>hf_repo</code> and rebuild. Every link and every command on the site follows it.</p>
+  </section>
+
+  <section class="es-section" id="format">
+    <h2>What a datastore file looks like</h2>
+    <p class="es-prose">One EEE file per model and source, under <code>data/&lt;source&gt;/&lt;developer&gt;/&lt;model&gt;/&lt;uuid&gt;.json</code>. A file can hold several results. The <a href="spec.html#formats">Spec</a> page shows where each EvalSpec field lives in it.</p>
+    <pre tabindex="0" aria-label="A datastore file"><code>{{file_example}}</code></pre>
+    <p class="es-small">{{file_example_caption}}</p>
+  </section>
+
+  <section class="es-section" id="cite">
+    <h2>Licence and citation</h2>
+    <p class="es-prose">EvalSpec, the harmonized dataset and the experiment records are released under <a href="{{data_licence_url}}">{{data_licence}}</a>; the code under the <a href="{{code_licence_url}}">{{code_licence}}</a> licence. The typefaces on this site are Atkinson Hyperlegible Next and Mono, under the <a href="assets/fonts/OFL.txt">SIL Open Font License</a>.</p>
+    <pre id="bibtex" tabindex="0" aria-label="BibTeX citation">{{bibtex}}</pre>
+    <button class="es-btn is-plain is-small" type="button" data-copy="bibtex" hidden>Copy BibTeX</button>
+  </section>
+</div>
+</main>

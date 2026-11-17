@@ -47,7 +47,7 @@
   },
 
   "licences": {
-    "data": {"name": "CC-BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/"},
+    "data": {"name": "MIT", "url": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset/blob/main/LICENSE"},
     "code": {"name": "MIT", "url": "https://github.com/psychias/eee-eval/blob/main/LICENSE"}
   }
 }

@@ -1,4 +1,4 @@
-/* Submit page: the form that writes a record, the check, and the conversion into datastore files.
+/* Submit page: the form that writes a record, the check, and the conversion into datastore files (one EEE record per line).
    Everything runs in the browser with assets/js/evalspec.js; nothing is sent anywhere.
      submit.html?record=<JSON>#build     opens the form with a record (used by "Correct this record")
      submit.html?example=<file>#check    opens a worked example in the check                           */
@@ -162,7 +162,7 @@
   function fileBox(file, n) {
     if (file.problem) { return '<div class="es-report-item"><div class="es-filebox"><b>' + esc(file.title) + "</b><br>" + file.problem + "</div></div>"; }
     return '<div class="es-report-item"><div class="es-report-head"><b>' + esc(file.title) + '</b><button class="es-btn is-small" type="button" data-save="' + n + '">Download the file</button></div>' +
-      '<div class="es-filebox">' + (file.asIs ? "This is a datastore file already. It is kept as it is. " : "") + "Save it as<br><code>" + esc(file.path) + "</code>" +
+      '<div class="es-filebox">' + (file.asIs ? "These are datastore records already. They are kept as they are, one per line. " : "") + "Save it as<br><code>" + esc(file.path) + "</code>" +
       "<details><summary>Show the file</summary><pre>" + esc(file.text) + "</pre></details></div></div>";
   }
   var files = [];
@@ -173,7 +173,7 @@
     var obj;
     try { obj = parse(text); }
     catch (e) { box.innerHTML = '<div class="es-report-item"><div class="es-report-head"><span class="es-result is-bad">This is not valid JSON</span></div><div class="es-filebox">' + esc(e.message) + "</div></div>"; return; }
-    var items = Array.isArray(obj) ? obj : [obj], reports = [];
+    var items = Array.isArray(obj) ? obj : [obj], reports = [], token = E.uuid().replace(/-/g, "").slice(0, 8), bySource = {};
     var docs = E.toEEEAll(items.filter(function (it) { return it && typeof it === "object" && !Array.isArray(it); }));
     items.forEach(function (item) {
       if (!item || typeof item !== "object" || Array.isArray(item)) {
@@ -191,8 +191,13 @@
       var title = (doc.model_info && doc.model_info.id || "no model") + " | " + mine.map(function (r) { return r.benchmark_id; }).join(", ");
       if (mine.some(function (r) { return !r.well_formed; })) { files.push({ title: title, problem: "Not well formed. Correct the errors listed in step 2 first." }); }
       else if (structure.length) { files.push({ title: title, problem: "The datastore file cannot be written yet: " + structure.map(esc).join("; ") + ". In a flat record, add <code>min_score</code> and <code>max_score</code>." }); }
-      else { files.push({ title: title, asIs: isFile, path: E.datastorePath(doc), text: JSON.stringify(doc, null, 2) + "\n" }); }
+      else {                                // one file per source, one record per line
+        var path = E.datastorePath(doc, token), file = bySource[path];
+        if (!file) { file = bySource[path] = { source: doc.source_metadata.source_name || "unnamed source", asIs: true, path: path, lines: [] }; files.push(file); }
+        file.lines.push(JSON.stringify(doc)); file.asIs = file.asIs && isFile;
+      }
     });
+    files.forEach(function (f) { if (f.lines) { f.title = f.source + " | " + ES.plural(f.lines.length, "record"); f.text = f.lines.join("\n") + "\n"; } });
     var ok = reports.filter(function (r) { return r.well_formed; }), tiered = ok.filter(function (r) { return r.tier !== "none"; });
     box.innerHTML = "<p><b>" + ES.plural(reports.length, "record") + " checked.</b> " + tiered.length + " at the Required tier or above, " + (ok.length - tiered.length) +
       " well formed below it, " + (reports.length - ok.length) + " not well formed." +
@@ -204,7 +209,7 @@
   }
   function save(file) {
     var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([file.text], { type: "application/json" }));
+    a.href = URL.createObjectURL(new Blob([file.text], { type: "application/x-ndjson" }));
     a.download = file.path.split("/").pop();
     document.body.appendChild(a); a.click(); a.remove();
     window.setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);

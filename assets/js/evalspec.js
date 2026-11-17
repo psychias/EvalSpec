@@ -368,9 +368,8 @@
       var r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
     });
   }
-  function datastorePath(doc) {         // data/<source>/<developer>/<model>/<uuid>.json
-    var mid = doc.model_info.id, developer = doc.model_info.developer || (mid.indexOf("/") >= 0 ? mid.split("/")[0] : "unknown");
-    return "data/" + slug(doc.source_metadata.source_name || "unnamed") + "/" + slug(developer) + "/" + slug(mid.split("/").pop()) + "/" + uuid() + ".json";
+  function datastorePath(doc, token) {  // data/<source>-<id>.jsonl, one record per line; the id keeps a submission from replacing a file
+    return "data/" + slug(doc.source_metadata.source_name || "unnamed").toLowerCase() + "-" + (token || uuid().replace(/-/g, "").slice(0, 8)) + ".jsonl";
   }
 
   /* ---------- sha256 of a prompt template, trimmed as the released hook trims it ---------- */
@@ -407,5 +406,5 @@
   return { spec: SPEC, fields: FIELDS, field: FIELD, tiers: TIERS, tagClass: TAG_CLASS,
            isMissing: isMissing, isEEE: isEEE, views: views, viewFromFlat: viewFromFlat, viewsFromEEE: viewsFromEEE,
            check: check, applies: applies, scorePercent: scorePercent, eeeStructureErrors: eeeStructureErrors,
-           toEEE: toEEE, toEEEAll: toEEEAll, datastorePath: datastorePath, slug: slug, promptHash: promptHash };
+           toEEE: toEEE, toEEEAll: toEEEAll, datastorePath: datastorePath, uuid: uuid, slug: slug, promptHash: promptHash };
 });

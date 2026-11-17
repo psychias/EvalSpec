@@ -350,7 +350,7 @@ def data_page(cfg, reg, meta, base):
     stats = reg["stats"]
     rows = [
         (f'{ds["name"]} datastore', "the home of every submission",
-         "One Every Eval Ever file per record, author-reported and predicted. New records arrive as pull requests.",
+         "One file per source with one Every Eval Ever record per line, author-reported and predicted. New records arrive as pull requests.",
          f"EEE {esc(eee)} with eight added fields<br>{data}",
          [("Datastore on Hugging Face", ds["url"]), (f'The {blocks.num(stats["records"])} records on this site as CSV', "data/records.csv"),
           ("The board as CSV", "data/board.csv"), ("Counts as JSON", "data/stats.json")]),
@@ -386,7 +386,7 @@ def data_page(cfg, reg, meta, base):
     doc = example_doc(meta["root"] / path, reg)
     if len(doc["evaluation_results"]) > 1:
         doc["evaluation_results"], shortened = doc["evaluation_results"][:1], True
-    caption = f'The file <code>{esc(path)}</code> of the datastore this site was built from' + (", shortened to its first result." if shortened else ".")
+    caption = (f'A record from <code>{esc(path)}</code>' if path.endswith(".jsonl") else f'The file <code>{esc(path)}</code>') + ' of the datastore this site was built from' + (", shortened to its first result." if shortened else ".")
     return {**base, "releases": blocks.releases(rows), "file_example": esc(json.dumps(doc, indent=2, ensure_ascii=False)),
             "file_example_caption": caption}
 

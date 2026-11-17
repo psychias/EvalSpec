@@ -197,8 +197,21 @@ class Conversion(unittest.TestCase):
         self.assertEqual(len(E.eee_structure_errors(doc)), 2)
 
     def test_datastore_path(self):
-        path = E.datastore_path(E.to_eee(GEN, now=1790000000))
-        self.assertRegex(path, r"^data/Illustrative_example_not_a_real_result/example-org/example-model-7b/[0-9a-f-]{36}\.json$")
+        doc = E.to_eee(GEN, now=1790000000)
+        self.assertRegex(E.datastore_path(doc), r"^data/illustrative_example_not_a_real_result-[0-9a-f]{8}\.jsonl$")
+        self.assertEqual(E.datastore_path(doc, "0a1b2c3d"), "data/illustrative_example_not_a_real_result-0a1b2c3d.jsonl")
+
+    def test_to_eee_writes_one_line_per_record(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src = pathlib.Path(tmp) / "records.json"
+            src.write_text(json.dumps([GEN, {**GEN, "benchmark_id": "another-benchmark"}]), encoding="utf-8")
+            self.assertEqual(E.main(["to-eee", str(src), "-o", tmp]), 0)
+            written = list((pathlib.Path(tmp) / "data").glob("*.jsonl"))
+            self.assertEqual(len(written), 1)
+            docs = [json.loads(line) for line in written[0].read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(len(docs), 2)
+            self.assertTrue(all(E.is_eee(d) for d in docs))
+            self.assertEqual(E.main(["check", str(written[0])]), 0)
 
 
 @unittest.skipIf(jsonschema is None, "jsonschema is not installed")

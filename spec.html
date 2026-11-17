@@ -126,7 +126,7 @@ python evalspec.py check record.json --require-tier required</code></pre>
 
       <section id="formats">
         <h2>Record formats</h2>
-        <p>The datastore holds EEE files. A harness, or a person filling in a form, more easily produces a flat record: one JSON object whose keys are the EvalSpec field names. The tools read both, and convert a flat record into an EEE file.</p>
+        <p>The datastore holds EEE records, one per line in a file for each source. A harness, or a person filling in a form, more easily produces a flat record: one JSON object whose keys are the EvalSpec field names. The tools read both, and convert a flat record into an EEE record.</p>
         <pre tabindex="0" aria-label="Convert a flat record into a datastore file"><code>python evalspec.py to-eee flat_records.json --output my_submission/</code></pre>
         <div class="es-example"><h3>A record at the Required tier</h3><p>A flat record for a score obtained by generation. Eleven Required fields apply to it.</p><pre tabindex="0" aria-label="A record at the Required tier"><code>{
   &quot;model_id&quot;: &quot;example-org/example-model-7b&quot;,

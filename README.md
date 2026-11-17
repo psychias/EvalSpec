@@ -30,7 +30,7 @@ Open `index.html` in a browser. Or serve the folder:
 ## Build
 
     python source/build.py                           # from the sample bundled in datastore/
-    python -m unittest discover -s tests             # 46 tests
+    python -m unittest discover -s tests             # 47 tests
 
     python tools/fetch_datastore.py                  # copy the datastore from Hugging Face into datastore_cache/
     python source/build.py --datastore datastore_cache
@@ -67,7 +67,8 @@ Everything that may change is in this one file.
 1. Someone writes records: with the form on the Submit page, with the released hook for
    lm-evaluation-harness, or by having a language model read a publication.
 2. They check them (Submit page, or `python tools/evalspec.py check records.json -v`) and
-   convert them into datastore files (Submit page, or `python tools/evalspec.py to-eee`).
+   convert them into a datastore file, `data/<source>-<id>.jsonl` with one record per line
+   (Submit page, or `python tools/evalspec.py to-eee`).
 3. They open a pull request on the Hugging Face dataset.
 4. A maintainer checks the files of the pull request with `python tools/evalspec.py check`
    and merges it. A record has to be well formed; it does not have to reach a tier.
@@ -152,8 +153,8 @@ These were settled in order to finish the site and are easy to change.
 - **EEE paths.** The paper fixes the path of `judge_model` only. The other paths in
   `spec/fields.json` are a reading, listed as an open question on the Spec page.
 - **Review.** The Submit page says a maintainer runs the validator on each pull request.
-- **Licences.** `config.json` states CC-BY 4.0 for data and MIT for code, as in the code
-  repository. The validator in `tools/` and the site's scripts are new files.
+- **Licences.** `config.json` states MIT for data and for code, as on the dataset card and
+  in the code repository. The validator in `tools/` and the site's scripts are new files.
 - **One id per model.** A model's page is headed by the id that includes an organisation,
   and lists the other spellings.
 - **Superseded records.** That a source's predicted records stop counting once the source

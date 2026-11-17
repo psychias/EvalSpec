@@ -3,7 +3,7 @@
 
   python tools/evalspec.py check PATH [PATH ...]     report tier and coverage of records
   python tools/evalspec.py flatten FILE              EEE file -> flat EvalSpec view(s)
-  python tools/evalspec.py to-eee FILE -o DIR        flat record(s) -> EEE datastore file(s)
+  python tools/evalspec.py to-eee FILE -o DIR        flat record(s) -> datastore file(s), one EEE record per line
   python tools/evalspec.py hash FILE                 sha256 of a prompt template, as the hook computes it
   python tools/evalspec.py schema                    print the JSON Schema generated from spec/fields.json
 
@@ -460,11 +460,11 @@ def slug(text: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(text)).strip("_") or "unnamed"
 
 
-def datastore_path(doc: dict) -> str:
-    """Where a file goes in the datastore: data/<source>/<developer>/<model>/<uuid>.json"""
-    mid = doc["model_info"]["id"]
-    developer = doc["model_info"].get("developer") or (mid.split("/")[0] if "/" in mid else "unknown")
-    return f"data/{slug(doc['source_metadata'].get('source_name', 'unnamed'))}/{slug(developer)}/{slug(mid.split('/')[-1])}/{uuid.uuid4()}.json"
+def datastore_path(doc: dict, token: str | None = None) -> str:
+    """Where the records of a source go in the datastore: data/<source>-<id>.jsonl, one record per line.
+    The short id keeps a submission from replacing a file that is already in the datastore."""
+    source = slug(doc["source_metadata"].get("source_name", "unnamed")).lower()
+    return f"data/{source}-{token or uuid.uuid4().hex[:8]}.jsonl"
 
 
 def prompt_hash(text: str) -> str:
@@ -547,7 +547,7 @@ def load(path: pathlib.Path):
 def files(paths):
     for p in map(pathlib.Path, paths):
         if p.is_dir():
-            yield from sorted(q for q in p.rglob("*.json") if not q.name.startswith(("manifest", "snapshot")))
+            yield from sorted(q for q in [*p.rglob("*.json"), *p.rglob("*.jsonl")] if not q.name.startswith(("manifest", "snapshot")))
         else:
             yield p
 
@@ -558,13 +558,15 @@ def cmd_check(args) -> int:
     for path in files(args.paths):
         try:
             obj = load(path)
-            structure = eee_structure_errors(obj) if is_eee(obj) else []
-            found = [check(v) for v in views(obj)]
+            found = []                               # (report, structure errors of the file or line it came from)
+            for item in (obj if path.suffix == ".jsonl" else [obj]):
+                structure = eee_structure_errors(item) if is_eee(item) else []
+                found += [(check(v), structure) for v in views(item)]
         except (ValueError, OSError) as e:
             print(f"{path}: cannot be read as a record ({e})", file=sys.stderr)
             bad += 1
             continue
-        for r in found:
+        for r, structure in found:
             r["file"] = str(path)
             r["errors"] = [{"field": "(EEE structure)", "message": m} for m in structure] + r["errors"]
             r["well_formed"] = not r["errors"]
@@ -593,9 +595,9 @@ def cmd_check(args) -> int:
 
 
 def cmd_to_eee(args) -> int:
-    """Writes one datastore file per record. A record that is not well formed, or that would not make a valid EEE file, is not written."""
+    """Writes one datastore file per source, one record per line. A record that is not well formed, or that would not make a valid EEE record, is not written."""
     obj = load(pathlib.Path(args.file))
-    out, left_out = pathlib.Path(args.output), 0
+    out, left_out, token, written = pathlib.Path(args.output), 0, uuid.uuid4().hex[:8], {}
     for doc in to_eee_all(obj if isinstance(obj, list) else [obj]):
         problems = eee_structure_errors(doc) + [f'{e["field"]}: {e["message"]}' for v in views_from_eee(doc) for e in check(v)["errors"]]
         if problems:
@@ -603,10 +605,11 @@ def cmd_to_eee(args) -> int:
             print(f'not written: {doc.get("model_info", {}).get("id")} | {doc["evaluation_results"][0].get("evaluation_name") if doc.get("evaluation_results") else "?"}: '
                   + "; ".join(problems), file=sys.stderr)
             continue
-        target = out / datastore_path(doc)
+        written.setdefault(out / datastore_path(doc, token), []).append(json.dumps(doc, ensure_ascii=False))
+    for target, lines in written.items():
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        print(target)
+        target.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"{target}  ({len(lines)} record(s))")
     if left_out:
         print(f"{left_out} record(s) not written. In a flat record, the range of the score goes in min_score and max_score.", file=sys.stderr)
     return 1 if left_out else 0
@@ -622,7 +625,7 @@ def main(argv=None) -> int:
     c.add_argument("--require-tier", choices=TIERS, help="exit with status 2 unless every record reaches this tier")
     f = sub.add_parser("flatten", help="EEE file -> flat view(s)")
     f.add_argument("file")
-    t = sub.add_parser("to-eee", help="flat record(s) -> EEE datastore file(s)")
+    t = sub.add_parser("to-eee", help="flat record(s) -> datastore file(s), one EEE record per line")
     t.add_argument("file")
     t.add_argument("-o", "--output", default=".", help="folder to write data/... into")
     h = sub.add_parser("hash", help="sha256 of a prompt template file")

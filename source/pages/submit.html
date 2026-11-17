@@ -154,7 +154,7 @@
     <section class="es-step" id="check">
       <div>
         <h2>Check it</h2>
-        <p class="es-prose">Paste a record, a list of records or a datastore file, or drop <code>.json</code> files on the box. The check runs in this page with the same rules as the command-line validator.</p>
+        <p class="es-prose">Paste a record, a list of records or lines of a datastore file, or drop <code>.json</code> or <code>.jsonl</code> files on the box. The check runs in this page with the same rules as the command-line validator.</p>
         <div class="es-drop" id="check-drop">
           <label class="sr" for="check-input">Records as JSON</label>
           <textarea class="es-textarea is-mono" id="check-input" rows="12" spellcheck="false" placeholder='{ "model_id": "organisation/model", "benchmark_id": "gsm8k", "score": 61.2, ... }'></textarea>
@@ -162,7 +162,7 @@
         <p class="es-actions" style="margin-top:10px">
           <button class="es-btn" type="button" id="check-run">Check</button>
           <label class="es-btn is-plain" for="check-files">Choose files</label>
-          <input class="sr" type="file" id="check-files" accept=".json,application/json" multiple>
+          <input class="sr" type="file" id="check-files" accept=".json,.jsonl,application/json" multiple>
           <button class="es-btn is-plain" type="button" id="check-clear">Clear</button>
         </p>
         <p class="es-small">Or load an example: {{example_buttons}}</p>
@@ -174,7 +174,7 @@
     <section class="es-step" id="file">
       <div>
         <h2>Save the datastore file</h2>
-        <p class="es-prose">The datastore holds Every Eval Ever files, one per record, each at its own path. The page converts every well-formed record and proposes the path.</p>
+        <p class="es-prose">The datastore holds one file per source, <code>{{data_dir}}/&lt;source&gt;.jsonl</code>, with one Every Eval Ever record on each line. The page converts every well-formed record and writes one such file for each source among your records. The proposed name ends in a short id, so that your file cannot replace one that is already in the datastore.</p>
         <div id="file-out"><p class="es-empty">Nothing to save yet. Check a record in step 2 first.</p></div>
       </div>
     </section>
@@ -182,14 +182,15 @@
     <section class="es-step" id="upload">
       <div>
         <h2>Open a pull request</h2>
-        <p class="es-prose">Put the files under the proposed paths inside one folder, here <code>my_submission</code>, and upload the folder as a pull request to the datastore.</p>
+        <p class="es-prose">Put the file under its proposed name inside one folder, here <code>my_submission/{{data_dir}}</code>, and upload the folder as a pull request to the datastore. The datastore is gated: log in to Hugging Face and accept its terms on the dataset page first.</p>
         <div class="es-cmd"><pre id="cmd-upload" tabindex="0" aria-label="Commands to open a pull request"><code>pip install -U huggingface_hub
 hf auth login
 hf upload {{hf_repo}} my_submission/{{data_dir}} {{data_dir}} --repo-type dataset --create-pr --commit-message "Add EvalSpec records: &lt;model or paper&gt;"</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-upload" hidden>Copy</button></div>
-        <p class="es-prose">Without the command line: open the <a href="{{datastore_url}}/tree/{{revision}}/{{data_dir}}">datastore on Hugging Face</a>, choose Contribute and then Upload files, and select the option to open a pull request before you commit.</p>
+        <p class="es-prose">Without the command line: open the <a href="{{datastore_url}}/tree/{{revision}}/{{data_dir}}">datastore on Hugging Face</a>, choose Contribute and then Upload files, add your <code>.jsonl</code> file, and select the option to open a pull request before you commit.</p>
         <h3>What happens next</h3>
         <ul class="es-prose">
-          <li>A maintainer runs the same validator on the pull request. A record has to be well formed. It does not have to reach a tier.</li>
+          <li>A maintainer runs the same validator on the file of the pull request. A record has to be well formed. It does not have to reach a tier.</li>
+          <li>Your records stay in the file you uploaded, or a maintainer moves its lines into the file of a source that is already there.</li>
           <li>After the merge the site is rebuilt from the datastore. The record appears in the <a href="registry.html">registry</a> and on the page of its model, in the track its provenance tag puts it in.</li>
           <li>A record is corrected or withdrawn with another pull request.</li>
         </ul>
@@ -211,7 +212,7 @@ with open("records.json", "w") as f:
     <p class="es-prose">As released, the hook leaves out <code>benchmark_variant</code>, <code>answer_parser_version</code> for generation tasks, and the range of the score (<code>min_score</code>, <code>max_score</code>). Its prompt hash covers the task template only. Add what is missing to each record; the validator lists it.</p>
     <p class="es-prose">The validator is one Python file without dependencies. Download <a href="tools/evalspec.py" download>evalspec.py</a> and <a href="spec/fields.json" download>fields.json</a> into one folder.</p>
     <div class="es-cmd"><pre id="cmd-cli" tabindex="0" aria-label="Command-line validator"><code>python evalspec.py check records.json --verbose          # tier, coverage and what is missing
-python evalspec.py to-eee records.json --output my_submission/   # writes my_submission/{{data_dir}}/&lt;source&gt;/&lt;developer&gt;/&lt;model&gt;/&lt;uuid&gt;.json
+python evalspec.py to-eee records.json --output my_submission/   # writes my_submission/{{data_dir}}/&lt;source&gt;-&lt;id&gt;.jsonl, one record per line
 python evalspec.py hash prompt.txt                        # sha256 of a prompt template</code></pre><button class="es-btn is-plain is-small" type="button" data-copy="cmd-cli" hidden>Copy</button></div>
     <p class="es-prose">For another harness, an adapter maps its configuration keys onto the same flat record. The Spec page lists <a href="spec.html#reference">what HELM, LightEval and OpenCompass already expose</a>.</p>
   </section>

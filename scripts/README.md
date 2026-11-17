@@ -1,24 +1,37 @@
-# `scripts/` — reproduction & verification entry points
+# Scripts
 
-Thin, self-contained command-line scripts. Each runs from the repo root, reads
-the on-disk `data/` and `experiments/` outputs, and writes to `analysis_output/`
-(or repo root). None requires API keys — they recompute from shipped data.
+Entry points for getting the dataset and recomputing the paper's numbers. Run them from
+the repository root. None needs an API key.
 
 | Script | What it does | Output |
 |---|---|---|
-| `reproduce_paper.py` | **Single source of truth.** Rebuilds the canonical aggregate from `data/` and recomputes every headline number (§3 dataset totals, §4 coverage + audits, §5/App-G experiments). | `analysis_output/paper_numbers.json` (+ printed report) |
-| `reproduce_case_studies.py` | Re-derives the §5 case-study numbers from the raw per-record JSONs and experiment JSONLs — 19 independent checks (`PASS`/`FAIL`). | stdout (19/19 verification) |
-| `generate_evidence_file.py` | Builds the raw-data provenance dump behind the §5 case studies (JSON paths, harness/shot fields per claim). | `section5_evidence.txt` (repo root) |
-
-## Usage
+| `fetch_data.py` | Downloads the published dataset from Hugging Face and lays it out under `data/` | `data/aggregated/`, `data/records/`, `data/annotations/` |
+| `reproduce_paper.py` | Recomputes the dataset totals, the metadata coverage, the score and harness audits and the experiment numbers | `analysis_output/paper_numbers.json` and a printed report |
+| `reproduce_case_studies.py` | Looks up every score quoted in the case studies of Section 5 and compares it with the paper | `PASS` / `FAIL` lines |
+| `collision_prevalence.py` | Counts model and benchmark pairs reported by several sources, and how often they disagree | printed report |
+| `generate_evidence_file.py` | Writes the records behind each case study, with their harness and shot fields | `section5_evidence.txt` |
+| `dataset_access.py` | Shared by the scripts above: finds the dataset on disk in either layout | |
 
 ```bash
-python scripts/reproduce_paper.py              # recompute all paper numbers
-python scripts/reproduce_paper.py --no-rebuild # reuse data/aggregated/all_results.csv (faster)
-python scripts/reproduce_case_studies.py       # §5 case-study checks (19/19)
-python scripts/generate_evidence_file.py       # write section5_evidence.txt
-# or: make repro   (== reproduce_paper.py)
+python scripts/fetch_data.py
+python scripts/reproduce_paper.py
+python scripts/reproduce_case_studies.py
 ```
 
-`reproduce_paper.py` is the authoritative one; the other two are detail/provenance
-companions for §5. See the top-level `README.md` for the full reproduction guide.
+## Two layouts of `data/`
+
+The scripts read the published dataset as `fetch_data.py` writes it: one CSV with every
+result, and one JSONL file per source. They also read the working tree of the extraction
+pipeline, which has one JSON file per record (`data/<source>/.../<uuid>.json`). When that
+tree is present, `reproduce_paper.py` rebuilds `all_results.csv` from it first; pass
+`--no-rebuild` to skip that.
+
+The case-study scripts name single record files of the pipeline tree. On the published
+dataset the same records are found in the JSONL files by paper, model and benchmark.
+
+## Experiment numbers
+
+`reproduce_paper.py` and `reproduce_case_studies.py` read the raw result files of the
+experiments under `experiments/*/results/`. Files that are not on disk are listed at the
+end of the report, and the checks that need them are skipped. `experiments/README.md`
+says which files those are.

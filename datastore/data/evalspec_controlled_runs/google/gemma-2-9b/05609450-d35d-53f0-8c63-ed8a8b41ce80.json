@@ -10,7 +10,7 @@
     "evaluator_relationship": "third_party",
     "additional_details": {
       "evidence_source": "source-reported",
-      "sample_origin": "experiments/harness_reeval/version_compare/sealion_provenance/olv2_gemma2_9b_bbh.json in the code repository"
+      "sample_origin": "experiments/bbh_protocol/sealion_provenance/olv2_gemma2_9b_bbh.json in the code repository"
     }
   },
   "eval_library": {
@@ -46,7 +46,7 @@
         "additional_details": {
           "scoring_mode": "log-likelihood",
           "benchmark_variant": "leaderboard_bbh",
-          "provenance_url": "https://github.com/psychias/EvalSpec/tree/main/experiments/harness_reeval/version_compare/sealion_provenance",
+          "provenance_url": "https://github.com/psychias/EvalSpec/tree/main/experiments/bbh_protocol/sealion_provenance",
           "note": "A re-run of the leaderboard's configuration on revision beb0c08e. The leaderboard's own value before rescaling is 53.77."
         }
       }

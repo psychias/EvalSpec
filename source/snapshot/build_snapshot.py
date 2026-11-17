@@ -260,10 +260,10 @@ def controlled_runs():
                 "experiments/harness_reeval/version_compare/version_pairs.csv and the README of the code repository (experiment E3)",
                 library=("lm-evaluation-harness", version))
     details = {"scoring_mode": "log-likelihood", "benchmark_variant": "leaderboard_bbh",
-               "provenance_url": REPO + "experiments/harness_reeval/version_compare/sealion_provenance",
+               "provenance_url": REPO + "experiments/bbh_protocol/sealion_provenance",
                "note": "A re-run of the leaderboard's configuration on revision beb0c08e. The leaderboard's own value before rescaling is 53.77."}
     run("rerun/leaderboard_bbh", "google/gemma-2-9b", result("bbh", 53.8795, metric="acc_norm", shots=3, details=details),
-        "experiments/harness_reeval/version_compare/sealion_provenance/olv2_gemma2_9b_bbh.json in the code repository")
+        "experiments/bbh_protocol/sealion_provenance/olv2_gemma2_9b_bbh.json in the code repository")
     for model_id, ratings in JUDGED.items():
         for judge, rating in zip(JUDGES, ratings):
             details = {"scoring_mode": "preference", "benchmark_variant": "MT-Bench, 80 turn-1 questions, single-answer grading",

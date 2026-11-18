@@ -11,6 +11,7 @@ the repository root. None needs an API key.
 | `collision_prevalence.py` | Section 3.3: counts model and benchmark pairs reported by several sources, how often they disagree, and how often the harness is missing. Names are compared after lower-casing and dropping punctuation, with no alias table | printed report |
 | `generate_evidence_file.py` | Writes the records behind each case study, with their harness and shot fields | `section5_evidence.txt` |
 | `dataset_card_numbers.py` | Recomputes every number on the dataset card on Hugging Face; with `--check` it compares them with the card and fails when one is missing | printed report |
+| `olv2_raw_scores.py` | Checks the Open LLM Leaderboard scores the paper quotes from the leaderboard's own table (the score before rescaling, such as 43.62 for Gemma-7B on BBH), which are not in the dataset. Reads the saved rows of the four models; with `--fetch` it downloads the table at a fixed revision and compares | printed report |
 | `dataset_access.py` | Shared by the scripts above: finds the dataset on disk in either layout | |
 
 ```bash

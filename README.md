@@ -209,6 +209,7 @@ make figures      # redraws every file in figures/ from the data and the experim
 | Collision counts of Section 3.3 | Reproduces from the published dataset (`scripts/collision_prevalence.py`) |
 | Score, harness and metadata audits | Reproduces from the audit files of the dataset |
 | Case-study scores of Section 5 | Reproduces: 25 of 25 checks pass |
+| Leaderboard scores before rescaling (43.62 for Gemma-7B on BBH, and five more) | Not in the dataset. `scripts/olv2_raw_scores.py` checks them against the saved rows of the leaderboard's table |
 | Figures in `figures/` | Redrawn by `make figures` |
 | Exp2 (scoring mode) | Reproduces from `experiments/scoring_mode_eval/scoring_mode_results.jsonl` |
 | Factorial grid, Exp1, Exp3, judge model, temperature panel | Reproduces from the raw result files under `experiments/*/results/`, without a GPU or an API key |

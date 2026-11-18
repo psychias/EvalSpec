@@ -18,7 +18,7 @@ pip install -e ".[dev]"
 huggingface-cli login                 # the dataset is gated: accept its terms on its page first
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 118 tests
+pytest                                # 121 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
@@ -174,7 +174,11 @@ data/aggregated/all_results.csv     one row per source, model, benchmark and sco
 data/records/<source>.jsonl         the full records of each of the 12 sources, one per line
 data/annotations/*.csv              the hand-checked audit sets (scores, harness, metadata fields)
 data/eval.schema.json               the record schema
+data/DATASET_CARD.md                the dataset card, as published on Hugging Face
 ```
+
+`python scripts/dataset_card_numbers.py --check` recomputes every number on the dataset
+card from these files and fails if one of them is not on the card.
 
 The dataset is gated, so the download needs a HuggingFace account that has accepted its
 terms. With a copy already on disk, run `python scripts/fetch_data.py --from <folder>`.

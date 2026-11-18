@@ -10,6 +10,7 @@ Writes:
     data/records/<source>.jsonl         the full records of each source, one per line
     data/annotations/*.csv              the hand-checked audit sets
     data/eval.schema.json               the record schema shipped with the dataset
+    data/DATASET_CARD.md                the dataset card (the README of the dataset)
 
 The dataset is gated on Hugging Face: log in (`huggingface-cli login`) with an account
 that has accepted its terms before running this script.
@@ -48,6 +49,8 @@ def lay_out(source: pathlib.Path) -> dict[str, int]:
     plan += [(f, DATA / "annotations" / f.name) for f in sorted((source / "annotations").glob("*.csv"))]
     if (source / "eval.schema.json").exists():
         plan.append((source / "eval.schema.json", DATA / "eval.schema.json"))
+    if (source / "README.md").exists():                    # the dataset card, for dataset_card_numbers.py --check
+        plan.append((source / "README.md", DATA / "DATASET_CARD.md"))
     for src, dst in plan:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(src, dst)

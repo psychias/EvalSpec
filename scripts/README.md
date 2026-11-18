@@ -5,11 +5,12 @@ the repository root. None needs an API key.
 
 | Script | What it does | Output |
 |---|---|---|
-| `fetch_data.py` | Downloads the published dataset from Hugging Face and lays it out under `data/` | `data/aggregated/`, `data/records/`, `data/annotations/` |
+| `fetch_data.py` | Downloads the published dataset from Hugging Face and lays it out under `data/` | `data/aggregated/`, `data/records/`, `data/annotations/`, `data/DATASET_CARD.md` |
 | `reproduce_paper.py` | Recomputes the dataset totals, the metadata coverage (Tables 6 and 7), the collision counts, the score, harness and metadata audits (Tables 4 and 5) and the experiment numbers | `analysis_output/paper_numbers.json` and a printed report |
 | `reproduce_case_studies.py` | Looks up every score quoted in the case studies of Section 5 and compares it with the paper | `PASS` / `FAIL` lines |
 | `collision_prevalence.py` | Section 3.3: counts model and benchmark pairs reported by several sources, how often they disagree, and how often the harness is missing. Names are compared after lower-casing and dropping punctuation, with no alias table | printed report |
 | `generate_evidence_file.py` | Writes the records behind each case study, with their harness and shot fields | `section5_evidence.txt` |
+| `dataset_card_numbers.py` | Recomputes every number on the dataset card on Hugging Face; with `--check` it compares them with the card and fails when one is missing | printed report |
 | `dataset_access.py` | Shared by the scripts above: finds the dataset on disk in either layout | |
 
 ```bash

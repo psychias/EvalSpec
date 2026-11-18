@@ -38,6 +38,11 @@ dev = [
 helm = [
     "dacite>=1.8",
 ]
+# Reads the Open LLM Leaderboard's own table (Parquet) for
+# scripts/olv2_raw_scores.py --fetch. The check against the saved rows needs none of it.
+leaderboard = [
+    "pyarrow>=15",
+]
 
 [build-system]
 requires = ["setuptools>=64"]

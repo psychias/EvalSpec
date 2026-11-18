@@ -56,12 +56,15 @@ def download() -> list[dict]:
         import pandas as pd
         from huggingface_hub import hf_hub_download
     except ImportError as e:
-        sys.exit(f"--fetch needs pandas, pyarrow and huggingface_hub: {e}")
+        sys.exit(f'--fetch needs pandas and huggingface_hub ({e}). Run: pip install -e ".[leaderboard]"')
     path = Path(hf_hub_download(REPO, FILE, repo_type="dataset", revision=REVISION))
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != SHA256:
         sys.exit(f"{REPO}@{REVISION[:7]}: checksum {digest} is not the expected {SHA256}")
-    table = pd.read_parquet(path)
+    try:
+        table = pd.read_parquet(path)
+    except ImportError:                      # pandas has no Parquet reader
+        sys.exit('--fetch needs pyarrow to read the table. Run: pip install -e ".[leaderboard]"')
     rows = table[table["fullname"].isin(MODELS)].sort_values("eval_name")
     return json.loads(rows.to_json(orient="records"))
 

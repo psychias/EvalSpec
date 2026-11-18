@@ -31,7 +31,7 @@ try:
     print(f"Friedman chi^2({k-1}) = {stat:.1f}, p = {p:.2e}")
     W = stat / (n * (k - 1))
     print(f"Kendall's W = {W:.3f}")
-except Exception as e:  # manual Friedman if scipy missing
+except ImportError as e:  # manual Friedman if scipy missing
     print("scipy unavailable, computing manually:", str(e)[:60])
     # rank within each block
     Rj = [0.0] * k

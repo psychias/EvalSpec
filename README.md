@@ -18,7 +18,7 @@ pip install -e ".[dev]"
 huggingface-cli login                 # the dataset is gated: accept its terms on its page first
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 102 tests
+pytest                                # 118 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit

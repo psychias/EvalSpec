@@ -33,7 +33,7 @@ def load_results(path):
             r = json.loads(line)
             if r.get('status') == 'ok':
                 records.append(r)
-        except Exception:
+        except (ValueError, AttributeError):   # a line that is not a JSON object
             pass
     return records
 

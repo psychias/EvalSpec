@@ -41,7 +41,7 @@ def audit_source(source_dir: Path) -> dict:
             continue
         try:
             rec = json.loads(fpath.read_text())
-        except Exception:
+        except (OSError, ValueError):   # unreadable file, or not JSON
             continue
         if not isinstance(rec, dict):
             continue

@@ -20,7 +20,7 @@ from collections import defaultdict
 
 try:
     from scipy import stats as _scipy_stats
-except Exception:  # scipy optional
+except ImportError:  # scipy optional
     _scipy_stats = None
 
 

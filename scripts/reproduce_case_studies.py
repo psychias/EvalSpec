@@ -147,7 +147,7 @@ def fetch_olv2_api(model_id: str, benchmark_key: str = "bbh") -> float | None:
                 evals = entry.get("results", entry.get("evaluations", {}))
                 if isinstance(evals, dict):
                     return evals.get(benchmark_key)
-    except Exception as exc:
+    except (OSError, ValueError) as exc:   # network failure, or an answer that is not JSON
         print(f"    [API error] {exc}")
     return None
 

@@ -17,20 +17,29 @@ import json
 import os
 import re
 import sys
-import time
 import urllib.request
 from collections import defaultdict
 
-import requests
-
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+
+# the OpenRouter client and the JSONL helpers are shared by the experiment scripts
+sys.path.insert(0, os.path.join(SCRIPT_DIR, ".."))
+from common import openrouter
+from common.openrouter import append_jsonl as append
+from common.openrouter import parse_rating, read_jsonl
+
+
+def chat(model, prompt, temperature, max_tokens=1024):
+    """One answer to a single user prompt at the given temperature."""
+    return openrouter.chat(model, [{"role": "user", "content": prompt}], temperature, max_tokens, timeout=150)
+
+
 RESULTS_DIR = os.path.join(SCRIPT_DIR, "results")
 os.makedirs(RESULTS_DIR, exist_ok=True)
 GEN_PATH = os.path.join(RESULTS_DIR, "gen.jsonl")
 STATS_PATH = os.path.join(SCRIPT_DIR, "temperature_panel_stats.json")
 
-BASE = "https://openrouter.ai/api/v1/chat/completions"
 MT_BENCH_URL = ("https://raw.githubusercontent.com/lm-sys/FastChat/main/"
                 "fastchat/llm_judge/data/mt_bench/question.jsonl")
 
@@ -51,52 +60,6 @@ JUDGE_TEMPLATE = (
     "(helpfulness, relevance, accuracy, depth). After a short explanation, output "
     'the rating strictly as "[[n]]" with n from 1 to 10.\n\n'
     "[Question]\n{question}\n\n[Answer]\n{answer}")
-
-
-def load_key():
-    env = os.path.join(REPO_ROOT, ".env")
-    if os.path.exists(env):
-        for line in open(env, encoding="utf-8"):
-            if line.startswith("OPENROUTER_API_KEY="):
-                return line.split("=", 1)[1].strip().strip('"').strip("'")
-    k = os.environ.get("OPENROUTER_API_KEY")
-    if not k:
-        sys.exit("OPENROUTER_API_KEY not found")
-    return k
-
-
-def headers():
-    # read the key only when a model is called, so --analyze needs none
-    return {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
-
-
-def chat(model, prompt, temperature, max_tokens=1024, retries=4):
-    payload = {"model": model, "messages": [{"role": "user", "content": prompt}],
-               "temperature": temperature, "max_tokens": max_tokens}
-    last = None
-    for a in range(retries):
-        try:
-            r = requests.post(BASE, headers=headers(), json=payload, timeout=150)
-            if r.status_code == 200:
-                c = r.json()["choices"][0]["message"].get("content")
-                if c:
-                    return c
-                last = "empty"
-            else:
-                last = f"HTTP {r.status_code}"
-        except Exception as e:  # noqa: BLE001
-            last = str(e)[:80]
-        time.sleep(2 * (a + 1))
-    return f"__ERROR__ {last}"
-
-
-def read_jsonl(p):
-    return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()] if os.path.exists(p) else []
-
-
-def append(p, o):
-    with open(p, "a", encoding="utf-8") as f:
-        f.write(json.dumps(o, ensure_ascii=False) + "\n")
 
 
 def load_gsm8k():
@@ -125,16 +88,6 @@ def num_from(text):
             return None
         return nums[-1].replace(",", "")
     return m.group(1).replace(",", "")
-
-
-def parse_rating(text):
-    m = re.search(r"\[\[\s*(\d+(?:\.\d+)?)\s*\]\]", text) or re.search(r"[Rr]ating:?\s*(\d+(?:\.\d+)?)", text)
-    if not m:
-        return None
-    try:
-        v = float(m.group(1)); return v if 1 <= v <= 10 else None
-    except ValueError:
-        return None
 
 
 def generate():

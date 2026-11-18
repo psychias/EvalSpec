@@ -9,23 +9,30 @@ import concurrent.futures as cf
 import itertools
 import json
 import os
-import re
 import sys
-import time
 import urllib.request
 from collections import defaultdict
 
-import requests
-
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+
+# the OpenRouter client and the JSONL helpers are shared by the experiment scripts
+sys.path.insert(0, os.path.join(SCRIPT_DIR, ".."))
+from common import openrouter
+from common.openrouter import append_jsonl, parse_rating, read_jsonl
+
+
+def chat(model, messages, max_tokens=800):
+    """One answer at temperature 0."""
+    return openrouter.chat(model, messages, temperature=0.0, max_tokens=max_tokens)
+
+
 RESULTS_DIR = os.path.join(SCRIPT_DIR, "results")
 os.makedirs(RESULTS_DIR, exist_ok=True)
 RESP_PATH = os.path.join(RESULTS_DIR, "responses.jsonl")
 JUDGE_PATH = os.path.join(RESULTS_DIR, "judge_runs.jsonl")
 STATS_PATH = os.path.join(SCRIPT_DIR, "judge_vicuna_stats.json")
 
-BASE = "https://openrouter.ai/api/v1/chat/completions"
 VICUNA_URL = ("https://raw.githubusercontent.com/lm-sys/FastChat/main/"
               "fastchat/llm_judge/data/vicuna_bench/question.jsonl")
 
@@ -55,61 +62,6 @@ JUDGE_TEMPLATE = (
     "[Question]\n{question}\n\n"
     "[The Start of Assistant's Answer]\n{answer}\n[The End of Assistant's Answer]"
 )
-
-
-def load_key():
-    env = os.path.join(REPO_ROOT, ".env")
-    if os.path.exists(env):
-        for line in open(env, encoding="utf-8"):
-            if line.startswith("OPENROUTER_API_KEY="):
-                return line.split("=", 1)[1].strip().strip('"').strip("'")
-    key = os.environ.get("OPENROUTER_API_KEY")
-    if not key:
-        sys.exit("OPENROUTER_API_KEY not found")
-    return key
-
-
-def headers():
-    # read the key only when a model is called, so --analyze needs none
-    return {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
-
-
-def chat(model, messages, max_tokens=800, retries=4):
-    payload = {"model": model, "messages": messages, "temperature": 0.0, "max_tokens": max_tokens}
-    last = None
-    for attempt in range(retries):
-        try:
-            r = requests.post(BASE, headers=headers(), json=payload, timeout=120)
-            if r.status_code == 200:
-                content = r.json()["choices"][0]["message"].get("content")
-                if content:
-                    return content
-                last = "empty content"
-            else:
-                last = f"HTTP {r.status_code}: {r.text[:150]}"
-        except Exception as e:  # noqa: BLE001
-            last = str(e)
-        time.sleep(2 * (attempt + 1))
-    return f"__ERROR__ {last}"
-
-
-def read_jsonl(p):
-    return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()] if os.path.exists(p) else []
-
-
-def append_jsonl(p, o):
-    with open(p, "a", encoding="utf-8") as f:
-        f.write(json.dumps(o, ensure_ascii=False) + "\n")
-
-
-def parse_rating(text):
-    m = re.search(r"\[\[\s*(\d+(?:\.\d+)?)\s*\]\]", text) or re.search(r"[Rr]ating:?\s*(\d+(?:\.\d+)?)", text)
-    if not m:
-        return None
-    try:
-        v = float(m.group(1)); return v if 1 <= v <= 10 else None
-    except ValueError:
-        return None
 
 
 def load_prompts():

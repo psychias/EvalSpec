@@ -22,21 +22,21 @@ Both stages cache to JSONL so re-runs only fill gaps. Outputs:
 import concurrent.futures as cf
 import json
 import os
-import re
 import sys
-import time
 import urllib.request
-
-import requests
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT   = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+
+# the OpenRouter client and the JSONL helpers are shared by the experiment scripts
+sys.path.insert(0, os.path.join(SCRIPT_DIR, ".."))
+from common.openrouter import append_jsonl, chat, parse_rating, read_jsonl
+
 RESULTS_DIR = os.path.join(SCRIPT_DIR, "results")
 RESP_PATH   = os.path.join(RESULTS_DIR, "responses.jsonl")
 JUDGE_PATH  = os.path.join(RESULTS_DIR, "judge_runs.jsonl")
 REPORT_PATH = os.path.join(SCRIPT_DIR, "judge_sensitivity_report.txt")
 
-BASE = "https://openrouter.ai/api/v1/chat/completions"
 MT_BENCH_URL = ("https://raw.githubusercontent.com/lm-sys/FastChat/main/"
                 "fastchat/llm_judge/data/mt_bench/question.jsonl")
 
@@ -73,43 +73,6 @@ JUDGE_TEMPLATE = (
 )
 
 
-def load_key():
-    env = os.path.join(REPO_ROOT, ".env")
-    for line in open(env, encoding="utf-8"):
-        if line.startswith("OPENROUTER_API_KEY="):
-            return line.split("=", 1)[1].strip().strip('"').strip("'")
-    key = os.environ.get("OPENROUTER_API_KEY")
-    if not key:
-        sys.exit("OPENROUTER_API_KEY not found in .env or environment")
-    return key
-
-
-def headers():
-    # read the key only when a model is called, so --analyze needs none
-    return {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
-
-
-def chat(model, messages, temperature=0.0, max_tokens=512, retries=4):
-    payload = {"model": model, "messages": messages,
-               "temperature": temperature, "max_tokens": max_tokens}
-    last = None
-    for attempt in range(retries):
-        try:
-            r = requests.post(BASE, headers=headers(), json=payload, timeout=120)
-            if r.status_code == 200:
-                j = r.json()
-                content = j["choices"][0]["message"].get("content")
-                if content:
-                    return content
-                last = "empty/None content"  # null content -> retry, then error
-            else:
-                last = f"HTTP {r.status_code}: {r.text[:200]}"
-        except Exception as e:  # noqa: BLE001
-            last = str(e)
-        time.sleep(2 * (attempt + 1))
-    return f"__ERROR__ {last}"
-
-
 def load_prompts():
     raw = urllib.request.urlopen(MT_BENCH_URL, timeout=60).read().decode("utf-8")
     qs = []
@@ -121,30 +84,6 @@ def load_prompts():
                    "category": obj.get("category", ""),
                    "prompt": obj["turns"][0]})  # turn-1 only
     return qs
-
-
-def read_jsonl(path):
-    if not os.path.exists(path):
-        return []
-    return [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
-
-
-def append_jsonl(path, obj):
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(obj, ensure_ascii=False) + "\n")
-
-
-def parse_rating(text):
-    m = re.search(r"\[\[\s*(\d+(?:\.\d+)?)\s*\]\]", text)
-    if not m:
-        m = re.search(r"[Rr]ating:?\s*(\d+(?:\.\d+)?)", text)
-    if not m:
-        return None
-    try:
-        v = float(m.group(1))
-        return v if 1 <= v <= 10 else None
-    except ValueError:
-        return None
 
 
 def generate_responses(prompts):

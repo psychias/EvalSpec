@@ -31,6 +31,9 @@ session. Gated models (Mistral, Gemma, the GPQA dataset) need `HF_TOKEN` set to 
 with access. The judge and temperature experiments need no GPU: they call models through
 OpenRouter and read `OPENROUTER_API_KEY` from the environment or from `.env`.
 
+The OpenRouter client and the JSONL helpers these scripts share are in
+[`common/openrouter.py`](common/openrouter.py).
+
 Each script writes its raw records to a `results/` folder next to it and caches there, so
 a second run only fills gaps. Analysis scripts read from the same folder.
 

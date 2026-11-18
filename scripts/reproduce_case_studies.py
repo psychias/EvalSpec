@@ -175,9 +175,9 @@ def main(live_api: bool = False) -> None:
     else:
         ce_records = read_jsonl(CONTROLLED_RESULTS)
         ce_all = pd.DataFrame(ce_records)
-        ce = ce_all[ce_all["status"] == "ok"]   # 306 successful runs (312 total incl. failures)
+        ce = ce_all[ce_all["status"] == "ok"]   # all 312 runs completed
 
-        check("Total controlled-eval runs (status=ok)", 306, len(ce),
+        check("Total controlled-eval runs (status=ok)", 312, len(ce),
               str(CONTROLLED_RESULTS))
 
         n_models = ce["model_id"].nunique()

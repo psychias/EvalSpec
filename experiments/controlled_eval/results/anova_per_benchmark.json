@@ -1,0 +1,798 @@
+{
+  "gsm8k": {
+    "benchmark": "gsm8k",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 24,
+          "mean": 19.25,
+          "min": 2.0,
+          "max": 41.0
+        },
+        "instruct": {
+          "n": 24,
+          "mean": 34.1875,
+          "min": 16.5,
+          "max": 57.0
+        },
+        "plain": {
+          "n": 24,
+          "mean": 38.75,
+          "min": 18.5,
+          "max": 59.5
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 24,
+          "instruct": 24,
+          "plain": 24
+        },
+        "F": 13.003179507742384,
+        "p": 1.613713208191873e-05,
+        "eta_squared": 0.27373282467593635,
+        "n_total": 72
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 36,
+          "mean": 31.52777777777778,
+          "min": 2.5,
+          "max": 58.5
+        },
+        "0.7": {
+          "n": 36,
+          "mean": 29.930555555555557,
+          "min": 2.0,
+          "max": 59.5
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0",
+          "0.7"
+        ],
+        "n_per_level": {
+          "0.0": 36,
+          "0.7": 36
+        },
+        "F": 0.17664941802531992,
+        "p": 0.6755560388021677,
+        "eta_squared": 0.0025172107743853932,
+        "n_total": 72
+      }
+    }
+  },
+  "mmlu": {
+    "benchmark": "mmlu",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 4,
+          "mean": 51.949225,
+          "min": 35.9686,
+          "max": 61.9514
+        },
+        "instruct": {
+          "n": 4,
+          "mean": 65.866275,
+          "min": 52.521,
+          "max": 76.0862
+        },
+        "plain": {
+          "n": 4,
+          "mean": 65.667525,
+          "min": 55.1672,
+          "max": 73.0262
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 4,
+          "instruct": 4,
+          "plain": 4
+        },
+        "F": 2.4327890795423386,
+        "p": 0.14301130438909254,
+        "eta_squared": 0.35091058614795434,
+        "n_total": 12
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 12,
+          "mean": 61.161008333333335,
+          "min": 35.9686,
+          "max": 76.0862
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0"
+        ],
+        "n_per_level": {
+          "0.0": 12
+        },
+        "F": NaN,
+        "p": NaN,
+        "eta_squared": 0.0,
+        "n_total": 12
+      }
+    }
+  },
+  "gpqa": {
+    "benchmark": "gpqa",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 4,
+          "mean": 32.0,
+          "min": 25.5,
+          "max": 40.5
+        },
+        "instruct": {
+          "n": 4,
+          "mean": 32.0,
+          "min": 26.0,
+          "max": 38.0
+        },
+        "plain": {
+          "n": 4,
+          "mean": 27.5,
+          "min": 19.5,
+          "max": 35.5
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 4,
+          "instruct": 4,
+          "plain": 4
+        },
+        "F": 0.7210682492581603,
+        "p": 0.5123174465139652,
+        "eta_squared": 0.13810741687979539,
+        "n_total": 12
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 12,
+          "mean": 30.5,
+          "min": 19.5,
+          "max": 40.5
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0"
+        ],
+        "n_per_level": {
+          "0.0": 12
+        },
+        "F": NaN,
+        "p": NaN,
+        "eta_squared": 0.0,
+        "n_total": 12
+      }
+    }
+  },
+  "ARC-Challenge": {
+    "benchmark": "ARC-Challenge",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 4,
+          "mean": 50.682575,
+          "min": 44.0273,
+          "max": 58.959
+        },
+        "instruct": {
+          "n": 4,
+          "mean": 56.7406,
+          "min": 51.5358,
+          "max": 60.2389
+        },
+        "plain": {
+          "n": 4,
+          "mean": 55.11942499999999,
+          "min": 45.8191,
+          "max": 61.3481
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 4,
+          "instruct": 4,
+          "plain": 4
+        },
+        "F": 1.133285257770931,
+        "p": 0.3639388898521387,
+        "eta_squared": 0.201176614695235,
+        "n_total": 12
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 12,
+          "mean": 54.180866666666674,
+          "min": 44.0273,
+          "max": 61.3481
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0"
+        ],
+        "n_per_level": {
+          "0.0": 12
+        },
+        "F": NaN,
+        "p": NaN,
+        "eta_squared": 0.0,
+        "n_total": 12
+      }
+    }
+  },
+  "WinoGrande": {
+    "benchmark": "WinoGrande",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 4,
+          "mean": 71.01419999999999,
+          "min": 68.5872,
+          "max": 73.6385
+        },
+        "instruct": {
+          "n": 4,
+          "mean": 68.133375,
+          "min": 64.6409,
+          "max": 71.3496
+        },
+        "plain": {
+          "n": 4,
+          "mean": 69.317275,
+          "min": 66.1405,
+          "max": 72.2178
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 4,
+          "instruct": 4,
+          "plain": 4
+        },
+        "F": 1.153113734545646,
+        "p": 0.3582296742221693,
+        "eta_squared": 0.2039785132039832,
+        "n_total": 12
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 12,
+          "mean": 69.48828333333334,
+          "min": 64.6409,
+          "max": 73.6385
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0"
+        ],
+        "n_per_level": {
+          "0.0": 12
+        },
+        "F": NaN,
+        "p": NaN,
+        "eta_squared": 0.0,
+        "n_total": 12
+      }
+    }
+  },
+  "OpenBookQA": {
+    "benchmark": "OpenBookQA",
+    "n_shot": 5,
+    "format": {
+      "summary": {
+        "cot": {
+          "n": 4,
+          "mean": 40.6,
+          "min": 36.4,
+          "max": 46.8
+        },
+        "instruct": {
+          "n": 4,
+          "mean": 42.5,
+          "min": 38.2,
+          "max": 46.0
+        },
+        "plain": {
+          "n": 4,
+          "mean": 42.7,
+          "min": 38.2,
+          "max": 46.8
+        }
+      },
+      "anova": {
+        "factor": "prompt_format",
+        "levels": [
+          "cot",
+          "instruct",
+          "plain"
+        ],
+        "n_per_level": {
+          "cot": 4,
+          "instruct": 4,
+          "plain": 4
+        },
+        "F": 0.37616677037959023,
+        "p": 0.6967914844355031,
+        "eta_squared": 0.07714395099540587,
+        "n_total": 12
+      }
+    },
+    "temperature": {
+      "summary": {
+        "0.0": {
+          "n": 12,
+          "mean": 41.93333333333333,
+          "min": 36.4,
+          "max": 46.8
+        }
+      },
+      "anova": {
+        "factor": "temperature",
+        "levels": [
+          "0.0"
+        ],
+        "n_per_level": {
+          "0.0": 12
+        },
+        "F": NaN,
+        "p": NaN,
+        "eta_squared": 0.0,
+        "n_total": 12
+      }
+    }
+  },
+  "_nshot": {
+    "gsm8k": {
+      "benchmark": "gsm8k",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 72,
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "5": {
+            "n": 72,
+            "mean": 30.729166666666668,
+            "min": 2.0,
+            "max": 59.5
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 72,
+            "5": 72
+          },
+          "F": 264.6115520274636,
+          "p": 3.0021037220079933e-34,
+          "eta_squared": 0.6507723420745088,
+          "n_total": 144
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 24,
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "5": {
+            "n": 24,
+            "mean": 38.75,
+            "min": 18.5,
+            "max": 59.5
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 24,
+            "5": 24
+          },
+          "F": 189.60597049067826,
+          "p": 6.256685781924986e-18,
+          "eta_squared": 0.8047587677672201,
+          "n_total": 48
+        }
+      }
+    },
+    "mmlu": {
+      "benchmark": "mmlu",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 12,
+            "mean": 60.16826666666666,
+            "min": 24.2949,
+            "max": 78.7216
+          },
+          "5": {
+            "n": 12,
+            "mean": 61.161008333333335,
+            "min": 35.9686,
+            "max": 76.0862
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 12,
+            "5": 12
+          },
+          "F": 0.025957116249709332,
+          "p": 0.8734754461620355,
+          "eta_squared": 0.001178478470320805,
+          "n_total": 24
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 4,
+            "mean": 69.20942500000001,
+            "min": 61.995,
+            "max": 78.7216
+          },
+          "5": {
+            "n": 4,
+            "mean": 65.667525,
+            "min": 55.1672,
+            "max": 73.0262
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 4,
+            "5": 4
+          },
+          "F": 0.39731773199567716,
+          "p": 0.5517131624560033,
+          "eta_squared": 0.06210692490831393,
+          "n_total": 8
+        }
+      }
+    },
+    "gpqa": {
+      "benchmark": "gpqa",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 12,
+            "mean": 30.708333333333332,
+            "min": 25.0,
+            "max": 34.5
+          },
+          "5": {
+            "n": 12,
+            "mean": 30.5,
+            "min": 19.5,
+            "max": 40.5
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 12,
+            "5": 12
+          },
+          "F": 0.011261722429255905,
+          "p": 0.9164478561436239,
+          "eta_squared": 0.0005116345701246283,
+          "n_total": 24
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 4,
+            "mean": 32.125,
+            "min": 30.0,
+            "max": 34.5
+          },
+          "5": {
+            "n": 4,
+            "mean": 27.5,
+            "min": 19.5,
+            "max": 35.5
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 4,
+            "5": 4
+          },
+          "F": 1.7034425549564496,
+          "p": 0.23965308336177465,
+          "eta_squared": 0.2211274430625101,
+          "n_total": 8
+        }
+      }
+    },
+    "ARC-Challenge": {
+      "benchmark": "ARC-Challenge",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 12,
+            "mean": 48.27218333333334,
+            "min": 41.041,
+            "max": 53.7543
+          },
+          "5": {
+            "n": 12,
+            "mean": 54.180866666666674,
+            "min": 44.0273,
+            "max": 61.3481
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 12,
+            "5": 12
+          },
+          "F": 7.497432589239123,
+          "p": 0.01200328210985792,
+          "eta_squared": 0.25417237810636595,
+          "n_total": 24
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 4,
+            "mean": 49.2534,
+            "min": 43.43,
+            "max": 53.157
+          },
+          "5": {
+            "n": 4,
+            "mean": 55.11942499999999,
+            "min": 45.8191,
+            "max": 61.3481
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 4,
+            "5": 4
+          },
+          "F": 2.0766275215598813,
+          "p": 0.1996494082335007,
+          "eta_squared": 0.25711567309703126,
+          "n_total": 8
+        }
+      }
+    },
+    "WinoGrande": {
+      "benchmark": "WinoGrande",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 12,
+            "mean": 66.21284166666668,
+            "min": 58.6425,
+            "max": 70.3236
+          },
+          "5": {
+            "n": 12,
+            "mean": 69.48828333333334,
+            "min": 64.6409,
+            "max": 73.6385
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 12,
+            "5": 12
+          },
+          "F": 6.493492949385855,
+          "p": 0.01832407130680113,
+          "eta_squared": 0.22789389005133623,
+          "n_total": 24
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 4,
+            "mean": 66.002375,
+            "min": 59.7474,
+            "max": 69.6133
+          },
+          "5": {
+            "n": 4,
+            "mean": 69.317275,
+            "min": 66.1405,
+            "max": 72.2178
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 4,
+            "5": 4
+          },
+          "F": 1.7414039993208486,
+          "p": 0.23507608721791545,
+          "eta_squared": 0.2249467925293161,
+          "n_total": 8
+        }
+      }
+    },
+    "OpenBookQA": {
+      "benchmark": "OpenBookQA",
+      "pooled": {
+        "summary": {
+          "0": {
+            "n": 12,
+            "mean": 44.449999999999996,
+            "min": 41.4,
+            "max": 47.6
+          },
+          "5": {
+            "n": 12,
+            "mean": 41.93333333333333,
+            "min": 36.4,
+            "max": 46.8
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 12,
+            "5": 12
+          },
+          "F": 4.821526749841405,
+          "p": 0.03894478400517235,
+          "eta_squared": 0.17976332200663828,
+          "n_total": 24
+        }
+      },
+      "plain_only": {
+        "summary": {
+          "0": {
+            "n": 4,
+            "mean": 44.75,
+            "min": 44.0,
+            "max": 46.0
+          },
+          "5": {
+            "n": 4,
+            "mean": 42.7,
+            "min": 38.2,
+            "max": 46.8
+          }
+        },
+        "anova": {
+          "factor": "n_shot",
+          "levels": [
+            "0",
+            "5"
+          ],
+          "n_per_level": {
+            "0": 4,
+            "5": 4
+          },
+          "F": 1.2436498150431565,
+          "p": 0.30743263337202836,
+          "eta_squared": 0.1716882851598404,
+          "n_total": 8
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,13 @@ from eee_eval.converters.inspect.adapter import InspectAIAdapter
 from eee_eval.eval_types import EvaluatorRelationship
 from eee_eval.instance_level_types import InstanceLevelEvaluationLog, InteractionType
 
+# The inspect fixtures (tests/data/inspect/) are captured runs that are not in the repository.
+# Skip the module when they are absent, so that the suite passes on a fresh clone.
+pytestmark = pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "data" / "inspect").exists(),
+    reason="tests/data/inspect is not in this checkout",
+)
+
 
 def _load_instance_level_data(adapter, filepath, metadata_args):
     eval_filepath = Path(filepath)

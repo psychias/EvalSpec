@@ -84,7 +84,9 @@ def load_key():
     return key
 
 
-HEADERS = {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
+def headers():
+    # read the key only when a model is called, so --analyze needs none
+    return {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
 
 
 def chat(model, messages, temperature=0.0, max_tokens=512, retries=4):
@@ -93,7 +95,7 @@ def chat(model, messages, temperature=0.0, max_tokens=512, retries=4):
     last = None
     for attempt in range(retries):
         try:
-            r = requests.post(BASE, headers=HEADERS, json=payload, timeout=120)
+            r = requests.post(BASE, headers=headers(), json=payload, timeout=120)
             if r.status_code == 200:
                 j = r.json()
                 content = j["choices"][0]["message"].get("content")
@@ -278,7 +280,7 @@ def aggregate():
         out("(scipy not available; skipped Spearman)")
 
     out("")
-    out(f"Rows scored: {len(rows)}  |  written {JUDGE_PATH}")
+    out(f"Rows scored: {len(rows)}  |  written {os.path.relpath(JUDGE_PATH, SCRIPT_DIR)}")
     os.makedirs(os.path.dirname(REPORT_PATH), exist_ok=True)
     with open(REPORT_PATH, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
@@ -286,6 +288,9 @@ def aggregate():
 
 
 def main():
+    if "--analyze" in sys.argv:  # recompute the statistics from the saved results/, no API calls
+        aggregate()
+        return
     os.makedirs(RESULTS_DIR, exist_ok=True)
     prompts = load_prompts()
     print(f"Loaded {len(prompts)} MT-Bench turn-1 prompts")

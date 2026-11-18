@@ -6,3 +6,5 @@ Vicuna-Bench.
     python experiments/judge_sensitivity_vicuna/run_judge_vicuna.py
 
 Needs `OPENROUTER_API_KEY`. Summary statistics are in `judge_vicuna_stats.json`.
+The answers and the ratings are in `results/`; with `--analyze` the script recomputes
+the statistics from them and calls no model.

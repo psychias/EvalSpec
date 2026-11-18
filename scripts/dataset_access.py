@@ -57,7 +57,8 @@ def _title_match(folder: str, title: str) -> float:
 
 def _same_model(folder: str, name: str) -> bool:
     """The same model name, allowing its parts in another order (Llama-2-Chat-7B, Llama-2-7B-Chat)."""
-    words = lambda s: sorted(w for w in re.split(r"[^a-z0-9]+", s.lower()) if w)
+    def words(s):
+        return sorted(w for w in re.split(r"[^a-z0-9]+", s.lower()) if w)
     return flat(folder) == flat(name) or words(folder) == words(name)
 
 

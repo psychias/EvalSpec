@@ -1,0 +1,311 @@
+{
+  "benchmark_order": [
+    "gsm8k",
+    "mmlu",
+    "gpqa",
+    "ARC-Challenge",
+    "WinoGrande",
+    "OpenBookQA"
+  ],
+  "display_names": {
+    "gsm8k": "GSM8K",
+    "mmlu": "MMLU",
+    "gpqa": "GPQA",
+    "ARC-Challenge": "ARC-C",
+    "WinoGrande": "WinoGrande",
+    "OpenBookQA": "OBQA"
+  },
+  "eta": {
+    "gsm8k": {
+      "format": {
+        "eta_pct": 27.4,
+        "ci_pct": [
+          14.4,
+          44.9
+        ],
+        "sig": {
+          "marker": "*",
+          "p": 1.613713208191873e-05
+        }
+      },
+      "n_shot": {
+        "eta_pct": 65.1,
+        "ci_pct": [
+          57.6,
+          72.9
+        ],
+        "sig": {
+          "marker": "*",
+          "p": 3.0021037220079933e-34
+        }
+      },
+      "temperature": {
+        "eta_pct": 0.3,
+        "ci_pct": [
+          0.0,
+          8.0
+        ],
+        "sig": {
+          "marker": "",
+          "p": 0.6755560388021677
+        }
+      }
+    },
+    "mmlu": {
+      "format": {
+        "eta_pct": 35.1,
+        "ci_pct": [
+          10.6,
+          79.5
+        ],
+        "sig": {
+          "marker": "\u2020",
+          "p": 0.003
+        }
+      },
+      "n_shot": {
+        "eta_pct": 0.1,
+        "ci_pct": [
+          0.0,
+          22.2
+        ],
+        "sig": {
+          "marker": "",
+          "p": 0.8734754461620355
+        }
+      },
+      "temperature": null
+    },
+    "gpqa": {
+      "format": {
+        "eta_pct": 13.8,
+        "ci_pct": [
+          1.1,
+          70.2
+        ],
+        "sig": {
+          "marker": "",
+          "p": 0.5123174465139652
+        }
+      },
+      "n_shot": {
+        "eta_pct": 0.1,
+        "ci_pct": [
+          0.0,
+          22.7
+        ],
+        "sig": {
+          "marker": "",
+          "p": 0.9164478561436239
+        }
+      },
+      "temperature": null
+    },
+    "ARC-Challenge": {
+      "format": {
+        "eta_pct": 20.1,
+        "ci_pct": [
+          2.6,
+          80.8
+        ],
+        "sig": {
+          "marker": "\u2020",
+          "p": 0.0001
+        }
+      },
+      "n_shot": {
+        "eta_pct": 25.4,
+        "ci_pct": [
+          3.5,
+          58.4
+        ],
+        "sig": {
+          "marker": "*",
+          "p": 0.01200328210985792
+        }
+      },
+      "temperature": null
+    },
+    "WinoGrande": {
+      "format": {
+        "eta_pct": 20.4,
+        "ci_pct": [
+          2.3,
+          72.8
+        ],
+        "sig": {
+          "marker": "\u2020",
+          "p": 0.0001
+        }
+      },
+      "n_shot": {
+        "eta_pct": 22.8,
+        "ci_pct": [
+          4.0,
+          47.6
+        ],
+        "sig": {
+          "marker": "*",
+          "p": 0.01832407130680113
+        }
+      },
+      "temperature": null
+    },
+    "OpenBookQA": {
+      "format": {
+        "eta_pct": 7.7,
+        "ci_pct": [
+          0.8,
+          75.5
+        ],
+        "sig": {
+          "marker": "\u2020",
+          "p": 0.01
+        }
+      },
+      "n_shot": {
+        "eta_pct": 18.0,
+        "ci_pct": [
+          0.8,
+          51.4
+        ],
+        "sig": {
+          "marker": "*",
+          "p": 0.03894478400517235
+        }
+      },
+      "temperature": null
+    }
+  },
+  "mismatch": {
+    "gsm8k": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 21.12,
+        "n_pairs": 24
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 6.6,
+        "n_pairs": 24
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 30.73,
+        "n_pairs": 72
+      },
+      "temp_00_vs_07": {
+        "mean_abs_delta_pp": 3.01,
+        "n_pairs": 36
+      },
+      "seed_vs_seed": {
+        "mean_abs_delta_pp": 2.07,
+        "n_pairs": 72
+      }
+    },
+    "mmlu": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 13.72,
+        "n_pairs": 4
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 1.85,
+        "n_pairs": 4
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 6.28,
+        "n_pairs": 12
+      },
+      "temp_00_vs_07": null,
+      "seed_vs_seed": null
+    },
+    "gpqa": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 6.75,
+        "n_pairs": 4
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 5.25,
+        "n_pairs": 4
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 5.71,
+        "n_pairs": 12
+      },
+      "temp_00_vs_07": null,
+      "seed_vs_seed": null
+    },
+    "ARC-Challenge": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 4.89,
+        "n_pairs": 12
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 2.08,
+        "n_pairs": 12
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 6.83,
+        "n_pairs": 12
+      },
+      "temp_00_vs_07": null,
+      "seed_vs_seed": {
+        "mean_abs_delta_pp": 0.68,
+        "n_pairs": 36
+      }
+    },
+    "WinoGrande": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 1.87,
+        "n_pairs": 12
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 1.27,
+        "n_pairs": 12
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 3.28,
+        "n_pairs": 12
+      },
+      "temp_00_vs_07": null,
+      "seed_vs_seed": {
+        "mean_abs_delta_pp": 1.0,
+        "n_pairs": 36
+      }
+    },
+    "OpenBookQA": {
+      "plain_vs_cot": {
+        "mean_abs_delta_pp": 1.67,
+        "n_pairs": 12
+      },
+      "plain_vs_instruct": {
+        "mean_abs_delta_pp": 1.43,
+        "n_pairs": 12
+      },
+      "shot_0_vs_5": {
+        "mean_abs_delta_pp": 3.85,
+        "n_pairs": 12
+      },
+      "temp_00_vs_07": null,
+      "seed_vs_seed": {
+        "mean_abs_delta_pp": 1.01,
+        "n_pairs": 36
+      }
+    }
+  },
+  "mismatch_columns": [
+    "plain_vs_cot",
+    "plain_vs_instruct",
+    "shot_0_vs_5",
+    "temp_00_vs_07",
+    "seed_vs_seed"
+  ],
+  "meta": {
+    "n_boot": 10000,
+    "rng_seed": 12345,
+    "sources": [
+      "controlled_eval_results.jsonl",
+      "gpqa_results.jsonl",
+      "generalization_hf.jsonl",
+      "generalization_multiseed.jsonl"
+    ],
+    "notes": "eta values copied from anova_per_benchmark.json (one-way, 5-shot stratum for format/temperature; pooled 0-vs-5 for n-shot). Dagger markers = repeated-measures significance reported in the paper."
+  }
+}

@@ -33,4 +33,4 @@ Pairwise Spearman rank correlation between judges:
   gemini-3.5-flash     vs claude-haiku-4.5    : rho=+0.300
   llama-3.1-70b-instruct vs claude-haiku-4.5    : rho=+0.800
 
-Rows scored: 1472  |  written C:\Users\z004knva\Desktop\Projects\eee-eval\experiments\judge_sensitivity\results\judge_runs.jsonl
+Rows scored: 1472  |  written results\judge_runs.jsonl

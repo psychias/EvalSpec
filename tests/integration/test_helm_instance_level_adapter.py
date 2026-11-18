@@ -10,6 +10,13 @@ from eee_eval.converters.helm.adapter import HELMAdapter
 from eee_eval.eval_types import EvaluatorRelationship
 from eee_eval.instance_level_types import InstanceLevelEvaluationLog, InteractionType
 
+# The helm fixtures (tests/data/helm/) are captured runs that are not in the repository.
+# Skip the module when they are absent, so that the suite passes on a fresh clone.
+pytestmark = pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "data" / "helm").exists(),
+    reason="tests/data/helm is not in this checkout",
+)
+
 
 def _load_instance_level_data(adapter, filepath, metadata_args):
     eval_dirpath = Path(filepath)

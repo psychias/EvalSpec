@@ -46,28 +46,45 @@ python experiments/judge_sensitivity_vicuna/run_judge_vicuna.py
 python experiments/temperature_panel/run_temperature_panel.py
 
 # harness version: see harness_reeval/version_compare/README.md
-# analysis of the grid
-python experiments/controlled_eval/scripts/compute_anova_per_benchmark.py
-python experiments/controlled_eval/scripts/rm_anova_loglik.py
 ```
 
-## What is in the repository and what is not
+## Recomputing the numbers from the saved results
 
-The numbers in the paper come from the raw result files. Some of those are in the
-repository, and for the others only the reports computed from them are.
+The raw result files of every experiment are in the repository, so the numbers of the
+paper can be recomputed without a GPU and without an API key:
 
-| Experiment | In the repository | Not in the repository |
-|---|---|---|
-| Factorial grid | per-question GSM8K logs for 4 models and 3 formats (`controlled_eval/0-shot-GSM8K/`, `5-shot-GSM8K/`), `results/gpqa_results.jsonl`, figures | `results/controlled_eval_results.jsonl` (the 312 runs), `results/generalization_hf.jsonl`, `results/gsm8k_hf_control.jsonl` |
-| Exp2 | `scoring_mode_results.jsonl`, `scoring_mode_summary.csv` | |
-| Exp3 | `version_comparison_report.txt`, `version_pairs.csv` (first 200-problem run) | `results/full_version_runs.jsonl` (the full-set, two-seed runs the paper reports) |
-| BBH re-run | the leaderboard's own record, `sealion_provenance/olv2_gemma2_9b_bbh.json` | `harness_reeval/version_compare/results/bbh_protocol_runs.jsonl` |
-| Judge model | reports and summary statistics | `results/responses.jsonl`, `results/judge_runs.jsonl` of each study |
-| Temperature panel | `temperature_panel_stats.json` | raw responses |
+```bash
+python scripts/reproduce_paper.py        # grid ANOVAs, Exp1, Exp2, Exp3, 4-judge table, BBH re-run
 
-`scripts/reproduce_paper.py` recomputes the experiment numbers from these files. It
-lists the files it could not find and leaves those numbers empty. To restore them, copy
-each file to the path given above and commit it; `results/` folders are tracked.
+# factorial grid: Tables 20 and 21, the bootstrap interval, Figures 3 and 4
+python experiments/controlled_eval/scripts/compute_anova_per_benchmark.py
+python experiments/controlled_eval/scripts/compute_factorial_figure_stats.py
+# prompt format on the five log-likelihood benchmarks
+python experiments/controlled_eval/scripts/rm_anova_loglik.py
+# GSM8K on the hf backend
+python experiments/controlled_eval/scripts/analyze_gsm8k_hf_control.py
+
+# judge model and temperature: --analyze reads results/ and calls no model
+python experiments/judge_sensitivity/run_judge_sensitivity.py --analyze
+python experiments/judge_sensitivity_extended/run_judge_sensitivity_extended.py --analyze
+python experiments/judge_sensitivity_extended/friedman_test.py
+python experiments/judge_sensitivity_vicuna/run_judge_vicuna.py --analyze
+python experiments/temperature_panel/run_temperature_panel.py --analyze
+```
+
+| Experiment | Raw results |
+|---|---|
+| Factorial grid | `controlled_eval/results/controlled_eval_results.jsonl` (the 312 runs), `gpqa_results.jsonl`, and the per-question GSM8K logs in `controlled_eval/0-shot-GSM8K/` and `5-shot-GSM8K/` |
+| Prompt format on five log-likelihood benchmarks | `controlled_eval/results/generalization_hf.jsonl`, `generalization_multiseed.jsonl`, `mmlu_gpqa_8models.jsonl`, `mmlu_hf_rerun.jsonl` |
+| Backend control and full-set check | `controlled_eval/results/gsm8k_hf_control.jsonl`, `controlled_eval/full_vs_limit200_qwen7b_gsm8k_RESULT.txt` |
+| Exp2 | `scoring_mode_eval/scoring_mode_results.jsonl`, `scoring_mode_summary.csv` |
+| Exp3 | `harness_reeval/version_compare/results/full_version_runs.jsonl` (full test set, two seeds) |
+| BBH re-run | `bbh_protocol/sealion_provenance/olv2_gemma2_9b_bbh.json`: the leaderboard's record and the score of our re-run. The log of the re-run itself was not kept |
+| Judge model | `results/responses.jsonl` and `results/judge_runs.jsonl` of each of the three studies |
+| Temperature panel | `temperature_panel/results/gen.jsonl`, `judge.jsonl` |
+
+The MATH Level 5 figures of Section 5.1 (4.66 pp over 3,751 models) are quoted from the
+leaderboard's own announcement and are not recomputed here.
 
 Two more things to know before reusing the grid:
 

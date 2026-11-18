@@ -1,45 +1,38 @@
-"""Corpus-wide cross-source collision prevalence (paper Section 5, "From existence
-to prevalence").
+"""Corpus-wide cross-source collision prevalence (paper Section 3.3,
+"Cross-source verification is rare"; OLv2 gaps in App. F).
 
 Reads data/aggregated/all_results.csv (the flattened union of all sources) and
-reports, over distinct model-benchmark cells after canonical name normalisation:
-  - how many cells are reported by >=2 independent sources (collisions),
+reports, over distinct model-benchmark pairs after name normalisation:
+  - how many pairs are reported by >=2 sources (collisions),
   - what fraction of collisions disagree by >1pp / >5pp,
-  - how unattributable the disagreements are (scoring-mode never recorded; harness
-    usually absent).
+  - for how many disagreements the harness is missing from at least one record,
+    and for how many the scoring mode is missing (it is never recorded).
 
-Name normalisation is heuristic (strips the HF org prefix + common suffixes,
-applies the canonical benchmark/model maps from src.eee_eval.extraction.constants),
-so the collision count is a LOWER BOUND on true overlap. Run from the repo root:
+Name normalisation is purely lexical and self-contained: lower-case, drop
+parenthesised qualifiers from benchmark names, drop the HF org prefix from model
+ids, and keep only [a-z0-9]. No alias or canonical-name map is applied, and
+capability suffixes (instruct/chat/base) are kept, so the collision count is a
+LOWER BOUND on true overlap. Run from the repo root:
 
-    python scripts/collision_prevalence.py
+    python scripts/collision_prevalence.py [path/to/all_results.csv]
+
+On the published dataset (Hermeneia/EvalSpec_Dataset, 46,559 rows) this prints the
+Section 3.3 numbers: 41,999 pairs, 291 collisions, 214 >1pp, 169 >5pp, harness
+missing for 210/214 (98%) of the disagreements.
 """
 import csv
 import os
 import re
+import statistics
 import sys
 from collections import defaultdict
-
-sys.path.insert(0, "src")
-try:
-    from eee_eval.extraction import constants as C
-    BENCH_CANON = C._BENCHMARK_CANONICAL
-    MODEL_ALIAS = C._MODEL_ALIASES
-except Exception:  # noqa: BLE001 - fall back to no-map normalisation
-    BENCH_CANON, MODEL_ALIAS = {}, {}
 
 CSV_PATH = os.path.join("data", "aggregated", "all_results.csv")
 
 
 def norm_bench(b):
     key = re.sub(r"\s+", " ", (b or "").strip().lower())
-    if key in BENCH_CANON:
-        return BENCH_CANON[key]
-    flat = re.sub(r"[^a-z0-9]", "", key)
-    if flat in BENCH_CANON:
-        return BENCH_CANON[flat]
-    base = re.sub(r"[^a-z0-9]", "", re.sub(r"\s*\(.*?\)", "", key))
-    return BENCH_CANON.get(base, base)
+    return re.sub(r"[^a-z0-9]", "", re.sub(r"\s*\(.*?\)", "", key))
 
 
 def norm_model(model_id, name):
@@ -49,8 +42,7 @@ def norm_model(model_id, name):
     # disagreement rate. This keeps the collision count a conservative lower
     # bound on true cross-source overlap.
     tail = (model_id or name or "").strip().split("/")[-1]
-    k = re.sub(r"[^a-z0-9]", "", tail.lower())
-    return MODEL_ALIAS.get(k, k)
+    return re.sub(r"[^a-z0-9]", "", tail.lower())
 
 
 def fnum(x):
@@ -65,17 +57,20 @@ def has(rec, field):
     return v not in ("", "unknown", "none", "nan", "null")
 
 
-def main():
-    with open(CSV_PATH, encoding="utf-8", errors="replace") as fh:
+def load_cells(path=CSV_PATH):
+    with open(path, encoding="utf-8", errors="replace") as fh:
         rows = list(csv.DictReader(fh))
-
     cells = defaultdict(list)
     for r in rows:
         m, b = norm_model(r.get("model_id"), r.get("model")), norm_bench(r.get("benchmark"))
         if m and b:
             cells[(m, b)].append(r)
+    return rows, cells
 
-    multi = disagree = big = unattributable = 0
+
+def prevalence(cells):
+    """Collision counts of Section 3.3."""
+    multi = disagree = big = no_harness = no_scoring = 0
     for recs in cells.values():
         if len({r.get("source") for r in recs}) < 2:
             continue
@@ -88,40 +83,51 @@ def main():
             disagree += 1
             if spread > 5.0:
                 big += 1
-            # unattributable: no record carries both harness and scoring-mode
-            if any(not has(r, "harness") or not has(r, "scoring_method") for r in recs):
-                unattributable += 1
+            # a disagreement cannot be attributed when a record omits the field
+            if any(not has(r, "harness") for r in recs):
+                no_harness += 1
+            if any(not has(r, "scoring_method") for r in recs):
+                no_scoring += 1
+    return {"pairs": len(cells), "collisions": multi, "differ_gt_1pp": disagree,
+            "differ_gt_5pp": big, "harness_missing": no_harness, "scoring_mode_missing": no_scoring}
 
-    print(f"records: {len(rows)}")
-    print(f"distinct model-benchmark cells: {len(cells)}")
-    print(f"collisions (>=2 sources): {multi} ({100*multi/len(cells):.2f}% of cells)")
-    print(f"  disagree >1pp: {disagree} ({100*disagree/max(multi,1):.1f}% of collisions)")
-    print(f"  disagree >5pp: {big} ({100*big/max(multi,1):.1f}% of collisions)")
-    print(f"  unattributable disagreements: {unattributable}/{disagree} "
-          f"({100*unattributable/max(disagree,1):.0f}%)")
 
-    # OLv2 runtime-vs-documented harness signature (Sec 6, "pipeline-attached
-    # harness labels"): OLv2 runs lighteval (log-likelihood) though we label it
-    # lm_eval; its score should sit systematically below sources that use the
-    # documented CoT/generation protocol, one-signed across many models.
-    import statistics
+def olv2_gaps(cells):
+    """OLv2 against the other sources, per benchmark (Section 3.3, App. F).
+
+    OLv2 scores by log-likelihood, so it should sit below sources that use the
+    documented chain-of-thought protocol, in the same direction across models.
+    Returns {benchmark: [median of the other sources - OLv2, one per model]}.
+    """
+    olv2 = "open_llm_leaderboard_v2"
     gaps = defaultdict(list)
-    for recs in cells.values():
+    for (_model, bench), recs in cells.items():
         srcs = {r.get("source") for r in recs}
-        if "open_llm_leaderboard_v2" not in srcs or len(srcs) < 2:
+        if olv2 not in srcs or len(srcs) < 2:
             continue
-        olv = [fnum(r["score"]) for r in recs
-               if r.get("source") == "open_llm_leaderboard_v2" and fnum(r.get("score")) is not None]
-        oth = [fnum(r["score"]) for r in recs
-               if r.get("source") != "open_llm_leaderboard_v2" and fnum(r.get("score")) is not None]
-        if olv and oth:
-            b = None
-            for r in recs:
-                if r.get("source") == "open_llm_leaderboard_v2":
-                    b = norm_bench(r.get("benchmark")); break
-            gaps[b].append(statistics.median(oth) - olv[0])
+        own = [fnum(r["score"]) for r in recs if r.get("source") == olv2 and fnum(r.get("score")) is not None]
+        oth = [fnum(r["score"]) for r in recs if r.get("source") != olv2 and fnum(r.get("score")) is not None]
+        if own and oth:
+            gaps[bench].append(statistics.median(oth) - own[0])
+    return gaps
+
+
+def main():
+    rows, cells = load_cells(sys.argv[1] if len(sys.argv) > 1 else CSV_PATH)
+    p = prevalence(cells)
+    n, d = p["collisions"], p["differ_gt_1pp"]
+    print(f"records: {len(rows)}")
+    print(f"distinct model-benchmark pairs: {p['pairs']}")
+    print(f"collisions (>=2 sources): {n} ({100*n/p['pairs']:.2f}% of pairs)")
+    print(f"  disagree >1pp: {d} ({100*d/max(n,1):.1f}% of collisions)")
+    print(f"  disagree >5pp: {p['differ_gt_5pp']} ({100*p['differ_gt_5pp']/max(n,1):.1f}% of collisions)")
+    print(f"  harness missing among disagreements: {p['harness_missing']}/{d} "
+          f"({100*p['harness_missing']/max(d,1):.0f}%)")
+    print(f"  scoring mode missing among disagreements: {p['scoring_mode_missing']}/{d} "
+          f"({100*p['scoring_mode_missing']/max(d,1):.0f}%)")
+
     print("\nOLv2 (lighteval) vs other-source gap, per benchmark:")
-    for b, gs in sorted(gaps.items(), key=lambda x: -len(x[1])):
+    for b, gs in sorted(olv2_gaps(cells).items(), key=lambda x: -len(x[1])):
         if len(gs) >= 2:
             print(f"  {b:14} n={len(gs):3}  median={statistics.median(gs):+.1f}pp  "
                   f"OLv2 lower in {sum(1 for g in gs if g > 0)}/{len(gs)}")

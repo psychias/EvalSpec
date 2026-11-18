@@ -9,4 +9,6 @@ the first study.
 
 Needs `OPENROUTER_API_KEY`. The report and the summary statistics
 (`judge_sensitivity_extended_report.txt`, `judge_sensitivity_extended_stats.json`) are in
-the repository; `friedman_test.py` reads `results/judge_runs.jsonl`.
+the repository, and so are the raw ratings in `results/`. With `--analyze` the first
+script recomputes the report from them and calls no model; `friedman_test.py` reads
+`results/judge_runs.jsonl`.

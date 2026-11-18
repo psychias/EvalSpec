@@ -6,3 +6,5 @@ GSM8K and on MT-Bench answers scored by a fixed judge.
     python experiments/temperature_panel/run_temperature_panel.py
 
 Needs `OPENROUTER_API_KEY`. Summary statistics are in `temperature_panel_stats.json`.
+The responses and the judge ratings are in `results/`; with `--analyze` the script
+recomputes the statistics from them and calls no model.

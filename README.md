@@ -189,8 +189,9 @@ python scripts/generate_evidence_file.py   # writes section5_evidence.txt: the r
 ```
 
 None of these needs an API key. From the published dataset they reproduce the dataset
-totals (46,559 records, 7,398 models, 1,954 benchmarks), the coverage table, the score
-audit (97.5% precision, 81.4% recall), the harness audit and the case-study scores.
+totals (46,559 records, 7,398 models, 1,954 benchmarks), the coverage tables, the
+collision counts (41,999 pairs, 291 in two or more sources), the score audit (97.5%
+precision, 81.4% recall), the harness and metadata audits and the case-study scores.
 
 ```bash
 make figures      # redraws every file in figures/ from the data and the experiment logs
@@ -201,16 +202,17 @@ make figures      # redraws every file in figures/ from the data and the experim
 | Part | Status |
 |---|---|
 | Dataset totals, per-source counts, metadata coverage | Reproduces from the published dataset |
-| Score audit and harness audit | Reproduces from the audit files of the dataset |
-| Case-study scores of Section 5 | Reproduces: 19 of 19 checks pass |
+| Collision counts of Section 3.3 | Reproduces from the published dataset (`scripts/collision_prevalence.py`) |
+| Score, harness and metadata audits | Reproduces from the audit files of the dataset |
+| Case-study scores of Section 5 | Reproduces: 25 of 25 checks pass |
 | Figures in `figures/` | Redrawn by `make figures` |
 | Exp2 (scoring mode) | Reproduces from `experiments/scoring_mode_eval/scoring_mode_results.jsonl` |
-| Factorial grid, Exp3, BBH re-run, judge model | The analysis runs once the raw result files are added; they are not in the repository yet |
+| Factorial grid, Exp1, Exp3, judge model, temperature panel | Reproduces from the raw result files under `experiments/*/results/`, without a GPU or an API key |
+| BBH re-run | The score of the re-run is recorded in `experiments/bbh_protocol/`; its log was not kept |
 | Re-running the experiments | Scripts are in `experiments/`; they need a GPU or an OpenRouter key |
 
-The scripts list the result files they could not find and skip the checks that need
-them. [`experiments/README.md`](experiments/README.md) names each missing file and the
-run that writes it.
+[`experiments/README.md`](experiments/README.md) lists the command that recomputes each
+experiment's numbers and the result file it reads.
 
 ## Using the pipeline
 

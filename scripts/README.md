@@ -6,9 +6,9 @@ the repository root. None needs an API key.
 | Script | What it does | Output |
 |---|---|---|
 | `fetch_data.py` | Downloads the published dataset from Hugging Face and lays it out under `data/` | `data/aggregated/`, `data/records/`, `data/annotations/` |
-| `reproduce_paper.py` | Recomputes the dataset totals, the metadata coverage, the score and harness audits and the experiment numbers | `analysis_output/paper_numbers.json` and a printed report |
+| `reproduce_paper.py` | Recomputes the dataset totals, the metadata coverage (Tables 6 and 7), the collision counts, the score, harness and metadata audits (Tables 4 and 5) and the experiment numbers | `analysis_output/paper_numbers.json` and a printed report |
 | `reproduce_case_studies.py` | Looks up every score quoted in the case studies of Section 5 and compares it with the paper | `PASS` / `FAIL` lines |
-| `collision_prevalence.py` | Counts model and benchmark pairs reported by several sources, and how often they disagree | printed report |
+| `collision_prevalence.py` | Section 3.3: counts model and benchmark pairs reported by several sources, how often they disagree, and how often the harness is missing. Names are compared after lower-casing and dropping punctuation, with no alias table | printed report |
 | `generate_evidence_file.py` | Writes the records behind each case study, with their harness and shot fields | `section5_evidence.txt` |
 | `dataset_access.py` | Shared by the scripts above: finds the dataset on disk in either layout | |
 
@@ -32,6 +32,9 @@ dataset the same records are found in the JSONL files by paper, model and benchm
 ## Experiment numbers
 
 `reproduce_paper.py` and `reproduce_case_studies.py` read the raw result files of the
-experiments under `experiments/*/results/`. Files that are not on disk are listed at the
-end of the report, and the checks that need them are skipped. `experiments/README.md`
-says which files those are.
+experiments under `experiments/*/results/`, which are in the repository. If one is
+removed, it is listed at the end of the report and the checks that need it are skipped.
+The statistics that `reproduce_paper.py` does not print (the repeated-measures ANOVAs,
+the figure numbers, the 8-judge and Vicuna-Bench studies, the temperature panel) come
+from the analysis scripts listed in `experiments/README.md`; none of them needs a GPU or
+an API key.

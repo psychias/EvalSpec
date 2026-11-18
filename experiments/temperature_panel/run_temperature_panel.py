@@ -65,7 +65,9 @@ def load_key():
     return k
 
 
-HEADERS = {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
+def headers():
+    # read the key only when a model is called, so --analyze needs none
+    return {"Authorization": f"Bearer {load_key()}", "Content-Type": "application/json"}
 
 
 def chat(model, prompt, temperature, max_tokens=1024, retries=4):
@@ -74,7 +76,7 @@ def chat(model, prompt, temperature, max_tokens=1024, retries=4):
     last = None
     for a in range(retries):
         try:
-            r = requests.post(BASE, headers=HEADERS, json=payload, timeout=150)
+            r = requests.post(BASE, headers=headers(), json=payload, timeout=150)
             if r.status_code == 200:
                 c = r.json()["choices"][0]["message"].get("content")
                 if c:
@@ -223,5 +225,6 @@ def score():
 
 
 if __name__ == "__main__":
-    generate()
+    if "--analyze" not in sys.argv:  # --analyze: statistics from the saved results/, no API calls
+        generate()
     score()

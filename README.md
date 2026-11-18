@@ -86,7 +86,7 @@ to two decimals on Gemma-2-9B BBH.
 The arXiv extraction was checked by hand against the source papers.
 
 - Scores: 2,027 extracted scores from 10 papers were compared with the papers.
-  1,976 matched, a precision of 97.5%. Recall is 81.4%: the pipeline picks up
+  1,977 matched, a precision of 97.5%. Recall is 81.4%: the pipeline picks up
   the main tables and skips many secondary ones.
 - Harness: five papers name a harness (817 rows). In 368 of those rows the
   paper attributes a harness to the result, and the extractor named it

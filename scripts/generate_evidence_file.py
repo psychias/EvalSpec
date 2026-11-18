@@ -686,13 +686,13 @@ def main() -> None:
         "  src/extraction/extract_paper.py\n"
         "  src/extraction/extract_arxiv_metadata_general.py\n\n"
         "All OLv2 JSON files were produced by:\n"
-        "  src/scrapers/hfopenllm_v2_scraper.py\n"
+        "  src/eee_eval/scrapers/hfopenllm_v2_scraper.py\n"
         "  (fetches from " + OLV2_API + ")\n\n"
         "The controlled-experiment samples were produced by running:\n"
         "  lm-evaluation-harness 0.4.11\n"
-        "  experiments/controlled_eval/run.py\n\n"
+        "  experiments/controlled_eval/factorial_grid.ipynb\n\n"
         "The scoring-mode experiment samples were produced by:\n"
-        "  experiments/scoring_mode_eval/scoring_mode_eval.ipynb"
+        "  the scripts in experiments/scoring_mode_eval/"
     )
 
     ev.write(OUT)

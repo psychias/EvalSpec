@@ -93,8 +93,6 @@ Two more things to know before reusing the grid:
   `results/controlled_eval_results.jsonl`. The MMLU runs of three models were made on
   the `hf` backend with `controlled_eval/scripts/rerun_mmlu_hf.py`; the notebook says
   which.
-- `controlled_eval/run.py` is an earlier runner. Its defaults (models, temperatures,
-  format names, benchmarks) are not those of the grid in the paper.
 - The quantisation experiment (`configs/experiment/quantisation_e4.yaml`,
   `harness_reeval/version_compare/run_e4.sh`) was started and is not in the paper.
 

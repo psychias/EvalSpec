@@ -121,9 +121,9 @@ def test_mtbench_jsonl_primary_path():
 def test_mtbench_fallback_backdates_timestamp():
     """When all live sources fail, the fallback timestamp must match the hardcoded date."""
     from eee_eval.scrapers.mtbench_scraper import (
-        MTBenchScraper,
         _FALLBACK_LEADERBOARD,
         _FALLBACK_TS,
+        MTBenchScraper,
     )
 
     with patch("eee_eval.scrapers.mtbench_scraper.requests.get", _mock_fail()):
@@ -230,9 +230,9 @@ def test_alpacaeval2_zero_standard_winrate_omits_secondary_result():
 def test_chatbot_arena_fallback_backdates_timestamp():
     """All live sources fail → uses hardcoded snapshot timestamped to 2024-06-27."""
     from eee_eval.scrapers.chatbot_arena_scraper import (
-        ChatbotArenaScraper,
         _FALLBACK_LEADERBOARD,
         _FALLBACK_RETRIEVED_TS,
+        ChatbotArenaScraper,
     )
 
     with (

@@ -11,15 +11,16 @@ cleanly if access is denied rather than aborting the MMLU run.
 
 One model per Colab session (swap MODELS). Mistral gated -> set HF_TOKEN."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 _TOKEN = os.environ.get("HF_TOKEN", "")
 if _TOKEN:
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
+import json
 import subprocess
 import sys
-import json
 import time
 from datetime import datetime, timezone
 
@@ -77,8 +78,9 @@ prefetch_mmlu()
 HAVE_GPQA = gpqa_available()
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

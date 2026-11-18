@@ -16,6 +16,7 @@ no offline-prefetch dance is needed); a retry wraps transient dataset fetches.
 One model per Colab session. Mistral is gated: set HF_TOKEN in the environment
 (injected for the run); Llama-3.1 uses the NousResearch mirror."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 _TOKEN = os.environ.get("HF_TOKEN", "")
@@ -23,9 +24,9 @@ if _TOKEN:
     os.environ["HF_TOKEN"] = _TOKEN
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
+import json
 import subprocess
 import sys
-import json
 import time
 from datetime import datetime, timezone
 
@@ -45,8 +46,9 @@ print("[setup] installing lm-eval==0.4.11 ...", flush=True)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

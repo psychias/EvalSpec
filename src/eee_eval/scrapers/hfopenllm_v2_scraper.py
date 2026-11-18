@@ -21,6 +21,7 @@ _ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(_ROOT))
 sys.path.insert(0, str(_ROOT / "utils"))
 
+from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.eval_types import (
     EvalLibrary,
     EvaluationLog,
@@ -32,10 +33,8 @@ from eee_eval.eval_types import (
     SourceDataHf,
     SourceMetadata,
 )
-from eee_eval.scrapers.utils import fetch_json
-
-from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.scrapers.base import BaseLeaderboardScraper
+from eee_eval.scrapers.utils import fetch_json
 
 # ---------------------------------------------------------------------------
 # constants

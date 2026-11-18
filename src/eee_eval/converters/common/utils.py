@@ -1,7 +1,8 @@
 import hashlib
 from datetime import datetime
+
 from huggingface_hub import HfApi
-from typing import Dict
+
 
 def convert_timestamp_to_unix_format(timestamp: str) -> str:
     dt = datetime.fromisoformat(timestamp)
@@ -10,7 +11,7 @@ def convert_timestamp_to_unix_format(timestamp: str) -> str:
 def get_current_unix_timestamp() -> str:
     return str(datetime.now().timestamp())
 
-def get_model_organization_info(model_base_name: str) -> Dict:
+def get_model_organization_info(model_base_name: str) -> dict:
     """
     Searches the Hugging Face Hub for a model based on its base name 
     and attempts to find the organization that published the most relevant/original version.

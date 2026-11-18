@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from eee_eval.converters import SCHEMA_VERSION
 from eee_eval.converters.common.adapter import (
@@ -32,10 +32,10 @@ from eee_eval.eval_types import (
 )
 
 from .utils import (
-    parse_model_args,
+    KNOWN_METRIC_BOUNDS,
     MODEL_TYPE_TO_INFERENCE_ENGINE,
     MODEL_TYPE_TO_INFERENCE_PLATFORM,
-    KNOWN_METRIC_BOUNDS,
+    parse_model_args,
 )
 
 
@@ -48,7 +48,7 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         # Keyed by evaluation_id -> {"parent_dir": str, "task_name": str}
         self._eval_metadata = {}
 
-    def get_eval_metadata(self, evaluation_id: str) -> Dict[str, Any]:
+    def get_eval_metadata(self, evaluation_id: str) -> dict[str, Any]:
         """Return stored metadata for a given evaluation_id."""
         return self._eval_metadata.get(evaluation_id, {})
 
@@ -66,7 +66,7 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         return SupportedLibrary.LM_EVAL
 
     def _extract_model_info(
-        self, raw_data: Dict[str, Any], metadata_args: Optional[Dict[str, Any]] = None
+        self, raw_data: dict[str, Any], metadata_args: dict[str, Any] | None = None
     ) -> ModelInfo:
         """Extract model information from lm-eval results."""
         metadata_args = metadata_args or {}
@@ -117,7 +117,7 @@ class LMEvalAdapter(BaseEvaluationAdapter):
             additional_details=additional if additional else None,
         )
 
-    def _get_tasks(self, raw_data: Dict[str, Any]) -> List[str]:
+    def _get_tasks(self, raw_data: dict[str, Any]) -> list[str]:
         """Get task names that have actual metric results (leaf tasks and groups)."""
         results = raw_data.get("results", {})
         tasks = []
@@ -139,7 +139,7 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         return tasks
 
     def _build_source_data(
-        self, task_config: Dict[str, Any], task_name: str
+        self, task_config: dict[str, Any], task_name: str
     ):
         """Build source_data from task config."""
         dataset_path = task_config.get("dataset_path", "")
@@ -165,8 +165,8 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         )
 
     def _build_generation_config(
-        self, task_config: Dict[str, Any]
-    ) -> Optional[GenerationConfig]:
+        self, task_config: dict[str, Any]
+    ) -> GenerationConfig | None:
         """Build generation config from task config."""
         gen_kwargs = task_config.get("generation_kwargs", {})
         if not gen_kwargs:
@@ -192,8 +192,8 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         )
 
     def _build_evaluation_results(
-        self, raw_data: Dict[str, Any], task_name: str
-    ) -> List[EvaluationResult]:
+        self, raw_data: dict[str, Any], task_name: str
+    ) -> list[EvaluationResult]:
         """Build EvaluationResult list for a single task."""
         task_results = raw_data["results"][task_name]
         task_config = raw_data.get("configs", {}).get(task_name, {})
@@ -279,7 +279,7 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         return results
 
     def _transform_single(
-        self, raw_data: Dict[str, Any], metadata_args: Dict[str, Any]
+        self, raw_data: dict[str, Any], metadata_args: dict[str, Any]
     ) -> EvaluationLog:
         """Transform a single task's results into an EvaluationLog.
 
@@ -338,8 +338,8 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         )
 
     def transform_from_file(
-        self, file_path: Union[str, Path], metadata_args: Dict[str, Any]
-    ) -> List[EvaluationLog]:
+        self, file_path: str | Path, metadata_args: dict[str, Any]
+    ) -> list[EvaluationLog]:
         """Transform a lm-eval results JSON file into EvaluationLogs.
 
         Returns one EvaluationLog per leaf task in the results file.
@@ -364,8 +364,8 @@ class LMEvalAdapter(BaseEvaluationAdapter):
         return results
 
     def transform_from_directory(
-        self, dir_path: Union[str, Path], metadata_args: Dict[str, Any]
-    ) -> List[EvaluationLog]:
+        self, dir_path: str | Path, metadata_args: dict[str, Any]
+    ) -> list[EvaluationLog]:
         """Transform all lm-eval results files in a directory.
 
         Searches for results_*.json files recursively.

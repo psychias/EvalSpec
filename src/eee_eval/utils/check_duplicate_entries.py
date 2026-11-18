@@ -2,15 +2,14 @@ import argparse
 import hashlib
 import json
 import os
-from typing import Any, Dict, List
-
+from typing import Any
 
 IGNORE_KEYS = {"retrieved_timestamp", "evaluation_id"}
 
 
-def expand_paths(paths: List[str]) -> List[str]:
+def expand_paths(paths: list[str]) -> list[str]:
     """Expand folders to file paths."""
-    file_paths: List[str] = []
+    file_paths: list[str] = []
     for path in paths:
         if os.path.isfile(path) and path.endswith(".json"):
             file_paths.append(path)
@@ -31,7 +30,7 @@ def annotate_error(file_path: str, message: str, **kwargs) -> None:
         print(f"::error file={file_path}{joined_kwargs}::{message}")
 
 
-def normalize_list(items: List[Any]) -> List[Any]:
+def normalize_list(items: list[Any]) -> list[Any]:
     normalized_items = [strip_ignored_keys(item) for item in items]
     # Sort to avoid false negatives when scrapers emit the same items in different orders.
     return sorted(
@@ -54,7 +53,7 @@ def strip_ignored_keys(value: Any) -> Any:
     return value
 
 
-def normalized_hash(payload: Dict[str, Any]) -> str:
+def normalized_hash(payload: dict[str, Any]) -> str:
     normalized = strip_ignored_keys(payload)
     encoded = json.dumps(
         normalized,
@@ -80,13 +79,13 @@ def main() -> None:
     print(f"Checking {len(file_paths)} JSON files for duplicates...")
     print()
 
-    groups: Dict[str, List[Dict[str, Any]]] = {}
+    groups: dict[str, list[dict[str, Any]]] = {}
     for file_path in file_paths:
         try:
             with open(file_path, "r") as f:
                 payload = json.load(f)
         except json.JSONDecodeError as e:
-            message = f"JSONDecodeError: {str(e)}"
+            message = f"JSONDecodeError: {e!s}"
             annotate_error(
                 file_path,
                 message,

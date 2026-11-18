@@ -59,7 +59,7 @@ def extract_row(json_path: Path, sample_set: str, paper_folder: str) -> dict | N
     norm_score = None
 
     # Try multiple score locations
-    if "results" in r and r["results"]:
+    if r.get("results"):
         score = r["results"][0].get("score")
         norm_score = r["results"][0].get("normalized_score")
     elif "score_details" in r:

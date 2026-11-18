@@ -1,32 +1,30 @@
 import json
+from pathlib import Path
+from typing import Any
+
+from inspect_ai.log import EvalSample
 from inspect_ai.model import (
     ChatMessage,
     ChatMessageAssistant,
     ChatMessageTool,
     ChatMessageUser,
-    ModelUsage
+    ModelUsage,
 )
-from inspect_ai.log import (
-    EvalSample
-)
-from pathlib import Path
-from typing import Any, List, Tuple
 
+from eee_eval.converters import SCHEMA_VERSION
+from eee_eval.converters.common.utils import sha256_string
 from eee_eval.instance_level_types import (
     AnswerAttributionItem,
     Evaluation,
     Input,
     InstanceLevelEvaluationLog,
-    Message,
     InteractionType,
-    Performance,
+    Message,
     Output,
+    Performance,
     TokenUsage,
-    ToolCall
+    ToolCall,
 )
-
-from eee_eval.converters import SCHEMA_VERSION
-from eee_eval.converters.common.utils import sha256_string
 
 
 class InspectInstanceLevelDataAdapter:
@@ -39,8 +37,8 @@ class InspectInstanceLevelDataAdapter:
 
     def _parse_content_with_reasoning(
         self,
-        content: List[Any]
-    ) -> Tuple[str, str]:
+        content: list[Any]
+    ) -> tuple[str, str]:
         response = None
         reasoning_trace = None
         for part in content:
@@ -70,10 +68,10 @@ class InspectInstanceLevelDataAdapter:
         role = message.role
         content = message.content
         reasoning = None
-        if isinstance(content, List):
+        if isinstance(content, list):
             content, reasoning = self._parse_content_with_reasoning(content)
         
-        tool_calls: List[ToolCall] = []
+        tool_calls: list[ToolCall] = []
         tool_call_id = None
 
         if isinstance(message, ChatMessageAssistant):
@@ -120,9 +118,9 @@ class InspectInstanceLevelDataAdapter:
         self, 
         evaluation_name: str,
         model_id: str,
-        samples: List[EvalSample]
-    ) -> Tuple[str, int]:
-        instance_level_logs: List[InstanceLevelEvaluationLog] = []
+        samples: list[EvalSample]
+    ) -> tuple[str, int]:
+        instance_level_logs: list[InstanceLevelEvaluationLog] = []
 
         for sample in samples:
             sample_input = Input(
@@ -188,7 +186,7 @@ class InspectInstanceLevelDataAdapter:
                 ) if messages else 0
             )
 
-            answer_attribution: List[AnswerAttributionItem] = []
+            answer_attribution: list[AnswerAttributionItem] = []
 
             token_usage = self._get_token_usage(sample.output.usage)
 

@@ -29,6 +29,7 @@ Two infrastructure issues, both handled by the prefetch-then-offline pattern bel
 Run on a Colab A100. Prints each result as it completes.
 """
 import os
+
 # Parent runs OFFLINE: transformers + datasets read only from the local cache that
 # the online subprocess below populates, so the flaky cais/mmlu API is never hit
 # and the (already-cached) models load without a network round-trip.

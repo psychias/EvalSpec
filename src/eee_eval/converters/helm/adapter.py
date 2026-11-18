@@ -1,48 +1,50 @@
+import datetime
 import json
 import os
-import datetime
-from typing import Any, Dict, List, Tuple
 from pathlib import Path
-from dacite import from_dict
+from typing import Any
 
-from helm.benchmark.metrics.metric import PerInstanceStats
-from helm.benchmark.adaptation.scenario_state import AdapterSpec, RequestState, ScenarioState
-from helm.benchmark.metrics.statistic import Stat
+from dacite import from_dict
+from helm.benchmark.adaptation.scenario_state import (
+    AdapterSpec,
+    RequestState,
+    ScenarioState,
+)
 from helm.benchmark.config_registry import register_builtin_configs_from_helm_package
+from helm.benchmark.metrics.metric import PerInstanceStats
+from helm.benchmark.metrics.statistic import Stat
 from helm.benchmark.model_deployment_registry import get_model_deployment
 from helm.benchmark.run_spec import RunSpec
 from helm.common.codec import from_json
 
+from eee_eval.converters import SCHEMA_VERSION
+from eee_eval.converters.common.adapter import (
+    AdapterMetadata,
+    BaseEvaluationAdapter,
+    SupportedLibrary,
+)
+from eee_eval.converters.common.utils import sha256_file
+from eee_eval.converters.helm.instance_level_adapter import HELMInstanceLevelDataAdapter
+from eee_eval.converters.helm.utils import extract_reasoning
 from eee_eval.eval_types import (
     DetailedEvaluationResults,
     EvalLibrary,
     EvaluationLog,
     EvaluationResult,
+    Format,
+    GenerationArgs,
+    GenerationConfig,
+    HashAlgorithm,
     MetricConfig,
     ModelInfo,
-    ScoreType,
     ScoreDetails,
+    ScoreType,
+    SourceDataHf,
     SourceMetadata,
     SourceType,
-    SourceDataHf,
-    GenerationConfig,
-    GenerationArgs,
-    Format,
-    HashAlgorithm,
-    Uncertainty
+    Uncertainty,
 )
-
-from eee_eval.instance_level_types import (
-    InstanceLevelEvaluationLog
-)
-
-from eee_eval.converters.common.adapter import AdapterMetadata, BaseEvaluationAdapter, SupportedLibrary
-from eee_eval.converters.common.utils import sha256_file
-from eee_eval.converters.helm.utils import extract_reasoning
-from eee_eval.converters.helm.instance_level_adapter import (
-    HELMInstanceLevelDataAdapter
-)
-from eee_eval.converters import SCHEMA_VERSION
+from eee_eval.instance_level_types import InstanceLevelEvaluationLog
 
 # HELM's bundled-config loader reads its YAML configs with the platform default
 # encoding, which raises UnicodeDecodeError on Windows (cp1252). Register
@@ -112,14 +114,14 @@ class HELMAdapter(BaseEvaluationAdapter):
         
         return None
 
-    def _load_evaluation_run_logfiles(self, dir_path) -> Dict:
+    def _load_evaluation_run_logfiles(self, dir_path) -> dict:
         scenario_state_dict = self._load_file_if_exists(dir_path, self.SCENARIO_STATE_FILE)
         run_spec_dict = self._load_file_if_exists(dir_path, self.RUN_SPEC_FILE)
         scenario_dict = self._load_file_if_exists(dir_path, self.SCENARIO_FILE)
         stats = self._load_file_if_exists(dir_path, self.STATS_FILE)
 		
         with open(f'{dir_path}/{self.PER_INSTANCE_STATS_FILE}', "r", encoding="utf-8") as f:
-            per_instance_stats = from_json(f.read(), List[PerInstanceStats])
+            per_instance_stats = from_json(f.read(), list[PerInstanceStats])
             
         return {
 			'per_instance_stats': per_instance_stats,
@@ -129,7 +131,7 @@ class HELMAdapter(BaseEvaluationAdapter):
 			'stats': stats
 		}
 
-    def transform_from_directory(self, dir_path: str, metadata_args: Dict[str, Any] = None):
+    def transform_from_directory(self, dir_path: str, metadata_args: dict[str, Any] = None):
         """
         Transforms HELM results into a list of aggregate EvaluationLogs.
 
@@ -137,7 +139,7 @@ class HELMAdapter(BaseEvaluationAdapter):
         adapter can be driven polymorphically by convert_eval_logs.py (the old
         required ``output_path`` positional broke that call and is removed).
         """
-        aggregate_logs: List[EvaluationLog] = []
+        aggregate_logs: list[EvaluationLog] = []
 
         if self._directory_contains_required_files(dir_path):
             data = self._load_evaluation_run_logfiles(dir_path)
@@ -181,7 +183,7 @@ class HELMAdapter(BaseEvaluationAdapter):
         )
     
 
-    def _extract_evaluation_time(self, request_states: List[RequestState]) -> str | None:
+    def _extract_evaluation_time(self, request_states: list[RequestState]) -> str | None:
         request_datetimes = [
             state.result.request_datetime
             for state in request_states
@@ -206,7 +208,7 @@ class HELMAdapter(BaseEvaluationAdapter):
         return run_spec_name.split(':')[0]
 
 
-    def _extract_metric_names(self, run_spec: RunSpec) -> List[str]:
+    def _extract_metric_names(self, run_spec: RunSpec) -> list[str]:
         metric_names = []
         for metric_spec in run_spec.metric_specs:
             names = metric_spec.args.get('names')
@@ -219,9 +221,9 @@ class HELMAdapter(BaseEvaluationAdapter):
 
     def _transform_single(
         self, 
-        raw_data: Dict, 
-        metadata_args: Dict[str, Any]
-    ) -> Tuple[EvaluationLog, List[InstanceLevelEvaluationLog]]:
+        raw_data: dict, 
+        metadata_args: dict[str, Any]
+    ) -> tuple[EvaluationLog, list[InstanceLevelEvaluationLog]]:
         run_spec = from_dict(data_class=RunSpec, data=raw_data['run_spec_dict'])
         scenario_state = from_dict(data_class=ScenarioState, data=raw_data['scenario_state_dict'])
         scenario_dict = raw_data['scenario_dict']
@@ -256,7 +258,7 @@ class HELMAdapter(BaseEvaluationAdapter):
 
         metric_names = self._extract_metric_names(run_spec)
 
-        evaluation_results: List[EvaluationResult] = []
+        evaluation_results: list[EvaluationResult] = []
 
         for metric_name in set(metric_names):
             metric_config = MetricConfig(

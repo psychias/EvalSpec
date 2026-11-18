@@ -6,6 +6,7 @@ script, and load with an access-granted token. Seeds 42/123/7, three prompt
 formats, n=12/format. One model per Colab session; set HF_TOKEN (with GPQA access).
 """
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["HF_DATASETS_TRUST_REMOTE_CODE"] = "1"
@@ -13,9 +14,9 @@ _TOKEN = os.environ.get("HF_TOKEN", "")
 if _TOKEN:
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
+import json
 import subprocess
 import sys
-import json
 import time
 from datetime import datetime, timezone
 
@@ -37,6 +38,7 @@ subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11",
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "datasets==2.21.0"], check=True)
 
 import datasets
+
 print(f"[setup] datasets {datasets.__version__}", flush=True)
 # The gated GPQA loading script's internal file download does not pick up the env
 # token; an explicit login authenticates the whole huggingface_hub session so the
@@ -53,8 +55,9 @@ except Exception as e:  # noqa: BLE001
     print(f"[gpqa] STILL FAILING: {str(e)[:160]}", flush=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

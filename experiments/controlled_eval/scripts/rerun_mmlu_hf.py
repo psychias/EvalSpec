@@ -12,13 +12,14 @@ locally and appended to controlled_eval_results.jsonl). Same prefetch-then-offli
 pattern; gated Mistral needs HF_TOKEN injected; Llama uses the ungated NousResearch
 mirror but is recorded under its canonical meta-llama id."""
 import os
+
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["HF_DATASETS_OFFLINE"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+import json
 import subprocess
 import sys
-import json
 from datetime import datetime, timezone
 
 # (eval_id, canonical_id_for_record, batch_size) -- set to this session's model(s).
@@ -79,8 +80,8 @@ print("[prefetch] done; running lm-eval OFFLINE", flush=True)
 
 import gc
 
-import torch
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

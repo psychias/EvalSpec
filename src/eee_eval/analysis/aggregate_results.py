@@ -64,10 +64,10 @@ JSON structure written by PaperWriter (one EvaluationResult per file):
   }
 """
 
+import collections
 import csv
 import json
 import pathlib
-import collections
 
 ROOT    = pathlib.Path(__file__).resolve().parent.parent.parent.parent
 OUT_DIR = ROOT / "data" / "aggregated"

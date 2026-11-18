@@ -8,12 +8,13 @@ greedy, full test set, on the hf backend and compare the plain/instruct/cot gap 
 the vLLM grid's. Format applied via system_instruction + apply_chat_template; GSM8K
 exact_match strict-match (the #### parser)."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+import json
 import subprocess
 import sys
-import json
 from datetime import datetime, timezone
 
 MODEL = "Qwen/Qwen2.5-7B-Instruct"
@@ -28,8 +29,9 @@ print("[setup] installing lm-eval==0.4.11 ...", flush=True)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

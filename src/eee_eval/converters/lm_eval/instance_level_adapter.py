@@ -3,7 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from eee_eval.converters import SCHEMA_VERSION
 from eee_eval.eval_types import DetailedEvaluationResults, Format, HashAlgorithm
@@ -22,11 +22,11 @@ class LMEvalInstanceLevelAdapter:
 
     def transform_samples(
         self,
-        samples_path: Union[str, Path],
+        samples_path: str | Path,
         evaluation_id: str,
         model_id: str,
         task_name: str,
-    ) -> List[InstanceLevelEvaluationLog]:
+    ) -> list[InstanceLevelEvaluationLog]:
         """Transform a samples JSONL file into instance-level logs."""
         samples_path = Path(samples_path)
         results = []
@@ -45,13 +45,13 @@ class LMEvalInstanceLevelAdapter:
 
     def transform_and_save(
         self,
-        samples_path: Union[str, Path],
+        samples_path: str | Path,
         evaluation_id: str,
         model_id: str,
         task_name: str,
-        output_dir: Optional[Union[str, Path]] = None,
-        file_uuid: Optional[str] = None,
-    ) -> Optional[DetailedEvaluationResults]:
+        output_dir: str | Path | None = None,
+        file_uuid: str | None = None,
+    ) -> DetailedEvaluationResults | None:
         """Transform samples and save to JSONL, returning a DetailedEvaluationResults pointer.
 
         If output_dir is None, returns None (skips instance-level output).
@@ -73,10 +73,7 @@ class LMEvalInstanceLevelAdapter:
             out_file = output_dir / f"samples_{task_name}.jsonl"
 
         with open(out_file, "w") as f:
-            for log in logs:
-                f.write(
-                    json.dumps(log.model_dump(mode="json"), ensure_ascii=False) + "\n"
-                )
+            f.writelines(json.dumps(log.model_dump(mode="json"), ensure_ascii=False) + "\n" for log in logs)
 
         file_hash = hashlib.sha256(out_file.read_bytes()).hexdigest()
 
@@ -90,7 +87,7 @@ class LMEvalInstanceLevelAdapter:
 
     def _transform_sample(
         self,
-        sample: Dict[str, Any],
+        sample: dict[str, Any],
         evaluation_id: str,
         model_id: str,
         task_name: str,

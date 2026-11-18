@@ -27,7 +27,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_CSV = ROOT / "data" / "aggregated" / "all_results.csv"
 # Record files of the pipeline tree, or the same records in data/records/*.jsonl
 # when only the published dataset is on disk (see dataset_access.py).
-from dataset_access import ARXIV_DIR, OLV2_DIR, FETCH_HINT  # noqa: E402
+from dataset_access import ARXIV_DIR, FETCH_HINT, OLV2_DIR
+
 CONTROLLED_RESULTS = ROOT / "experiments" / "controlled_eval" / "results" / "controlled_eval_results.jsonl"
 SCORING_MODE_RESULTS = ROOT / "experiments" / "scoring_mode_eval" / "scoring_mode_results.jsonl"
 
@@ -42,7 +43,7 @@ _pass = 0
 _fail = 0
 
 
-def check(label: str, claimed: float | int | str, actual: float | int | str,
+def check(label: str, claimed: float | str, actual: float | str,
           source: str, tol: float = 0.005) -> bool:
     global _pass, _fail
     if isinstance(claimed, (int, float)) and isinstance(actual, (int, float)):

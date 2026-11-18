@@ -21,7 +21,8 @@ OUT  = ROOT / "section5_evidence.txt"
 
 # Record files of the pipeline tree, or the same records in data/records/*.jsonl
 # when only the published dataset is on disk (see dataset_access.py).
-from dataset_access import ARXIV_DIR, OLV2_DIR  # noqa: E402
+from dataset_access import ARXIV_DIR, OLV2_DIR
+
 CE_DIR     = ROOT / "experiments" / "controlled_eval" / "5-shot-GSM8K"
 OLV2_API   = ("https://open-llm-leaderboard-open-llm-leaderboard.hf.space"
                "/api/leaderboard/formatted")

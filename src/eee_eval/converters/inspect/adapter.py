@@ -1,5 +1,8 @@
 import json
 import os
+from pathlib import Path
+from typing import Any
+from urllib.parse import urlparse
 
 from inspect_ai.log import (
     EvalDataset,
@@ -9,25 +12,38 @@ from inspect_ai.log import (
     EvalSample,
     EvalSampleSummary,
     EvalScore,
-    EvalStats,
     EvalSpec,
+    EvalStats,
     list_eval_logs,
     read_eval_log,
     read_eval_log_sample,
     read_eval_log_sample_summaries,
 )
 from inspect_ai.log import EvalPlan as InspectEvalPlan
-from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
-from urllib.parse import urlparse
 
+from eee_eval.converters import SCHEMA_VERSION
+from eee_eval.converters.common.adapter import (
+    AdapterMetadata,
+    BaseEvaluationAdapter,
+    SupportedLibrary,
+)
+from eee_eval.converters.common.error import AdapterError
+from eee_eval.converters.common.utils import (
+    convert_timestamp_to_unix_format,
+    get_current_unix_timestamp,
+    sha256_file,
+)
+from eee_eval.converters.inspect.instance_level_adapter import (
+    InspectInstanceLevelDataAdapter,
+)
+from eee_eval.converters.inspect.utils import extract_model_info_from_model_path
 from eee_eval.eval_types import (
     AgenticEvalConfig,
     AvailableTool,
     DetailedEvaluationResults,
+    EvalLibrary,
     EvalLimits,
     EvalPlan,
-    EvalLibrary,
     EvaluationLog,
     EvaluationResult,
     EvaluatorRelationship,
@@ -36,38 +52,19 @@ from eee_eval.eval_types import (
     GenerationConfig,
     HashAlgorithm,
     JudgeConfig,
+    LlmScoring,
     MetricConfig,
     ModelInfo,
-    LlmScoring,
     Sandbox,
-    ScoreType,
     ScoreDetails,
+    ScoreType,
     SourceDataHf,
     SourceMetadata,
     SourceType,
     StandardError,
-    Uncertainty
+    Uncertainty,
 )
 
-from eee_eval.converters.common.adapter import (
-    AdapterMetadata, 
-    BaseEvaluationAdapter, 
-    SupportedLibrary
-)
-
-from eee_eval.converters.common.error import AdapterError
-from eee_eval.converters.common.utils import (
-    convert_timestamp_to_unix_format, 
-    get_current_unix_timestamp
-)
-from eee_eval.converters.inspect.instance_level_adapter import (
-    InspectInstanceLevelDataAdapter
-)
-from eee_eval.converters.common.utils import sha256_file
-from eee_eval.converters.inspect.utils import (
-    extract_model_info_from_model_path
-)
-from eee_eval.converters import SCHEMA_VERSION
 
 class InspectAIAdapter(BaseEvaluationAdapter):
     """
@@ -107,7 +104,7 @@ class InspectAIAdapter(BaseEvaluationAdapter):
         llm_grader: LlmScoring,
         source_data: SourceDataHf,
         evaluation_timestamp: str,
-        generation_config: Dict[str, Any],
+        generation_config: dict[str, Any],
         stderr_value: float | None = None,
         stddev_value: float | None = None,
         num_samples: int = 0
@@ -137,13 +134,13 @@ class InspectAIAdapter(BaseEvaluationAdapter):
 
     def _extract_evaluation_results(
         self,
-        scores: List[EvalScore],
+        scores: list[EvalScore],
         source_data: SourceDataHf,
-        generation_config: Dict[str, Any],
+        generation_config: dict[str, Any],
         num_samples: int,
         timestamp: str
-    ) -> List[EvaluationResult]:
-        results: List[EvaluationResult] = []
+    ) -> list[EvaluationResult]:
+        results: list[EvaluationResult] = []
 
         for scorer in scores:
             llm_grader = None
@@ -226,7 +223,7 @@ class InspectAIAdapter(BaseEvaluationAdapter):
     def _extract_available_tools(
         self, 
         eval_plan: InspectEvalPlan
-    ) -> List[AvailableTool]:
+    ) -> list[AvailableTool]:
         """Extracts and flattens tools from the evaluation plan steps."""
         
         tools_in_plan_steps = [
@@ -298,7 +295,7 @@ class InspectAIAdapter(BaseEvaluationAdapter):
             else False
         )
 
-        available_tools: List[AvailableTool] = self._extract_available_tools(
+        available_tools: list[AvailableTool] = self._extract_available_tools(
             inspect_plan
         )
 
@@ -330,7 +327,7 @@ class InspectAIAdapter(BaseEvaluationAdapter):
     
     def _extract_library_version(
         self,
-        packages: Dict[str, str]
+        packages: dict[str, str]
     ) -> str:
         parts = [
             f"{name}:{version}"
@@ -341,9 +338,9 @@ class InspectAIAdapter(BaseEvaluationAdapter):
 
     def transform_from_directory(
         self,
-        dir_path: Union[str, Path],
-        metadata_args: Dict[str, Any] = None
-    ) -> List[EvaluationLog]:
+        dir_path: str | Path,
+        metadata_args: dict[str, Any] = None
+    ) -> list[EvaluationLog]:
         metadata_args = metadata_args or {}
 
         if isinstance(dir_path, str):
@@ -352,21 +349,18 @@ class InspectAIAdapter(BaseEvaluationAdapter):
         if not dir_path.exists():
             raise FileNotFoundError(f"Directory path {dir_path} does not exist!")
         
-        log_paths: List[Path] = list_eval_logs(dir_path.absolute().as_posix())
+        log_paths: list[Path] = list_eval_logs(dir_path.absolute().as_posix())
         try:
             return [self.transform_from_file(urlparse(log_path.name).path, metadata_args) for log_path in log_paths]
         except Exception as e:
-            raise AdapterError(f"Failed to load file from directory {dir_path}: {str(e)} for InspectAIAdapter")
+            raise AdapterError(f"Failed to load file from directory {dir_path}: {e!s} for InspectAIAdapter")
 
     def transform_from_file(
         self, 
-        file_path: Union[str, Path], 
-        metadata_args: Dict[str, Any] = None,
+        file_path: str | Path, 
+        metadata_args: dict[str, Any] = None,
         header_only: bool = False
-    ) -> Union[
-        EvaluationLog,
-        List[EvaluationLog]
-    ]:
+    ) -> EvaluationLog | list[EvaluationLog]:
         metadata_args = metadata_args or {}
 
         if not os.path.exists(file_path):
@@ -374,19 +368,19 @@ class InspectAIAdapter(BaseEvaluationAdapter):
         
         try:
             file_path = Path(file_path) if isinstance(file_path, str) else file_path
-            eval_data: Tuple[EvalLog, List[EvalSampleSummary], EvalSample | None] = (
+            eval_data: tuple[EvalLog, list[EvalSampleSummary], EvalSample | None] = (
                 self._load_file(file_path, header_only=header_only)
             )
             return self.transform(eval_data, metadata_args)
         except AdapterError as e:
             raise e
         except Exception as e:
-            raise AdapterError(f"Failed to load file {file_path}: {str(e)} for InspectAIAdapter")
+            raise AdapterError(f"Failed to load file {file_path}: {e!s} for InspectAIAdapter")
 
     def _transform_single(
         self, 
-        raw_data: Tuple[EvalLog, List[EvalSampleSummary], EvalSample | None], 
-        metadata_args: Dict[str, Any]
+        raw_data: tuple[EvalLog, list[EvalSampleSummary], EvalSample | None], 
+        metadata_args: dict[str, Any]
     ) -> EvaluationLog:
         metadata_args = metadata_args or {}
 
@@ -510,7 +504,7 @@ class InspectAIAdapter(BaseEvaluationAdapter):
     
     def _load_file(
         self, file_path, header_only=False
-    ) -> Tuple[EvalLog, List[EvalSampleSummary], EvalSample | None]:
+    ) -> tuple[EvalLog, list[EvalSampleSummary], EvalSample | None]:
         log = read_eval_log(file_path, header_only=header_only)
         if header_only:
             summaries = read_eval_log_sample_summaries(file_path)

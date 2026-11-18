@@ -6,15 +6,16 @@ seed 42, so each benchmark's prompt-format ANOVA has n=12 per format group
 
 hf backend, full test set, 5-shot, three formats. One model per Colab session."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 _TOKEN = os.environ.get("HF_TOKEN", "")
 if _TOKEN:
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
+import json
 import subprocess
 import sys
-import json
 import time
 from datetime import datetime, timezone
 
@@ -34,8 +35,9 @@ print("[setup] installing lm-eval==0.4.11 ...", flush=True)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

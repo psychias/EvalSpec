@@ -11,15 +11,16 @@ format via system_instruction + apply_chat_template; greedy (temperature 0); 5-s
 One model per Colab session (swap MODELS). Mistral is gated: set HF_TOKEN in the
 environment. Llama-3.1 uses the NousResearch mirror."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 _TOKEN = os.environ.get("HF_TOKEN", "")
 if _TOKEN:
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
+import json
 import subprocess
 import sys
-import json
 from datetime import datetime, timezone
 
 # (eval_id, canonical_id, batch_size) -- one active per session.
@@ -35,8 +36,9 @@ print("[setup] installing lm-eval==0.4.11 ...", flush=True)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

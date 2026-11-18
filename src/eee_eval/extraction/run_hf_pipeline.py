@@ -61,14 +61,15 @@ _SCRIPTS = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(_SCRIPTS))
 
 from add_leaderboard_records import run_all as _run_leaderboards
-from hf_model_card_fetcher   import (
+from hf_model_card_fetcher import (
     HFModelCardFetcher,
-    write_model_card_record,
-    _already_exists as _card_exists,
     models_from_leaderboards,
+    write_model_card_record,
+)
+from hf_model_card_fetcher import (
+    _already_exists as _card_exists,
 )
 from pwc_fetcher import run_pwc as _run_pwc
-
 
 # ---------------------------------------------------------------------------
 # Conflict detection

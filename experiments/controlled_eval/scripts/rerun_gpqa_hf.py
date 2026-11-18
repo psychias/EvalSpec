@@ -8,13 +8,14 @@ per Colab session. GPQA (Idavidrein/gpqa) is a GATED dataset, so the online
 prefetch authenticates with HF_TOKEN; the offline eval needs no token.
 Llama-3.1 uses the NousResearch mirror (see rerun_mmlu_hf.py caveat)."""
 import os
+
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["HF_DATASETS_OFFLINE"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+import json
 import subprocess
 import sys
-import json
 from datetime import datetime, timezone
 
 MODELS = [("Qwen/Qwen2.5-7B-Instruct", "Qwen/Qwen2.5-7B-Instruct", 16)]
@@ -54,8 +55,9 @@ subprocess.run([sys.executable, "-c", SNIPPET], env=online_env)
 print("[prefetch] done; running lm-eval OFFLINE", flush=True)
 
 import gc
-import torch
+
 import lm_eval
+import torch
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 

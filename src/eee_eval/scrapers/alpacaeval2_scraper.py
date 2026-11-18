@@ -26,6 +26,7 @@ sys.path.insert(0, str(_ROOT / "utils"))
 
 import requests
 
+from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.eval_types import (
     EvalLibrary,
     EvaluationLog,
@@ -38,10 +39,8 @@ from eee_eval.eval_types import (
     SourceDataUrl,
     SourceMetadata,
 )
-from eee_eval.scrapers.utils import get_developer
-
-from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.scrapers.base import BaseLeaderboardScraper
+from eee_eval.scrapers.utils import get_developer
 
 # ---------------------------------------------------------------------------
 # constants
@@ -80,6 +79,7 @@ _LEADERBOARD_JSON_URL = (
 _FALLBACK_DATE = "2026-01-15"
 import calendar as _calendar
 import datetime as _dt
+
 _FALLBACK_TS = str(_calendar.timegm(_dt.date(2026, 1, 15).timetuple()))
 del _calendar, _dt
 

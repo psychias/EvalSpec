@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 
-
 MODULE_PATH = Path(__file__).resolve().parents[2] / "src" / "eee_eval" / "utils" / "check_duplicate_entries.py"
 DATA_ROOT = Path(__file__).resolve().parents[2] / "data"
 SAMPLE_FILES = [

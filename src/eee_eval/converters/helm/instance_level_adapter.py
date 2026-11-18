@@ -1,26 +1,21 @@
 import json
-
-from helm.benchmark.adaptation.scenario_state import (
-    RequestState
-)
-
 from pathlib import Path
-from typing import List, Tuple
 
+from helm.benchmark.adaptation.scenario_state import RequestState
+
+from eee_eval.converters import SCHEMA_VERSION
+from eee_eval.converters.common.utils import sha256_string
+from eee_eval.converters.helm.utils import extract_all_reasonings
 from eee_eval.instance_level_types import (
     AnswerAttributionItem,
     Evaluation,
     Input,
     InstanceLevelEvaluationLog,
     InteractionType,
-    Performance,
     Output,
+    Performance,
     TokenUsage,
 )
-
-from eee_eval.converters import SCHEMA_VERSION
-from eee_eval.converters.common.utils import sha256_string
-from eee_eval.converters.helm.utils import extract_all_reasonings
 
 
 class HELMInstanceLevelDataAdapter:
@@ -39,7 +34,7 @@ class HELMInstanceLevelDataAdapter:
 
     def _save_json(
         self,
-        items: List[InstanceLevelEvaluationLog]
+        items: list[InstanceLevelEvaluationLog]
     ):
         eval_dir_path = Path(self.evaluation_dir)
         eval_dir_path.mkdir(parents=True, exist_ok=True)
@@ -59,10 +54,10 @@ class HELMInstanceLevelDataAdapter:
         self, 
         evaluation_name: str,
         model_id: str,
-        request_states: List[RequestState],
-        per_instance_stats_list: List
-    ) -> Tuple[str, int]:
-        instance_level_logs: List[InstanceLevelEvaluationLog] = []
+        request_states: list[RequestState],
+        per_instance_stats_list: list
+    ) -> tuple[str, int]:
+        instance_level_logs: list[InstanceLevelEvaluationLog] = []
         for state in request_states:
             inst_stats = next((s for s in per_instance_stats_list if s.instance_id == state.instance.id), None)
             

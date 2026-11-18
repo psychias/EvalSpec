@@ -179,8 +179,7 @@ def run_judges(prompts):
     good = [j for j in all_rows if j.get("rating") is not None]
     if len(good) != len(all_rows):
         with open(JUDGE_PATH, "w", encoding="utf-8") as f:
-            for j in good:
-                f.write(json.dumps(j, ensure_ascii=False) + "\n")
+            f.writelines(json.dumps(j, ensure_ascii=False) + "\n" for j in good)
         print(f"[judges] purged {len(all_rows) - len(good)} failed rows; kept {len(good)}")
     done = {(j["contestant"], j["question_id"], j["judge"]) for j in good}
     todo = [(jm, key) for jm in JUDGES for key in responses

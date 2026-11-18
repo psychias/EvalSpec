@@ -1,5 +1,5 @@
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -10,7 +10,7 @@ from eee_eval.eval_types import (
     EvaluationLog,
     EvaluatorRelationship,
     SourceDataHf,
-    SourceMetadata
+    SourceMetadata,
 )
 
 # The helm fixtures (tests/data/helm/) are captured runs that are not in the repository.

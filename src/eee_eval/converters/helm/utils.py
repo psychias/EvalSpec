@@ -1,5 +1,6 @@
-from typing import List
+
 from helm.benchmark.adaptation.scenario_state import RequestState
+
 
 def extract_reasoning(request_state: RequestState) -> str | None:
     if request_state.result and request_state.result.completions:
@@ -15,7 +16,7 @@ def extract_reasoning(request_state: RequestState) -> str | None:
     
     return None
 
-def extract_all_reasonings(request_state: RequestState) -> List[str] | None:
+def extract_all_reasonings(request_state: RequestState) -> list[str] | None:
     if not (request_state.result and request_state.result.completions):
         return None
 

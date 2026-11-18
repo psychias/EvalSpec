@@ -31,13 +31,14 @@ sys.path.insert(0, str(_ROOT / "utils"))
 
 import requests
 
+from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.eval_types import (
     EvalLibrary,
     EvaluationLog,
     EvaluationResult,
     EvaluatorRelationship,
-    GenerationConfig,
     GenerationArgs,
+    GenerationConfig,
     JudgeConfig,
     LlmScoring,
     MetricConfig,
@@ -47,10 +48,8 @@ from eee_eval.eval_types import (
     SourceDataUrl,
     SourceMetadata,
 )
-from eee_eval.scrapers.utils import get_developer
-
-from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.scrapers.base import BaseLeaderboardScraper
+from eee_eval.scrapers.utils import get_developer
 
 # ---------------------------------------------------------------------------
 # constants
@@ -62,6 +61,7 @@ _TIMEOUT = 30  # seconds
 _FALLBACK_DATE = "2023-06-09"
 import calendar as _cal
 import datetime as _dt
+
 _FALLBACK_TS = str(_cal.timegm(_dt.date(2023, 6, 9).timetuple()))
 del _cal, _dt
 

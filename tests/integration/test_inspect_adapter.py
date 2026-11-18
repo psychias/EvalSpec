@@ -1,6 +1,6 @@
 import contextlib
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -12,7 +12,7 @@ from eee_eval.eval_types import (
     EvaluationLog,
     EvaluatorRelationship,
     SourceDataHf,
-    SourceMetadata
+    SourceMetadata,
 )
 
 # The inspect fixtures (tests/data/inspect/) are captured runs that are not in the repository.

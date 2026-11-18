@@ -16,13 +16,16 @@ independent evaluator choosing a different (equally valid) BBH protocol would no
 Needs: google/gemma-2-9b license accepted on the token's HF account; set HF_TOKEN.
 One Colab A100 session."""
 import os
+
 os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 _TOKEN = os.environ.get("HF_TOKEN", "")
 if _TOKEN:
     os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
 
-import subprocess, sys, json, time
+import json
+import subprocess
+import sys
 from datetime import datetime, timezone
 
 MODEL = "google/gemma-2-9b"

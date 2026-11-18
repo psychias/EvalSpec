@@ -21,7 +21,6 @@ import json
 import math
 import warnings
 from collections import defaultdict
-from itertools import combinations
 from pathlib import Path
 
 import numpy as np
@@ -83,8 +82,8 @@ def compute_sensitivity(records: list[dict]) -> dict:
         return {}
 
     try:
-        import statsmodels.api as sm
         import pandas as pd
+        import statsmodels.api as sm
     except ImportError:
         warnings.warn("statsmodels/pandas not installed; using OLS fallback.")
         return _compute_sensitivity_numpy(records)
@@ -297,7 +296,7 @@ def make_figures(records: list[dict], effects: dict,
 
 def _fig_config_variance(records: list[dict], plt) -> None:
     """3-panel boxplot: score distributions by temperature, format, n_shot."""
-    import matplotlib.gridspec as gridspec
+    from matplotlib import gridspec
 
     if not records:
         return

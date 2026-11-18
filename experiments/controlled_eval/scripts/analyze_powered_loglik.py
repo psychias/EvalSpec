@@ -11,7 +11,6 @@ Reports F, p (approx via F-dist survival), and eta^2 per benchmark, for the §G 
 import json
 import math
 import os
-from collections import defaultdict
 
 R = os.path.join(os.path.dirname(__file__), "..", "results")
 

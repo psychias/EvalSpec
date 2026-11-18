@@ -10,16 +10,24 @@ from pathlib import Path
 
 import pytest
 
-from eee_eval.validation.schema import SchemaValidator, AutoFixer, FileValidator
-from eee_eval.validation.quality_audit import (
-    Record, ShotsCheck, ScoreCheck,
-    DuplicateCheck, RequiredFieldsCheck, BenchmarkNamingCheck,
-    ModelIdentityCheck, AuditRunner,
-)
 from eee_eval.validation.fix_data_quality import (
-    ParameterLeakFix, BenchmarkCanonFix, FixStats,
-    _is_metadata_metric, _is_score_out_of_range,
+    BenchmarkCanonFix,
+    FixStats,
+    ParameterLeakFix,
+    _is_metadata_metric,
+    _is_score_out_of_range,
 )
+from eee_eval.validation.quality_audit import (
+    AuditRunner,
+    BenchmarkNamingCheck,
+    DuplicateCheck,
+    ModelIdentityCheck,
+    Record,
+    RequiredFieldsCheck,
+    ScoreCheck,
+    ShotsCheck,
+)
+from eee_eval.validation.schema import AutoFixer, FileValidator, SchemaValidator
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 

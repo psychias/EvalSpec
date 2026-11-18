@@ -4,15 +4,15 @@ Fetch real papers from arXiv related to LLM evaluation for your paper coverage.
 This script queries the arXiv API for papers matching your research area.
 """
 
+import time
 import urllib.request
 import xml.etree.ElementTree as ET
-import time
 from datetime import datetime
-from typing import List, Dict
 from urllib.parse import quote
 
+
 def search_arxiv(query: str, max_results: int = 25,
-                 years: List[int] = [2026, 2025, 2024]) -> List[Dict]:
+                 years: list[int] = [2026, 2025, 2024]) -> list[dict]:
     """
     Search arXiv using urllib and XML parsing.
 
@@ -85,7 +85,7 @@ def search_arxiv(query: str, max_results: int = 25,
         print(f"Error searching arXiv: {e}")
         return []
 
-def format_bibtex(paper: Dict) -> str:
+def format_bibtex(paper: dict) -> str:
     """Convert paper to BibTeX format."""
     arxiv_id = paper['arxiv_id']
     year = paper['published'][:4]

@@ -33,7 +33,6 @@ try:
     print(f"Kendall's W = {W:.3f}")
 except Exception as e:  # manual Friedman if scipy missing
     print("scipy unavailable, computing manually:", str(e)[:60])
-    import math
     # rank within each block
     Rj = [0.0] * k
     for row in matrix:

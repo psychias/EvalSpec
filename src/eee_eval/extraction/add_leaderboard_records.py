@@ -458,7 +458,7 @@ def _load_hf_dataset_as_df(
     config: str = "default",
     split: str = "train",
     token: str = "",
-) -> "pd.DataFrame":
+) -> pd.DataFrame:
     """Download a HuggingFace dataset as a pandas DataFrame.
 
     Uses huggingface_hub.snapshot_download to fetch the parquet shard(s)
@@ -479,8 +479,8 @@ def _load_hf_dataset_as_df(
     os.environ["HF_HUB_OFFLINE"] = "0"
 
     try:
-        import pandas as pd
         import huggingface_hub.constants
+        import pandas as pd
         from huggingface_hub import snapshot_download
 
         # Also patch the cached constant in case the module was already imported

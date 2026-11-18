@@ -1,14 +1,10 @@
 import re
-
 from pathlib import Path
-from pydantic import BaseModel
-from typing import Dict, Type, List
 
-from eee_eval.eval_types import (
-    InferenceEngine,
-    ModelInfo
-)
+from pydantic import BaseModel
+
 from eee_eval.converters.common.utils import get_model_organization_info
+from eee_eval.eval_types import InferenceEngine, ModelInfo
 
 
 class ModelPathHandler:
@@ -218,7 +214,7 @@ class InferenceEngineHandler(ModelPathHandler):
 
 # Mapping the provider/engine prefix to the specific Handler class
 # This is where the extension point is for *new* provider categories.
-MODEL_HANDLER_MAP: Dict[str, Type[ModelPathHandler]] = {
+MODEL_HANDLER_MAP: dict[str, type[ModelPathHandler]] = {
     # Closed API Providers
     'openai': ClosedApiHandler,
     'anthropic': ClosedApiHandler,
@@ -250,7 +246,7 @@ MODEL_HANDLER_MAP: Dict[str, Type[ModelPathHandler]] = {
     'sglang': InferenceEngineHandler
 }
 
-PROVIDER_PREFIXES: List[str] = list(MODEL_HANDLER_MAP.keys())
+PROVIDER_PREFIXES: list[str] = list(MODEL_HANDLER_MAP.keys())
 
 def extract_model_info_from_model_path(model_path: str) -> ModelInfo:
     """
@@ -270,7 +266,6 @@ def extract_model_info_from_model_path(model_path: str) -> ModelInfo:
             return handler.handle()
         except Exception as e:
             print(f"Handler failed for {model_path}: {e}. Fallback into unknown model developer.")
-            pass
 
     # Fallback
     return ModelInfo(

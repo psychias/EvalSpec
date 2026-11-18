@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Collect the four good RESULT_JSON records (0.4.3 from the orchestrate combined
 file, 0.4.11 from the two native-stack canary logs) into final_runs.jsonl."""
-import json, os, glob
+import glob
+import json
+import os
 
 keep = []
 seen = set()
@@ -26,8 +28,7 @@ for log in glob.glob("results/c411*.log"):
             add(json.loads(line[len("RESULT_JSON:"):]))
 
 with open("results/final_runs.jsonl", "w") as f:
-    for d in keep:
-        f.write(json.dumps(d) + "\n")
+    f.writelines(json.dumps(d) + "\n" for d in keep)
 print(f"wrote results/final_runs.jsonl with {len(keep)} rows")
 for d in keep:
     print(f"  {d['lm_eval_version']:>7} | {d['model_id']:<30} | {d['score']} | {d['metric']}")

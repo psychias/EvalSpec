@@ -143,8 +143,7 @@ def run_judges():
     responses = {(r["model"], r["question_id"]): r for r in read_jsonl(RESP_PATH) if r.get("ok")}
     good = [j for j in read_jsonl(JUDGE_PATH) if j.get("rating") is not None]
     with open(JUDGE_PATH, "w", encoding="utf-8") as f:
-        for j in good:
-            f.write(json.dumps(j, ensure_ascii=False) + "\n")
+        f.writelines(json.dumps(j, ensure_ascii=False) + "\n" for j in good)
     done = {(j["contestant"], j["question_id"], j["judge"]) for j in good}
     todo = [(jm, key) for jm in JUDGES for key in responses if (key[0], key[1], jm) not in done]
     print(f"[judges] {len(done)} cached, {len(todo)} to score", flush=True)

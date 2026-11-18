@@ -5,15 +5,15 @@ variant form can reach a *different* canonical name through the normaliser.
 This catches both over-collapse (two different benchmarks → one name) and
 under-collapse (one benchmark → two different names).
 """
-import pytest
-from pathlib import Path
-
 # ---------------------------------------------------------------------------
 # Import both canonical dicts — use importlib to avoid triggering
 # eee_eval.extraction.__init__ which pulls in docling and has broken imports
 # ---------------------------------------------------------------------------
 import importlib.util
 import sys
+from pathlib import Path
+
+import pytest
 
 _root = Path(__file__).resolve().parent.parent.parent
 

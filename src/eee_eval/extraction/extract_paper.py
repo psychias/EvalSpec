@@ -21,22 +21,25 @@ import logging
 import os
 import re
 import shutil
+
+# ── Inline validation import ──────────────────────────────────────────
+import sys as _sys
 import time
 import uuid as _uuid
 from datetime import date as _date
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import requests
+from bs4 import BeautifulSoup
 from pydantic import BaseModel, field_validator
 from tenacity import (
-    retry, stop_after_attempt, wait_exponential,
+    retry,
     retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
 )
-from bs4 import BeautifulSoup
 
-# ── Inline validation import ──────────────────────────────────────────
-import sys as _sys
 _sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent))
 from eee_eval.validation.validate_extractions import validate_record
 
@@ -218,20 +221,20 @@ def _same_org(paper_authors: str, model_family: str | None) -> bool:
 
 class BenchmarkEntry(BaseModel):
     benchmark_name: str
-    score: Optional[float] = None
-    metric_name: Optional[str] = None
-    lower_is_better: Optional[bool] = None
-    score_range: Optional[str] = None
-    n_shot: Optional[int] = None
-    temperature: Optional[float] = None
-    prompt_template: Optional[str] = None
-    decoding_strategy: Optional[str] = None
+    score: float | None = None
+    metric_name: str | None = None
+    lower_is_better: bool | None = None
+    score_range: str | None = None
+    n_shot: int | None = None
+    temperature: float | None = None
+    prompt_template: str | None = None
+    decoding_strategy: str | None = None
     # Per-benchmark harness assignment. Only set if the paper explicitly
     # attributes THIS benchmark to a named harness. Generative tasks,
     # LLM-as-judge evals, proof assistants, code-execution sandboxes, and
     # internal pipelines should be left as None — even if the paper names a
     # harness for other benchmarks.
-    eval_harness: Optional[str] = None
+    eval_harness: str | None = None
 
     @field_validator("n_shot", mode="before")
     @classmethod
@@ -253,23 +256,23 @@ class BenchmarkEntry(BaseModel):
 
 class ModelEntry(BaseModel):
     model_name: str
-    model_family: Optional[str] = None
-    developer: Optional[str] = None
+    model_family: str | None = None
+    developer: str | None = None
     is_baseline: bool = False
     benchmarks: list[BenchmarkEntry] = []
 
 
 class GlobalConfig(BaseModel):
-    eval_harness: Optional[str] = None
-    eval_library_version: Optional[str] = None
-    seed: Optional[int | list[int]] = None
+    eval_harness: str | None = None
+    eval_library_version: str | None = None
+    seed: int | list[int] | None = None
     # Only set this to True if the paper explicitly says the named harness
     # was used for EVERY benchmark in the paper (e.g., "we evaluate all
     # benchmarks with lm-eval-harness"). If the paper names the harness only
     # for some benchmarks (a "we used X for the commonsense reasoning suite"
     # style attribution), set this to False and rely on per-benchmark
     # eval_harness fields. Default False — never blanket-apply a harness.
-    eval_harness_applies_to_all: Optional[bool] = False
+    eval_harness_applies_to_all: bool | None = False
 
 
 class LLMExtractionResult(BaseModel):
@@ -382,12 +385,12 @@ def extract_sections(html: str) -> dict[str, str]:
     body = soup.get_text(separator="\n", strip=True)
 
     sections = {}
-    headings = soup.find_all(re.compile(r"^h[1-4]$", re.I))
+    headings = soup.find_all(re.compile(r"^h[1-4]$", re.IGNORECASE))
     for h in headings:
         title = h.get_text(strip=True).lower()
         parts = []
         for sib in h.find_next_siblings():
-            if sib.name and re.match(r"^h[1-4]$", sib.name, re.I):
+            if sib.name and re.match(r"^h[1-4]$", sib.name, re.IGNORECASE):
                 break
             parts.append(sib.get_text(separator="\n", strip=True))
         sections[title] = "\n".join(parts)
@@ -417,8 +420,8 @@ def get_extraction_text(sects: dict[str, str]) -> str:
 # Naive extraction (unchanged)
 # ═══════════════════════════════════════════════════════════════════════
 
-NSHOT_PAT = re.compile(r"(\d+)[- ]?shot|few[- ]?shot|zero[- ]?shot|(\d+)[- ]?example", re.I)
-TEMP_PAT = re.compile(r"temperature\s*(?:of|=|:)?\s*([0-9]*\.?[0-9]+)", re.I)
+NSHOT_PAT = re.compile(r"(\d+)[- ]?shot|few[- ]?shot|zero[- ]?shot|(\d+)[- ]?example", re.IGNORECASE)
+TEMP_PAT = re.compile(r"temperature\s*(?:of|=|:)?\s*([0-9]*\.?[0-9]+)", re.IGNORECASE)
 HARNESS_PAT = re.compile(
     r"(lm[- _]eval(?:uation)?[- _]harness|eleuther|helm|big-?bench"
     r"|open[- ]?llm[- ]?leaderboard|eval-?plus|human-?eval"
@@ -427,17 +430,17 @@ HARNESS_PAT = re.compile(
     r"|lighteval|opencompass|vlmevalkit|unitxt"
     r"|internal\s+eval(?:uation)?(?:\s+\w+){0,3}?\s*(?:library|framework|tool|harness|pipeline)"
     r"|(?:internal|in-house|proprietary)\s+(?:evaluation|eval)\s+(?:library|framework|tool)"
-    r"|our\s+internal\s+(?:eval|tool|framework|library))", re.I)
+    r"|our\s+internal\s+(?:eval|tool|framework|library))", re.IGNORECASE)
 PROMPT_PAT = re.compile(
     r"(chain[- ]?of[- ]?thought|cot|zero[- ]?shot[- ]?cot"
     r"|few[- ]?shot|direct|standard prompt|instruction"
-    r"|system prompt|prompt template)", re.I)
+    r"|system prompt|prompt template)", re.IGNORECASE)
 SCORING_PAT = re.compile(
     r"(log[- ]?likelihood|multiple[- ]?choice|exact[- ]?match"
     r"|pass@k|greedy|beam|sampling|majority[- ]?voting"
-    r"|self[- ]?consistency|maj@)", re.I)
-SEED_PAT = re.compile(r"(?:random\s+)?seed\s*(?:of|=|:)?\s*(\d+)", re.I)
-SAMPLES_PAT = re.compile(r"(?:k\s*=\s*|n\s*=\s*|samples?\s*(?:=|:)\s*)(\d+)", re.I)
+    r"|self[- ]?consistency|maj@)", re.IGNORECASE)
+SEED_PAT = re.compile(r"(?:random\s+)?seed\s*(?:of|=|:)?\s*(\d+)", re.IGNORECASE)
+SAMPLES_PAT = re.compile(r"(?:k\s*=\s*|n\s*=\s*|samples?\s*(?:=|:)\s*)(\d+)", re.IGNORECASE)
 
 
 def naive_extract(text: str) -> dict:
@@ -465,13 +468,13 @@ def naive_extract(text: str) -> dict:
     seeds = SEED_PAT.findall(text)
     if seeds:
         result["seed"] = sorted(set(int(s) for s in seeds))
-    if re.search(r"greedy|temperature\s*(?:=|of)\s*0", text, re.I):
+    if re.search(r"greedy|temperature\s*(?:=|of)\s*0", text, re.IGNORECASE):
         result["decoding_strategy"] = "greedy"
-    elif re.search(r"beam\s*search|num_beams", text, re.I):
+    elif re.search(r"beam\s*search|num_beams", text, re.IGNORECASE):
         result["decoding_strategy"] = "beam_search"
-    elif re.search(r"nucleus|top[- _]?p", text, re.I):
+    elif re.search(r"nucleus|top[- _]?p", text, re.IGNORECASE):
         result["decoding_strategy"] = "nucleus"
-    elif re.search(r"top[- _]?k", text, re.I):
+    elif re.search(r"top[- _]?k", text, re.IGNORECASE):
         result["decoding_strategy"] = "top_k"
     return result
 
@@ -791,7 +794,6 @@ def _parse_llm_json(content: str) -> dict | None:
 
 class _RetryableHTTPError(Exception):
     """Raised for 429/5xx responses to trigger tenacity retry."""
-    pass
 
 
 @retry(

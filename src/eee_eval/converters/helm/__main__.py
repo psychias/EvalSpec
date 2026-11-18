@@ -1,16 +1,15 @@
 from __future__ import annotations
-from argparse import ArgumentParser
-import uuid
+
 import json
+import uuid
+from argparse import ArgumentParser
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 from eee_eval.converters.helm.adapter import HELMAdapter
-from eee_eval.eval_types import (
-    EvaluatorRelationship,
-    EvaluationLog
-)
+from eee_eval.eval_types import EvaluationLog, EvaluatorRelationship
+
 
 def parse_args():
     parser = ArgumentParser()
@@ -45,7 +44,7 @@ class HELMEvalLogConverter:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def convert_to_unified_schema(self, metadata_args: Dict[str, Any] = None) -> Union[EvaluationLog, List[EvaluationLog]]:
+    def convert_to_unified_schema(self, metadata_args: dict[str, Any] = None) -> EvaluationLog | list[EvaluationLog]:
         return HELMAdapter().transform_from_directory(self.log_path, metadata_args=metadata_args)
 
     def save_to_file(self, unified_eval_log: EvaluationLog, output_filedir: str, output_filepath: str) -> bool:
@@ -76,7 +75,7 @@ def save_evaluation_log(
         helm_converter.save_to_file(unified_output, filedir, filename)
         return True
     except Exception as e:
-        print(f'Failed to save eval log {unified_output.evaluation_id} to file.\n{str(e)}')
+        print(f'Failed to save eval log {unified_output.evaluation_id} to file.\n{e!s}')
         return False
 
 
@@ -110,7 +109,7 @@ if __name__ == '__main__':
             file_uuid
         )
 
-    elif unified_output and isinstance(unified_output, List):
+    elif unified_output and isinstance(unified_output, list):
         for single_unified_output in unified_output:
             save_evaluation_log(
                 single_unified_output,

@@ -27,7 +27,6 @@ import subprocess
 import sys
 import traceback
 
-
 # Identical dependency stack for BOTH lm-eval versions, so the only variable in
 # the comparison is the harness version. These are the mid-2024 versions lm-eval
 # 0.4.3 shipped against; crucially `huggingface_hub` here still accepts bare

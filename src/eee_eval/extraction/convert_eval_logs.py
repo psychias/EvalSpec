@@ -27,6 +27,7 @@ sys.path.insert(0, str(_ROOT))
 
 from eee_eval.converters.common.adapter import BaseEvaluationAdapter
 from eee_eval.converters.lm_eval.adapter import LMEvalAdapter
+
 try:
     from eee_eval.converters.inspect.adapter import InspectAIAdapter
     _HAS_INSPECT = True

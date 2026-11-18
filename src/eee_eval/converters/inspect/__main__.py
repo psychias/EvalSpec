@@ -1,17 +1,16 @@
 from __future__ import annotations
-from argparse import ArgumentParser
+
 import json
 import uuid
+from argparse import ArgumentParser
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any
 
 from eee_eval.converters.inspect.adapter import InspectAIAdapter
-from eee_eval.eval_types import (
-    EvaluatorRelationship,
-    EvaluationLog
-)
+from eee_eval.eval_types import EvaluationLog, EvaluatorRelationship
 from eee_eval.instance_level_types import InstanceLevelEvaluationLog
+
 
 def parse_args():
     parser = ArgumentParser()
@@ -49,11 +48,8 @@ class InspectEvalLogConverter:
 
     def convert_to_unified_schema(
         self, 
-        metadata_args: Dict[str, Any] = None,
-    ) -> Union[
-        Tuple[EvaluationLog, InstanceLevelEvaluationLog],
-        List[Tuple[EvaluationLog, InstanceLevelEvaluationLog]]
-    ]:
+        metadata_args: dict[str, Any] = None,
+    ) -> tuple[EvaluationLog, InstanceLevelEvaluationLog] | list[tuple[EvaluationLog, InstanceLevelEvaluationLog]]:
         if self.is_log_path_directory:
             return InspectAIAdapter().transform_from_directory(
                 self.log_path, 
@@ -98,7 +94,7 @@ def save_evaluation_log(
         inspect_converter.save_to_file(unified_output, filedir, filename)
         return True
     except Exception as e:
-        print(f'Failed to save eval log {unified_output.evaluation_id} to file.\n{str(e)}')
+        print(f'Failed to save eval log {unified_output.evaluation_id} to file.\n{e!s}')
         return False
 
 
@@ -126,7 +122,7 @@ if __name__ == '__main__':
     unified_output = inspect_converter.convert_to_unified_schema(metadata_args)
     
     if unified_output:
-        if isinstance(unified_output, List):
+        if isinstance(unified_output, list):
             for single_unified_output in unified_output:
                 save_evaluation_log(
                     single_unified_output,

@@ -202,7 +202,7 @@ def main():
 
         print(f"=== {benchmark.upper()} @ {n_shot}-shot ===")
         # per-format summary
-        print(f"Per-format (factor: prompt_format)")
+        print("Per-format (factor: prompt_format)")
         print(f"  {'format':<10} {'n':>3}  {'mean':>8}  {'min':>8}  {'max':>8}")
         for lvl, s in sorted(block["format"]["summary"].items()):
             print(f"  {lvl:<10} {s['n']:>3}  {s['mean']:>8.4f}  {s['min']:>8.4f}  {s['max']:>8.4f}")
@@ -210,10 +210,10 @@ def main():
         print(f"ANOVA(prompt_format): F={fmt_F(a['F'])}  p={fmt_p(a['p'])}  eta^2={fmt_pct(a['eta_squared'])}")
         print()
         # temperature sanity
-        print(f"Per-temperature (factor: temperature)")
+        print("Per-temperature (factor: temperature)")
         print(f"  {'temp':<10} {'n':>3}  {'mean':>8}  {'min':>8}  {'max':>8}")
         for lvl, s in sorted(block["temperature"]["summary"].items()):
-            print(f"  {str(lvl):<10} {s['n']:>3}  {s['mean']:>8.4f}  {s['min']:>8.4f}  {s['max']:>8.4f}")
+            print(f"  {lvl!s:<10} {s['n']:>3}  {s['mean']:>8.4f}  {s['min']:>8.4f}  {s['max']:>8.4f}")
         a = block["temperature"]["anova"]
         print(f"ANOVA(temperature): F={fmt_F(a['F'])}  p={fmt_p(a['p'])}  eta^2={fmt_pct(a['eta_squared'])}")
         print()

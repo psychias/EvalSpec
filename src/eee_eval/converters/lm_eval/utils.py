@@ -1,10 +1,9 @@
 """Utility functions for the lm-eval adapter."""
 
 from pathlib import Path
-from typing import Dict, Optional
 
 
-def parse_model_args(model_args: str | None) -> Dict[str, str]:
+def parse_model_args(model_args: str | None) -> dict[str, str]:
     """Parse lm-eval model_args string (comma-separated key=value pairs).
 
     Handles the common format: "pretrained=EleutherAI/pythia-160m,dtype=float16"
@@ -23,7 +22,7 @@ def parse_model_args(model_args: str | None) -> Dict[str, str]:
     return result
 
 
-def find_samples_file(output_dir: Path, task_name: str) -> Optional[Path]:
+def find_samples_file(output_dir: Path, task_name: str) -> Path | None:
     """Find the samples JSONL file for a given task in the output directory.
 
     lm-eval writes samples as: samples_<task_name>_<datetime>.jsonl

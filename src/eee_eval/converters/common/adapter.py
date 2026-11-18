@@ -3,19 +3,21 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from huggingface_hub import model_info
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
+
+from huggingface_hub import model_info
 
 from eee_eval.converters.common.error import AdapterError, TransformationError
 from eee_eval.eval_types import EvaluationLog
+
 
 @dataclass
 class AdapterMetadata:
     """Metadata about the adapter"""
     name: str
     version: str
-    supported_library_versions: List[str]
+    supported_library_versions: list[str]
     description: str
 
     
@@ -50,17 +52,15 @@ class BaseEvaluationAdapter(ABC):
     @abstractmethod
     def metadata(self) -> AdapterMetadata:
         """Return metadata about this adapter"""
-        pass
     
     @property
     @abstractmethod
     def supported_library(self) -> SupportedLibrary:
         """Return the library this adapter supports"""
-        pass
     
     @abstractmethod
     def _transform_single(
-        self, raw_data: Any, metadata_args: Dict[str, Any]
+        self, raw_data: Any, metadata_args: dict[str, Any]
     ) -> EvaluationLog:
         """
         Transform a single evaluation record.
@@ -74,14 +74,10 @@ class BaseEvaluationAdapter(ABC):
         Raises:
             TransformationError: If transformation fails
         """
-        pass
     
     def transform(
-        self, data: Any, metadata_args: Dict[str, Any]
-    ) -> Union[
-        EvaluationLog,
-        List[EvaluationLog]
-    ]:
+        self, data: Any, metadata_args: dict[str, Any]
+    ) -> EvaluationLog | list[EvaluationLog]:
         """
         Transform evaluation data to unified schema format.
         
@@ -109,11 +105,8 @@ class BaseEvaluationAdapter(ABC):
             self._handle_transformation_error(e, "data transformation")
             
     def transform_from_file(
-        self, file_path: Union[str, Path], metadata_args: Dict[str, Any]
-    ) -> Union[
-        EvaluationLog,
-        List[EvaluationLog]
-    ]:
+        self, file_path: str | Path, metadata_args: dict[str, Any]
+    ) -> EvaluationLog | list[EvaluationLog]:
         """
         Load and transform evaluation data from file.
         
@@ -132,17 +125,14 @@ class BaseEvaluationAdapter(ABC):
             data = self._load_file(file_path)
             return self.transform(data, metadata_args)
         except Exception as e:
-            raise AdapterError(f"Failed to load file {file_path}: {str(e)}")
+            raise AdapterError(f"Failed to load file {file_path}: {e!s}")
         
     @abstractmethod
     def transform_from_directory(
         self, 
-        dir_path: Union[str, Path],
-        metadata_args: Dict[str, Any] = None    
-    ) -> Union[
-        EvaluationLog,
-        List[EvaluationLog]
-    ]:
+        dir_path: str | Path,
+        metadata_args: dict[str, Any] = None    
+    ) -> EvaluationLog | list[EvaluationLog]:
         """
         Load and transform evaluation data from all files in a directory.
         
@@ -159,7 +149,6 @@ class BaseEvaluationAdapter(ABC):
         
         # Subclass must implement this part
         # e.g., how to iterate through files and process them
-        pass
 
     def _load_file(self, file_path: Path) -> Any:
         """
@@ -187,7 +176,7 @@ class BaseEvaluationAdapter(ABC):
     
     def _handle_transformation_error(self, error: Exception, context: str):
         """Handle transformation errors based on strict_validation setting"""
-        error_msg = f"Transformation error in {context}: {str(error)}"
+        error_msg = f"Transformation error in {context}: {error!s}"
         
         if self.strict_validation:
             raise TransformationError(error_msg) from error

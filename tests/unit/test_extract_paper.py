@@ -28,21 +28,20 @@ sys.path.insert(0, str(_ROOT / "src" / "utils"))
 sys.path.insert(0, str(_ROOT / "src" / "extraction"))
 
 from extract_paper import (
-    _parse_numeric,
-    _parse_numeric_with_pct,
-    _is_separator,
+    ResultsTableParser,
     _clean_cell,
     _infer_developer,
-    _infer_model_metadata,
-    _infer_metric_name,
     _infer_evaluator_relationship,
+    _infer_metric_name,
+    _infer_model_metadata,
     _is_plausible_result,
-    _sanitize_extracted,
-    _normalise_benchmark_key,
+    _is_separator,
     _lookup_protocol,
-    ResultsTableParser,
+    _normalise_benchmark_key,
+    _parse_numeric,
+    _parse_numeric_with_pct,
+    _sanitize_extracted,
 )
-
 
 # ---------------------------------------------------------------------------
 # _parse_numeric

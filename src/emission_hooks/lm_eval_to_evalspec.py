@@ -26,7 +26,6 @@ from __future__ import annotations
 import hashlib
 from typing import Any
 
-
 # lm-eval-harness task `output_type` -> EvalSpec controlled-vocabulary scoring_mode.
 _OUTPUT_TYPE_TO_SCORING_MODE = {
     "loglikelihood": "log-likelihood",

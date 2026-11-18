@@ -6,7 +6,12 @@ Kept for backward compatibility with existing task runners.
 import sys
 from pathlib import Path
 
-from eee_eval.validation.schema import SchemaValidator, AutoFixer, FileValidator, BatchValidator
+from eee_eval.validation.schema import (
+    AutoFixer,
+    BatchValidator,
+    FileValidator,
+    SchemaValidator,
+)
 
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 

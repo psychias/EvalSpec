@@ -88,12 +88,13 @@ leaderboard's own announcement and are not recomputed here.
 
 Two more things to know before reusing the grid:
 
+- The grid of the paper was run from `controlled_eval/factorial_grid.ipynb`, on Colab
+  with vLLM. Its configuration cell plans exactly the 312 runs of
+  `results/controlled_eval_results.jsonl`. The MMLU runs of three models were made on
+  the `hf` backend with `controlled_eval/scripts/rerun_mmlu_hf.py`; the notebook says
+  which.
 - `controlled_eval/run.py` is an earlier runner. Its defaults (models, temperatures,
-  format names, benchmarks) are not those of the grid in the paper, which was run from
-  a Colab notebook that is not in the repository. The design of the paper's grid is
-  written out below, and the scripts in `controlled_eval/scripts/` use it. Notebooks
-  under `experiments/` are tracked by git, so the grid notebook can be added next to
-  `run.py`.
+  format names, benchmarks) are not those of the grid in the paper.
 - The quantisation experiment (`configs/experiment/quantisation_e4.yaml`,
   `harness_reeval/version_compare/run_e4.sh`) was started and is not in the paper.
 

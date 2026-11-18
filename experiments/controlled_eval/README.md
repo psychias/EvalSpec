@@ -16,6 +16,7 @@ in [`../README.md`](../README.md).
 | `scripts/gsm8k_hf_control.py`, `scripts/gsm8k_hf_backend_check.py`, `scripts/analyze_gsm8k_hf_control.py` | GSM8K on the `hf` backend, to check the format effect is not specific to vLLM |
 | `full_vs_limit200_qwen7b_gsm8k*.py`, `..._RESULT.txt` | One cell on the full GSM8K test set against the 200-problem subset |
 | `analyse.py`, `figures/` | Sensitivity analysis and figures from the grid records |
+| `factorial_grid.ipynb` | The Colab notebook that ran the grid of the paper: lm-evaluation-harness 0.4.11 on vLLM, 312 runs. Needs a GPU |
 | `run.py` | An earlier grid runner; its defaults are not the grid of the paper |
 | `collision_model_results.jsonl` | 24 runs of Llama-3.1-Tulu-3-8B on BBH, GSM8K, MMLU and GPQA from an earlier design |
 

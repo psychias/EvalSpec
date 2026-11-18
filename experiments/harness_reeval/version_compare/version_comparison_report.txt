@@ -1,30 +1,28 @@
 ============================================================================================
-LM-EVALUATION-HARNESS VERSION COMPARISON: 0.4.3 vs 0.4.11
+LM-EVAL VERSION COMPARISON: 0.4.3 vs 0.4.11
 ============================================================================================
-Backend: hf  |  identical config per pair (delta = pure version effect)
-
-Total OK runs: 4   |   failed/no-score runs: 0
-Matched A/B pairs: 2
-
---------------------------------------------------------------------------------------------
-OVERALL STATISTICS
---------------------------------------------------------------------------------------------
-  Mean delta (B-A):  +1.0000
-  Median delta:      +1.0000
-  Std delta:         0.5000
-  Mean |delta|:      1.0000
-  Max  |delta|:      1.5000
+OK runs: 8   failed/no-score runs: 0   matched per-seed pairs: 4
+NOTE: 0.4.3 and 0.4.11 run on different dependency stacks (they are not
+      reconcilable on one transformers version); delta conflates harness
+      version with dependency era. See README / report discussion.
 
 --------------------------------------------------------------------------------------------
-PER-PAIR (sorted by |delta|)
+PER-MODEL (mean +/- std across seeds, paired t-test on per-seed deltas)
 --------------------------------------------------------------------------------------------
-   1. Qwen/Qwen2.5-7B-Instruct  [gsm8k]  n_shot=5 limit=200
-         0.4.3 =   75.50  (exact_match,strict-match)
-        0.4.11 =   77.00  (exact_match,strict-match)
-      Delta (B-A): +1.50   |Delta|: 1.50
+  Qwen/Qwen2.5-1.5B-Instruct  [gsm8k, n_shot=5, limit=0, seeds=2]
+       0.4.3:  33.28 +/- 0.64
+      0.4.11:  33.21 +/- 0.21
+    delta (B-A): -0.08   paired t=-0.250, df=1, p=0.8440 ns
 
-   2. Qwen/Qwen2.5-1.5B-Instruct  [gsm8k]  n_shot=5 limit=200
-         0.4.3 =   29.50  (exact_match,strict-match)
-        0.4.11 =   30.00  (exact_match,strict-match)
-      Delta (B-A): +0.50   |Delta|: 0.50
+  Qwen/Qwen2.5-7B-Instruct  [gsm8k, n_shot=5, limit=0, seeds=2]
+       0.4.3:  75.70 +/- 0.91
+      0.4.11:  76.92 +/- 1.99
+    delta (B-A): +1.21   paired t=+1.599, df=1, p=0.3558 ns
 
+--------------------------------------------------------------------------------------------
+PER-SEED PAIRS
+--------------------------------------------------------------------------------------------
+  Qwen/Qwen2.5-1.5B-Instruct     seed=42    0.4.3= 32.83  0.4.11= 33.06  delta=+0.23
+  Qwen/Qwen2.5-1.5B-Instruct     seed=123   0.4.3= 33.74  0.4.11= 33.36  delta=-0.38
+  Qwen/Qwen2.5-7B-Instruct       seed=42    0.4.3= 75.06  0.4.11= 75.51  delta=+0.45
+  Qwen/Qwen2.5-7B-Instruct       seed=123   0.4.3= 76.35  0.4.11= 78.32  delta=+1.97

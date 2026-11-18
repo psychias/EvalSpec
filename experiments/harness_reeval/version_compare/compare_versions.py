@@ -7,13 +7,14 @@ delta is tested against seed-to-seed noise). Falls back gracefully to the
 single-seed case. delta == version effect at fixed config.
 
 Usage:
-    python compare_versions.py results/full_version_runs.jsonl
+    python compare_versions.py                                  # results/full_version_runs.jsonl
     python compare_versions.py results/final_runs.jsonl --version-a 0.4.3 --version-b 0.4.11
 """
 import argparse
 import csv
 import json
 import math
+import os
 import statistics
 from collections import defaultdict
 
@@ -54,11 +55,14 @@ def paired_ttest(deltas):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("jsonl")
+    here = os.path.dirname(os.path.abspath(__file__))
+    ap.add_argument("jsonl", nargs="?", default=os.path.join(here, "results", "full_version_runs.jsonl"),
+                    help="run records (default: results/full_version_runs.jsonl next to this script)")
     ap.add_argument("--version-a", default="0.4.3")
     ap.add_argument("--version-b", default="0.4.11")
-    ap.add_argument("--report", default="version_comparison_report.txt")
-    ap.add_argument("--csv", default="version_pairs.csv")
+    # written next to this script, wherever it is run from
+    ap.add_argument("--report", default=os.path.join(here, "version_comparison_report.txt"))
+    ap.add_argument("--csv", default=os.path.join(here, "version_pairs.csv"))
     args = ap.parse_args()
 
     rows = load(args.jsonl)
@@ -143,7 +147,7 @@ def main():
     with open(args.report, "w") as fh:
         fh.write(report + "\n")
     print(report)
-    print(f"\n[wrote {args.report} and {args.csv}]")
+    print(f"\n[wrote {os.path.basename(args.report)} and {os.path.basename(args.csv)} in {os.path.dirname(os.path.abspath(args.report))}]")
 
 
 if __name__ == "__main__":

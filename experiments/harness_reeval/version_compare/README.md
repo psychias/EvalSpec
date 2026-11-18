@@ -45,9 +45,11 @@ concatenates them into `results/all_version_runs.jsonl`.
 
 ## Analyze
 ```bash
-python compare_versions.py results/all_version_runs.jsonl
-# -> version_comparison_report.txt  (delta per model, overall mean/median |Δ|)
+python compare_versions.py            # reads results/full_version_runs.jsonl, the runs the paper reports
+# -> version_comparison_report.txt  (delta per model and per seed)
 # -> version_pairs.csv
+# both are written next to the script, wherever it is run from;
+# pass another JSONL file as the first argument to compare other runs
 ```
 
 ## Notes

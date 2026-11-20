@@ -16,7 +16,7 @@ LOWER BOUND on true overlap. Run from the repo root:
 
     python scripts/collision_prevalence.py [path/to/all_results.csv]
 
-On the published dataset (Hermeneia/EvalSpec_Dataset, 46,559 rows) this prints the
+On the published dataset (Psychias/EvalSpec_Dataset, 46,559 rows) this prints the
 Section 3.3 numbers: 41,999 pairs, 291 collisions, 214 >1pp, 169 >5pp, harness
 missing for 210/214 (98%) of the disagreements.
 """

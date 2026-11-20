@@ -4,7 +4,7 @@
     python scripts/dataset_card_numbers.py            # print the numbers
     python scripts/dataset_card_numbers.py --check    # and compare them with the card
 
-The card is the README of https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset.
+The card is the README of https://huggingface.co/datasets/Psychias/EvalSpec_Dataset.
 `scripts/fetch_data.py` saves a copy of it as data/DATASET_CARD.md, which is what
 --check reads. With --check the script exits with status 1 when a number it computes
 is not on the card.

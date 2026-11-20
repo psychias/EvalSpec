@@ -12,8 +12,7 @@ Writes:
     data/eval.schema.json               the record schema shipped with the dataset
     data/DATASET_CARD.md                the dataset card (the README of the dataset)
 
-The dataset is gated on Hugging Face: log in (`huggingface-cli login`) with an account
-that has accepted its terms before running this script.
+The dataset is public; no Hugging Face account is needed.
 """
 from __future__ import annotations
 
@@ -25,7 +24,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-REPO = "Hermeneia/EvalSpec_Dataset"
+REPO = "Psychias/EvalSpec_Dataset"
 
 
 def download(repo: str, revision: str) -> pathlib.Path:
@@ -37,7 +36,7 @@ def download(repo: str, revision: str) -> pathlib.Path:
         return pathlib.Path(snapshot_download(repo_id=repo, repo_type="dataset", revision=revision))
     except Exception as e:  # noqa: BLE001  huggingface_hub raises its own error types
         sys.exit(f"could not download {repo}: {type(e).__name__}: {e}\n"
-                 "The dataset is gated: accept its terms on the dataset page and run `huggingface-cli login`.")
+                 "Check the network connection, or pass --from <folder> to use a copy on disk.")
 
 
 def lay_out(source: pathlib.Path) -> dict[str, int]:

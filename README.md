@@ -6,7 +6,7 @@ Michail. Accepted to Findings of EACL 2027, to appear.
 
 - EvalSpec site: https://psychias.github.io/EvalSpec/
 - Interactive article: https://psychias.github.io/EvalSpec/article.html
-- Dataset: https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset
+- Dataset: https://huggingface.co/datasets/Psychias/EvalSpec_Dataset
 
 ## Quick start
 
@@ -15,10 +15,9 @@ git clone https://github.com/psychias/EvalSpec.git && cd EvalSpec
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-huggingface-cli login                 # the dataset is gated: accept its terms on its page first
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 121 tests
+pytest                                # 124 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
@@ -166,7 +165,7 @@ and `make test` run the same steps.
 ## The dataset
 
 `python scripts/fetch_data.py` downloads
-[Hermeneia/EvalSpec_Dataset](https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset)
+[Psychias/EvalSpec_Dataset](https://huggingface.co/datasets/Psychias/EvalSpec_Dataset)
 and lays it out where the scripts read it:
 
 ```
@@ -180,8 +179,8 @@ data/DATASET_CARD.md                the dataset card, as published on Hugging Fa
 `python scripts/dataset_card_numbers.py --check` recomputes every number on the dataset
 card from these files and fails if one of them is not on the card.
 
-The dataset is gated, so the download needs a HuggingFace account that has accepted its
-terms. With a copy already on disk, run `python scripts/fetch_data.py --from <folder>`.
+The download needs no account. With a copy already on disk, run
+`python scripts/fetch_data.py --from <folder>`.
 
 ## Reproducing the paper's numbers
 

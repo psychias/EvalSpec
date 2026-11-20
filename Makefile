@@ -22,6 +22,7 @@ figures:  ## redraw the figures in figures/ (run `make repro` first)
 	python figures/scripts/unified.py
 	python figures/scripts/case1.py
 	python experiments/scoring_mode_eval/gen_scoring_mode_figure.py
+	python figures/scripts/factorial.py
 
 test:  ## run the test suite
 	python -m pytest -q

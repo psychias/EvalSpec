@@ -1,9 +1,9 @@
 """
-Judge-model sensitivity (E5).
+Judge-model sensitivity (Appendix M.6), four judges.
 
 Holds the evaluated responses FIXED and varies only the judge model, to isolate
 the effect of `judge_model` on benchmark scores and rankings. Motivated by the
-TruthfulQA Case 2 confound (judge + n_shot entangled) and the four LLM-judge
+TruthfulQA case of §5.2 (two judges under one benchmark name) and the four LLM-judge
 sources in the dataset (Chatbot Arena, AlpacaEval 2, MT-Bench, WildBench).
 
 Pipeline (all via OpenRouter, no GPU):
@@ -159,7 +159,7 @@ def aggregate():
         lines.append(s); print(s)
 
     out("=" * 84)
-    out("JUDGE-MODEL SENSITIVITY (E5): identical responses, judge varied")
+    out("JUDGE-MODEL SENSITIVITY: identical responses, judge varied")
     out("=" * 84)
     out(f"Contestants: {len(CONTESTANTS)}  |  Judges: {len(JUDGES)}  |  "
         f"MT-Bench turn-1 questions")

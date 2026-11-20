@@ -1,5 +1,5 @@
-"""E2 uniformity pass: full-set log-likelihood for the three smaller models, so all
-four E2 rows are ll@full vs gen@full (the 14B is in finish_missing_cells_e2_e3.py, in this folder).
+"""Exp2 (scoring mode on MMLU): full-set log-likelihood for the three smaller models, so all
+four rows of the table are ll@full vs gen@full (the 14B is in rerun_missing_cells.py, in this folder).
 
 Motivation: the original ll values used limit=500/subject, which carries subset-
 composition noise. For the 14B this mattered (ll@500=81.72 vs ll@full=79.97); for the
@@ -79,9 +79,9 @@ for eval_id, _ in MODELS:
                             torch_random_seed=42, fewshot_random_seed=42)
         m = r["results"]["mmlu"]
         acc = round(100 * m.get("acc,none", m.get("acc")), 2)
-        print(f"[E2] {eval_id} MMLU 5-shot log-likelihood (FULL 14042): {acc}", flush=True)
+        print(f"[Exp2] {eval_id} MMLU 5-shot log-likelihood (FULL 14042): {acc}", flush=True)
         del lm
         gc.collect()
         torch.cuda.empty_cache()
     except Exception as e:  # noqa: BLE001
-        print(f"[E2-SKIP] {eval_id}: {str(e)[:120]}", flush=True)
+        print(f"[Exp2-SKIP] {eval_id}: {str(e)[:120]}", flush=True)

@@ -1,8 +1,7 @@
 """Power up the log-likelihood generalization benchmarks: re-run ARC-Challenge,
 WinoGrande, and OpenBookQA at TWO additional seeds (123, 7) beyond the original
 seed 42, so each benchmark's prompt-format ANOVA has n=12 per format group
-(4 models x 3 seeds) instead of the single-seed n=4. Addresses the reviewer's
-"log-likelihood benchmarks are underpowered" concern.
+(4 models x 3 seeds) instead of the single-seed n=4.
 
 hf backend, full test set, 5-shot, three formats. One model per Colab session."""
 import os

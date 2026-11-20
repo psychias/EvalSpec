@@ -4,7 +4,7 @@ and 8 judge families, same fixed-response design (responses generated once at
 temperature 0, then every judge scores every response), Vicuna-Bench's 80 single-
 turn questions instead of MT-Bench's. Reports the judge-induced spread, cross-judge
 Spearman, and a formal Friedman test over the fixed responses. All via OpenRouter,
-no GPU. Directly addresses the reviewer's "span more datasets" request."""
+no GPU."""
 import concurrent.futures as cf
 import itertools
 import json

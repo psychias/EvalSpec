@@ -19,12 +19,12 @@ import math
 import os
 from collections import defaultdict
 
-R = os.path.join(os.path.dirname(__file__), "..", "results")
+RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
 FORMATS = ("plain", "instruct", "cot")
 
 
 def load(name):
-    p = os.path.join(R, name)
+    p = os.path.join(RESULTS_DIR, name)
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()] if os.path.exists(p) else []
 
 

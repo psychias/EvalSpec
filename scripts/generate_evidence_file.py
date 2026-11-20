@@ -1,13 +1,10 @@
 """
-generate_evidence_file.py
-=========================
-Reads the stored EEE JSON records, raw lm-eval sample files, and
-controlled-experiment results, then writes section5_evidence.txt —
-a human-readable appendix showing the raw data behind every numerical
-claim in Section 5 of the paper.
+Write section5_evidence.txt: the raw records behind every number of the case studies.
 
-Run from the EvalSpec repo root:
-    python generate_evidence_file.py
+    python scripts/generate_evidence_file.py     # needs the dataset: python scripts/fetch_data.py
+
+Reads the dataset records, the per-question lm-eval logs and the results of the
+controlled experiments, and prints for each claim of Section 5 the records it rests on.
 """
 
 from __future__ import annotations
@@ -182,11 +179,11 @@ def main() -> None:
     ]
 
     # =========================================================================
-    # CASE STUDY 1a: BBH — lighteval log-likelihood vs CoT generation
+    # CASE STUDY 1a: BBH — lm-eval log-likelihood vs CoT generation
     # =========================================================================
-    ev.h1("CASE STUDY 1a — BBH: lighteval log-likelihood vs CoT generation")
+    ev.h1("CASE STUDY 1a — BBH: lm-eval log-likelihood vs CoT generation")
     ev.note(
-        "OLv2 evaluates BBH with lighteval using log-likelihood scoring: each "
+        "OLv2 evaluates BBH with lm-eval using log-likelihood scoring: each "
         "candidate answer is presented to the model and the answer receiving the "
         "highest token log-probability is selected. The paper-reported scores "
         "use 3-shot chain-of-thought generation (Suzgun et al. 2023 protocol). "
@@ -304,7 +301,7 @@ def main() -> None:
 
     ev.note(
         "COMPARISON SUMMARY — Gemma-7B BBH:\n"
-        "  OLv2 (lighteval, log-likelihood, 3-shot) : 21.12\n"
+        "  OLv2 (lm-eval, log-likelihood, 3-shot) : 21.12\n"
         "  Jamba paper (CoT generation)              : 55.10\n"
         "  RecurrentGemma paper (CoT generation)     : 55.10\n"
         "  MAmmoTH2 paper (CoT generation)           : 57.40\n"
@@ -313,9 +310,9 @@ def main() -> None:
     )
 
     # =========================================================================
-    # CASE STUDY 1c: GSM8K — CoT parser failure (Experiment E3)
+    # CASE STUDY 1c: GSM8K — CoT parser failure (Exp1)
     # =========================================================================
-    ev.h1("CASE STUDY 1c — GSM8K: CoT Parser Failure (Experiment E3)")
+    ev.h1("CASE STUDY 1c — GSM8K: CoT Parser Failure (Exp1)")
     ev.note(
         "lm-evaluation-harness 0.4.11 was run on Qwen2.5-14B-Instruct at 5-shot "
         "under three prompt formats (plain, instruct, cot). The raw lm-eval sample "
@@ -642,7 +639,7 @@ def main() -> None:
 
     ev.note(
         "COMPARISON SUMMARY — Gemma-2-9B BBH:\n"
-        "  OLv2 (lighteval, 3-shot log-likelihood)     : 34.10\n"
+        "  OLv2 (lm-eval, 3-shot log-likelihood)     : 34.10\n"
         "  SEA-LION paper (shared pipeline origin)      : 34.10  [exact match]\n"
         "  High cluster (0-shot CoT generation papers)  : 68.20, 69.00\n"
         "  The two 34.10 records cannot be verified as independent measurements.\n"
@@ -651,15 +648,15 @@ def main() -> None:
     )
 
     # =========================================================================
-    # EXPERIMENT E5: MMLU scoring mode gap
+    # EXP2: MMLU scoring mode gap
     # =========================================================================
-    ev.h1("EXPERIMENT E5 — MMLU: Max Scoring-Mode Gap Across Models")
+    ev.h1("EXP2 — MMLU: Max Scoring-Mode Gap Across Models")
     ev.note(
         "Three models were evaluated on MMLU at 5-shot under both log-likelihood "
         "and generation-based scoring. The maximum gap across all models is "
         "0.28 percentage points, confirming that the ~35-point BBH gap is not "
         "a generic scoring-mode effect but is specific to the interaction between "
-        "lighteval's log-likelihood approach and BBH's CoT structure."
+        "lm-eval's log-likelihood approach and BBH's CoT structure."
     )
     sm_path = ROOT / "experiments" / "scoring_mode_eval" / "scoring_mode_results.jsonl"
     ev.kv("File", str(sm_path.relative_to(ROOT)))

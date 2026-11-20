@@ -1,5 +1,5 @@
 ====================================================================================
-JUDGE-MODEL SENSITIVITY (E5): identical responses, judge varied
+JUDGE-MODEL SENSITIVITY: identical responses, judge varied
 ====================================================================================
 Contestants: 5  |  Judges: 4  |  MT-Bench turn-1 questions
 

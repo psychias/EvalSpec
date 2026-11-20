@@ -6,7 +6,7 @@ Reads scoring_mode_results.jsonl and produces a grouped bar chart
 showing log-likelihood vs generation accuracy per model.
 
 Usage:
-    python gen_scoring_mode_figure.py [--results PATH] [--output PATH]
+    python draw_scoring_mode_figure.py [--results PATH] [--output PATH]
 
 Defaults:
     --results experiments/scoring_mode_eval/scoring_mode_results.jsonl

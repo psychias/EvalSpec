@@ -1,6 +1,6 @@
 """Broaden the "temperature contributes <1% of variance" finding beyond GSM8K to a
-panel of generation tasks, via OpenRouter. Tests the reviewer's concern that the
-result (parsed short answers, greedy decoding) may not generalize to open-ended
+panel of generation tasks, via OpenRouter. Tests whether the
+result (parsed short answers, greedy decoding) also holds for open-ended
 generation.
 
 Panel spans the generation spectrum:

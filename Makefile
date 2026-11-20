@@ -19,9 +19,9 @@ card:  ## recompute the numbers of the dataset card and compare them with the ca
 
 figures:  ## redraw the figures in figures/ (run `make repro` first)
 	python figures/scripts/coverage_bars.py
-	python figures/scripts/unified.py
-	python figures/scripts/case1.py
-	python experiments/scoring_mode_eval/gen_scoring_mode_figure.py
+	python figures/scripts/case_studies.py
+	python figures/scripts/parser_flow.py
+	python experiments/scoring_mode_eval/draw_scoring_mode_figure.py
 	python figures/scripts/factorial.py
 
 test:  ## run the test suite

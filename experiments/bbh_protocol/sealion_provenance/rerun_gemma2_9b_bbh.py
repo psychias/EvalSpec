@@ -1,6 +1,6 @@
 """Reproduce OLv2's Gemma-2-9B BBH score (34.0968) under its exact config, to test
 whether 34.10 is a deterministic fingerprint of the OLv2 pipeline (SEA-LION provenance
-check, Case Study 3). OLv2 evaluated google/gemma-2-9b @ beb0c08e in bfloat16 on the
+check, §5.3). OLv2 evaluated google/gemma-2-9b @ beb0c08e in bfloat16 on the
 `leaderboard_bbh` task group (3-shot multiple-choice log-likelihood, acc_norm).
 
 Determinism note: leaderboard_bbh is fixed-few-shot MC log-likelihood, so an exact

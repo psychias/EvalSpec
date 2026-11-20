@@ -1,14 +1,11 @@
 """
-reproduce_case_studies.py
-=========================
-Verifies every numerical claim in Section 5 (Case Studies) of the paper
-"How To Report Evaluations of your LLM" against the stored EEE dataset.
+Check every number of the case studies (Section 5 of the paper) against the dataset.
 
-Run from the EvalSpec repo root:
-    python reproduce_case_studies.py
+    python scripts/reproduce_case_studies.py              # needs the dataset: python scripts/fetch_data.py
+    python scripts/reproduce_case_studies.py --live-api   # also asks the Hugging Face API (needs network)
 
-With live HF API verification (requires network):
-    python reproduce_case_studies.py --live-api
+Each check prints the expected value, the value found and PASS or FAIL; the last lines
+give the totals.
 
 Data provenance for each number is printed alongside the result so a
 reader can trace any figure back to the exact file that produced it.
@@ -194,7 +191,7 @@ def main(live_api: bool = False) -> None:
     olv2_gemma7b_file = OLV2_DIR / "google" / "gemma-7B" / "3ce9060c-07c3-4b21-ba23-4b65994bd8f6.json"
     if olv2_gemma7b_file.exists():
         score, _ = olv2_bbh_score("google/gemma-7B")
-        check("Gemma-7B BBH (OLv2, lighteval log-likelihood, 3-shot)", 21.12, score,
+        check("Gemma-7B BBH (OLv2, lm-eval log-likelihood, 3-shot)", 21.12, score,
               str(olv2_gemma7b_file))
     else:
         # fall back to CSV
@@ -275,8 +272,8 @@ def main(live_api: bool = False) -> None:
     print(f"  Current dataset has {n_math_models} models (scraped later; new submissions added).")
     print("  [INFO] The 3,751 figure is from Kydlicek et al. blog post, not recomputable here.")
 
-    # ── Case Study 1c: GSM8K E3 ───────────────────────────────────────────
-    section("CASE STUDY 1c — GSM8K: CoT Parser Failure (Experiment E3)")
+    # ── Case Study 1c: GSM8K Exp1 ──────────────────────────────────────────
+    section("CASE STUDY 1c — GSM8K: CoT Parser Failure (Exp1)")
     print(f"  File: {CONTROLLED_RESULTS}")
 
     gsm = ce[ce["benchmark"].str.lower().str.contains("gsm", na=False)]
@@ -545,8 +542,8 @@ def main(live_api: bool = False) -> None:
     check("69.00 cluster exists in dataset", True, has_69,
           "data/aggregated/all_results.csv")
 
-    # ── Scoring mode experiment (E5) ───────────────────────────────────────
-    section("EXPERIMENT E5 — MMLU Scoring Mode: Max Gap Across Models")
+    # ── Scoring mode experiment (Exp2) ─────────────────────────────────────
+    section("EXP2 — MMLU Scoring Mode: Max Gap Across Models")
     print(f"  File: {SCORING_MODE_RESULTS}")
 
     sm_records = read_jsonl(SCORING_MODE_RESULTS)

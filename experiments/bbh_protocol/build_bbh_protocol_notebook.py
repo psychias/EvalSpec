@@ -1,9 +1,12 @@
-"""Generate the E1 BBH controlled experiment notebook.
+"""Write the notebook that runs BBH on Gemma-7B under four protocols.
 
-Key design insight: lm-eval 0.4.5 uses generate_until for ALL BBH tasks.
-There is no loglikelihood BBH variant. OLv2 uses lighteval, whose BBH
-implementation uses loglikelihood MC scoring. To reproduce OLv2's ~21pp
-number, we need lighteval for Condition A.
+An early design, kept for reference; the paper's BBH numbers come from
+sealion_provenance/rerun_gemma2_9b_bbh.py, which runs the leaderboard's own
+`leaderboard_bbh` task in lm-evaluation-harness.
+
+lm-eval 0.4.5, which this notebook pins, scores every BBH task by generation and has
+no log-likelihood variant. Condition A therefore uses lighteval, whose BBH tasks are
+scored by multiple-choice log-likelihood, as a stand-in for the leaderboard's scoring.
 
 Four conditions:
   A  (lighteval):  loglikelihood MC, 18 tasks     → reproduces OLv2's ~21pp
@@ -42,8 +45,8 @@ capability.
 
 **Critical discovery:** lm-eval 0.4.5 uses `generate_until` for **ALL** BBH tasks
 (both `bbh_fewshot` and `bbh_cot_fewshot`). There is no loglikelihood BBH variant.
-OLv2 uses **lighteval**, whose BBH implementation does loglikelihood MC scoring.
-Therefore we need lighteval for Condition A.
+OLv2 scores BBH by multiple-choice loglikelihood. **lighteval** has BBH tasks scored
+that way, so Condition A uses lighteval as a stand-in for the leaderboard's scoring.
 
 | Condition | Harness | Method | Tasks | Expected |
 |---|---|---|---|---|
@@ -245,7 +248,7 @@ else:
 print()
 print('NOTE: Both bbh_fewshot_* and bbh_cot_fewshot_* use generate_until.')
 print('      Neither uses loglikelihood. For true loglikelihood scoring')
-print('      (OLv2\\'s method), we use lighteval in Condition A.')""")
+print('      (how OLv2 scores BBH), we use lighteval in Condition A.')""")
 
 # ═══════════════════════════════════════════════════════════════════════════
 md("""## 4 · Condition A — lighteval loglikelihood (18 tasks)
@@ -820,7 +823,7 @@ summary_md = f\"\"\"# Experiment 1 -- BBH Controlled Experiment Summary
 
 ## Key Finding
 lm-eval 0.4.5 uses generate_until for ALL BBH tasks -- there is no loglikelihood
-variant. OLv2 uses lighteval, which does loglikelihood MC scoring. This experiment
+variant. OLv2 scores BBH by loglikelihood MC, as lighteval's BBH tasks do. This experiment
 uses lighteval for Condition A and lm-eval for the rest, enabling a 3-way
 decomposition of the total gap.
 

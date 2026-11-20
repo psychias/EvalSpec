@@ -1,4 +1,4 @@
-# E3 — harness-version sensitivity (one config file per experiment = the run log).
+# Exp3 — harness-version sensitivity (one config file per experiment = the run log).
 name: harness_version_e3
 goal: >
   Does the lm-evaluation-harness VERSION change scores under identical config?

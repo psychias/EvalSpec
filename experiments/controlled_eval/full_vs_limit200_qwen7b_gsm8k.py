@@ -2,7 +2,7 @@
 Full-set vs limit=200 robustness check for ONE factorial-grid cell.
 
 Cell: Qwen2.5-7B-Instruct x GSM8K x 5-shot, prompt format plain vs cot, temp 0.0.
-The factorial grid (Appendix G) scored GSM8K on a 200-problem subset (limit=200)
+The factorial grid (Appendix M.1) scored GSM8K on a 200-problem subset (limit=200)
 for compute budget. This reruns the same cell on the FULL GSM8K test set (1319
 questions) and prints the full-vs-limit=200 comparison, to confirm the subset is
 representative and the plain>cot collapse is not a subset artefact.

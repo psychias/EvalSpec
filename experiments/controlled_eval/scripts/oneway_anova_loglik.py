@@ -6,17 +6,17 @@ appropriate replication unit for each:
   * Deterministic fixed-few-shot benchmarks (MMLU, GPQA) do not vary by seed, so they
     are powered by MODELS: 8 models x 1 seed = n=8 per format.
 
-Reports F, p (approx via F-dist survival), and eta^2 per benchmark, for the §G table.
+Reports F, p (approx via F-dist survival), and eta^2 per benchmark, for comparison with the repeated-measures test of Appendix M.1.
 """
 import json
 import math
 import os
 
-R = os.path.join(os.path.dirname(__file__), "..", "results")
+RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
 
 
 def load(name):
-    p = os.path.join(R, name)
+    p = os.path.join(RESULTS_DIR, name)
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()] if os.path.exists(p) else []
 
 

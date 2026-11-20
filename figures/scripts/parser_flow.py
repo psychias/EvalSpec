@@ -1,5 +1,5 @@
 """
-Parser-flow diagram for §5.1 (Case Study 1) — CoT visual register.
+Parser-flow diagram for the GSM8K result of §4 — CoT visual register.
 Generates 3 variants with different score display styles.
 
 Outputs (figures/):
@@ -118,7 +118,7 @@ def generate_variant(score_style):
 
     # ── Title ─────────────────────────────────────────────────────────────────
     _txt(ax, 0.5, 0.967,
-         "Case Study 1 · GSM8K: Answer-Parser Failure from Prompt Format",
+         "GSM8K: Answer-Parser Failure from Prompt Format",
          ha="center", va="top", fontsize=12, fontfamily=SANS,
          fontweight="bold", color=BLACK)
     _txt(ax, 0.5, 0.942,

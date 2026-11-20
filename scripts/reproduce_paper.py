@@ -6,14 +6,14 @@ repository's data and experiment outputs, in one command.
 This is the single source of truth for the paper's quantitative claims. It
 rebuilds the canonical aggregate from ``data/`` (ArXiv = the per-benchmark
 ``llm/`` extraction only; audit-sample copies and the naive extraction are
-excluded), recomputes the §3–§4 dataset/coverage/audit numbers, and reads the
-§5 / Appendix-G experiment results from ``experiments/``. All values are written
+excluded), recomputes the dataset, coverage and audit numbers of §3, and reads the
+experiment results of §4, §5 and Appendix M from ``experiments/``. All values are written
 to ``analysis_output/paper_numbers.json`` and printed as a report.
 
 Usage
 -----
-    python reproduce_paper.py            # recompute and write paper_numbers.json
-    python reproduce_paper.py --no-rebuild   # skip the (slow) aggregate rebuild
+    python scripts/reproduce_paper.py            # recompute and write paper_numbers.json
+    python scripts/reproduce_paper.py --no-rebuild   # skip the (slow) aggregate rebuild
 
 Determinism: everything here is a pure function of the on-disk data plus the
 seeded experiment outputs. No network, no randomness. The only non-reproducible
@@ -37,7 +37,7 @@ DATA = ROOT / "data"
 ANALYSIS_OUT = ROOT / "analysis_output"
 EXP = ROOT / "experiments"
 
-# Sources that make up the "10-source leaderboard subset" (§3.2 / §4.3). ArXiv
+# Sources that make up the "10-source leaderboard subset" (§3.1, §3.3). ArXiv
 # and Papers With Code are not leaderboards and are excluded from the subset;
 # both are included in the full-dataset totals.
 LEADERBOARD_SOURCES = {
@@ -50,7 +50,7 @@ ARXIV_SOURCES = {"arxiv_html_llm", "arxiv_html_naive"}
 
 # --------------------------------------------------------------------------- #
 # Coverage field predicates — match src/analysis/coverage_audit.py exactly so
-# the §4.3 numbers are consistent with the audited methodology.
+# the coverage numbers of §3.3 are consistent with the audited methodology.
 # --------------------------------------------------------------------------- #
 def _present(value) -> bool:
     s = "" if value is None else str(value).strip()
@@ -75,7 +75,7 @@ def _cot_recorded(cot_flag, prompt_template) -> bool:
 
 
 # --------------------------------------------------------------------------- #
-# §3 — dataset composition
+# §3.1 — dataset composition
 # --------------------------------------------------------------------------- #
 def load_aggregate(rebuild: bool) -> list[dict]:
     """Rebuild the canonical aggregate (optional) and return its rows."""
@@ -160,7 +160,7 @@ def collision_numbers() -> dict:
 
 
 def arxiv_score_presence() -> dict:
-    """§4.1 structural-presence check over the canonical ArXiv extraction."""
+    """§3.2 structural-presence check over the canonical ArXiv extraction."""
     n = nn = 0
     for rec in ds.arxiv_records():
         for er in rec.get("evaluation_results", []):
@@ -172,7 +172,7 @@ def arxiv_score_presence() -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# §4 — annotation audits
+# §3.2 — annotation audits
 # --------------------------------------------------------------------------- #
 def _read_csv_rows(path: Path) -> list[dict]:
     for enc in ("utf-8-sig", "cp1252"):
@@ -190,7 +190,7 @@ def _truthy(v) -> bool:
 
 def score_audit() -> dict:
     rows = _read_csv_rows(ds.annotation_file("annotation_score_verification.csv"))
-    # §4.1 score-verification audit. The verdict_type column separates the two
+    # §3.2 score-verification audit. The verdict_type column separates the two
     # axes: 'score' rows are the pipeline's extractions (the precision basis);
     # 'recall' rows are paper-reported scores the pipeline missed (appended as
     # correct=FALSE during the senior-annotator re-audit). agreement_pct is
@@ -274,7 +274,7 @@ def metadata_audit() -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# §5 / Appendix G — experiments
+# §4, §5, Appendix M — experiments
 # --------------------------------------------------------------------------- #
 MISSING_RESULTS: list[str] = []      # experiment result files that are not on disk
 

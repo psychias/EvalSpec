@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# E4: quantisation sensitivity. Harness + model + task + n-shot + seeds held
-# fixed; only weight quantisation varies. The bf16 baseline is E3's
-# 0.4.11 / Qwen2.5-7B full-GSM8K runs, so E4 only needs 4-bit and 8-bit.
+# Quantisation sensitivity (started, not in the paper). Harness + model + task + n-shot + seeds held
+# fixed; only weight quantisation varies. The bf16 baseline is Exp3's
+# 0.4.11 / Qwen2.5-7B full-GSM8K runs, so this script only runs 4-bit and 8-bit.
 # Backs adding a `software_environment`/`quantisation` field to EvalSpec.
 set -uo pipefail
 cd "$(dirname "$0")"
@@ -24,7 +24,7 @@ for quant in $QUANTS; do
     tag="$(echo "$MODEL" | tr '/' '_')_${TASK}_${VER}_${quant}_seed${seed}"
     log="${RESULTS_DIR}/${tag}.log"
     echo "==================================================================="
-    echo ">> E4 ${VER} | ${MODEL} | quant=${quant} | seed=${seed} (gpu=${GPU})"
+    echo ">> quantisation ${VER} | ${MODEL} | quant=${quant} | seed=${seed} (gpu=${GPU})"
     echo "==================================================================="
     colab run --gpu "$GPU" --timeout "$RUN_TIMEOUT" run_lm_eval_version.py \
       --lm-eval-version "$VER" \
@@ -41,4 +41,4 @@ for quant in $QUANTS; do
       >> "${RESULTS_DIR}/e4_runs.jsonl" || echo "!! no RESULT_JSON for ${tag}"
   done
 done
-echo "E4 done -> ${RESULTS_DIR}/e4_runs.jsonl"
+echo "quantisation done -> ${RESULTS_DIR}/e4_runs.jsonl"

@@ -46,7 +46,7 @@ SANS      = "DejaVu Sans"
 # ── Column data ───────────────────────────────────────────────────────────────
 COLS = {
     "gsm8k": dict(
-        title     = "GSM8K  ·  §5.1",
+        title     = "GSM8K  ·  §4",
         subtitle  = "Qwen2.5-14B-Instruct · lm-evaluation-harness 0.4.11 · 5-shot",
         top_hdr   = "Plain few-shot  (direct-answer)",
         top_score = 58.5,
@@ -190,11 +190,11 @@ COLS = {
     "bbh": dict(
         title     = "BBH · Gemma-2-9B  ·  §5.3",
         subtitle  = "Five sources · two score clusters · two protocols",
-        top_hdr   = "OLv2 & SEA-LION · lighteval · 3-shot · log-likelihood",
+        top_hdr   = "OLv2 & SEA-LION · lm-eval · 3-shot · log-likelihood",
         top_score = 34.10,
         top_unit  = "",
         top_text  = (
-            "# lighteval BBH protocol (OLv2 / SEA-LION)\n"
+            "# lm-eval BBH protocol (OLv2 / SEA-LION)\n"
             "Q: Which statement is logically false?\n"
             "   given: all mammals breathe air;\n"
             "          whales are mammals.\n"

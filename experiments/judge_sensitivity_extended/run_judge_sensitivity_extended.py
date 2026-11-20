@@ -2,7 +2,7 @@
 Judge-model sensitivity (extended).
 
 Broadens the original single-task / 4-judge study (../judge_sensitivity) along the
-two axes a reviewer would ask for: more judge FAMILIES and more TASKS.
+two axes: more judge FAMILIES and more TASKS.
 
   * Judges: 8 distinct provider families
       OpenAI, Google, Meta, Anthropic, DeepSeek, Mistral, Alibaba/Qwen, Amazon.

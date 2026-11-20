@@ -1,4 +1,4 @@
-# E4 — quantisation sensitivity.
+# Quantisation sensitivity (started, not in the paper).
 name: quantisation_e4
 goal: >
   Does weight quantisation change scores, motivating a quantisation /
@@ -14,6 +14,6 @@ lm_eval_version: latest            # see note
 note: >
   4-bit/8-bit need a current lm-eval (which builds a BitsAndBytesConfig
   compatible with modern transformers); lm-eval 0.4.11 forwards load_in_4bit in
-  a way newer transformers reject. Hence lm_eval_version: latest for E4.
+  a way newer transformers reject. Hence lm_eval_version: latest here.
 results: experiments/harness_reeval/version_compare/results/e4_runs.jsonl
 status: bf16 baseline ok (~76); quant runs in progress on current lm-eval

@@ -1,6 +1,6 @@
 """Generalize the factorial grid: add three more benchmarks on a single common
 backend (hf), full test set (no limit=200), to test whether the prompt-format
-effect and the scoring-mode diagnostic (Sec. 5) hold beyond the original
+effect and the scoring-mode diagnostic (§5.1) hold beyond the original
 benchmarks.
 
 New benchmarks (all open, small, log-likelihood multiple-choice, fit the

@@ -64,7 +64,7 @@ python experiments/controlled_eval/scripts/compute_anova_per_benchmark.py
 python experiments/controlled_eval/scripts/compute_factorial_figure_stats.py
 python figures/scripts/factorial.py     # draws Figures 3 and 4 from the numbers of the script above
 # prompt format on the five log-likelihood benchmarks
-python experiments/controlled_eval/scripts/rm_anova_loglik.py
+python experiments/controlled_eval/scripts/repeated_measures_anova_loglik.py
 # GSM8K on the hf backend
 python experiments/controlled_eval/scripts/analyze_gsm8k_hf_control.py
 
@@ -98,7 +98,7 @@ Two more things to know before reusing the grid:
   the `hf` backend with `controlled_eval/scripts/rerun_mmlu_hf.py`; the notebook says
   which.
 - The quantisation experiment (`configs/experiment/quantisation_e4.yaml`,
-  `harness_reeval/version_compare/run_e4.sh`) was started and is not in the paper.
+  `harness_reeval/version_compare/run_quantisation.sh`) was started and is not in the paper.
 
 ## Designs and results
 
@@ -171,8 +171,8 @@ level. Phi-3.5 was dropped because its metric did not parse.
 
 Scripts: `rerun_generalization_hf.py`, `rerun_generalization_multiseed.py`,
 `rerun_mmlu_hf.py`, `rerun_mmlu_gpqa_multiseed.py`, `rerun_gpqa_hf.py`,
-`rerun_gpqa_multiseed.py` run the cells; `rm_anova_loglik.py` and
-`analyze_powered_loglik.py` analyse them.
+`rerun_gpqa_multiseed.py` run the cells; `repeated_measures_anova_loglik.py` and
+`oneway_anova_loglik.py` analyse them.
 
 ### Backend control and full-set check
 
@@ -232,7 +232,7 @@ cell runs on its own machine.
 `leaderboard_bbh` configuration on Gemma-2-9B. It reproduces the unrescaled score to
 within 0.11 pp (53.88 against the leaderboard's 53.77), so the published 34.10 is
 reproducible under its own procedure and not comparable with the chain-of-thought score
-of 68.20. `bbh_protocol/build_E1_notebook.py` generates the notebook that compares BBH
+of 68.20. `bbh_protocol/build_bbh_protocol_notebook.py` generates the notebook that compares BBH
 protocols (log-likelihood, direct generation, chain-of-thought generation).
 
 ### Judge model

@@ -390,8 +390,6 @@ class LiveLeaderboardFetcher(ABC):
                     r_dict["shots"] = name_meta["shots"]
                 if r_dict.get("chain_of_thought") is None and "chain_of_thought" in bench_meta:
                     r_dict["chain_of_thought"] = bench_meta["chain_of_thought"]
-                if r_dict.get("chain_of_thought") is None and "chain_of_thought" in name_meta:
-                    r_dict["chain_of_thought"] = name_meta["chain_of_thought"]
                 if r_dict.get("temperature") is None and "temperature" in bench_meta:
                     r_dict["temperature"] = bench_meta["temperature"]
                 if r_dict.get("temperature") is None and "temperature" in name_meta:
@@ -656,8 +654,17 @@ class OpenLLMLeaderboardV2Fetcher(LiveLeaderboardFetcher):
     """
     Open LLM Leaderboard v2 (active as of 2025).
     Dataset: open-llm-leaderboard/contents
-    Benchmarks: IFEval (0-shot), BBH (3-shot CoT), MATH Lvl 5 (4-shot CoT),
-                GPQA (0-shot CoT), MuSR (0-shot CoT), MMLU-PRO (5-shot CoT)
+    Benchmarks: IFEval (0-shot, generative), BBH (3-shot, multiple choice),
+                MATH Lvl 5 (4-shot, generative), GPQA (0-shot, multiple choice),
+                MuSR (0-shot, multiple choice), MMLU-PRO (5-shot, multiple choice)
+
+    Shots, metric and task type are the ones the leaderboard documents
+    (https://huggingface.co/docs/leaderboards/open_llm_leaderboard/about and the
+    `leaderboard` task group of lm-evaluation-harness). The four multiple-choice
+    tasks are scored by log-likelihood over the answer choices, so they are not
+    chain-of-thought. MATH Lvl 5 uses the Minerva prompt, whose four examples are
+    worked solutions; the documentation does not call it chain-of-thought, that
+    label is ours.
     Harness: EleutherAI lm-evaluation-harness 0.4.x
 
     Column schema (verified from the live dataset parquet):
@@ -693,13 +700,14 @@ class OpenLLMLeaderboardV2Fetcher(LiveLeaderboardFetcher):
     _MODEL_COL  = "fullname"  # "fullname" has org/model; "Model" is display-only
 
     # Exact column names → (bench_name, shots, metric, note, cot)
-    _BENCH_COLS: dict[str, tuple[str, int, str, str, bool]] = {
-        "IFEval":     ("IFEval (strict-prompt)", 0, "prompt_level_strict_acc", "", False),
-        "BBH":        ("BBH",      3, "accuracy",                "3-shot CoT",               True),
-        "MATH Lvl 5": ("MATH Lvl 5", 4, "accuracy",               "4-shot CoT, level 5 only", True),
-        "GPQA":       ("GPQA-Diamond", 0, "acc_norm",              "0-shot CoT, Diamond subset", True),
-        "MUSR":       ("MuSR",     0, "accuracy",                "0-shot CoT",               True),
-        "MMLU-PRO":   ("MMLU-Pro", 5, "accuracy",                "5-shot CoT",               True),
+    # cot: True or False where the task type settles it, None where nothing is recorded
+    _BENCH_COLS: dict[str, tuple[str, int, str, str, bool | None]] = {
+        "IFEval":     ("IFEval (strict-prompt)", 0, "prompt_level_strict_acc", "", None),
+        "BBH":        ("BBH",      3, "acc_norm",    "3-shot, multiple choice (log-likelihood)", False),
+        "MATH Lvl 5": ("MATH Lvl 5", 4, "exact_match", "4-shot, generative, worked solutions in the prompt, level 5 only", True),
+        "GPQA":       ("GPQA-Diamond", 0, "acc_norm", "0-shot, multiple choice (log-likelihood), Diamond subset", False),
+        "MUSR":       ("MuSR",     0, "acc_norm",    "0-shot, multiple choice (log-likelihood)", False),
+        "MMLU-PRO":   ("MMLU-Pro", 5, "accuracy",    "5-shot, multiple choice (log-likelihood)", False),
     }
 
     def _fetch_rows(self) -> list[FetchedRow]:
@@ -747,8 +755,8 @@ class OpenLLMLeaderboardV2Fetcher(LiveLeaderboardFetcher):
                         fr.scales[bench]       = (0.0, 100.0)
                         if note:
                             fr.notes[bench]    = note
-                        if cot:
-                            fr.chain_of_thought[bench] = True
+                        if cot is not None:
+                            fr.chain_of_thought[bench] = cot
                     except (TypeError, ValueError):
                         pass
 

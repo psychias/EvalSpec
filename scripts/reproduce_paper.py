@@ -63,9 +63,15 @@ def _prompt_present(value) -> bool:
 
 
 def _is_cot(cot_flag, prompt_template) -> bool:
+    """The record says the evaluation used chain-of-thought."""
     pt = ("" if prompt_template is None else str(prompt_template)).lower()
     flag = str(cot_flag).strip().lower() not in ("", "none", "false", "0", "nan")
     return flag or ("chain" in pt) or ("cot" in pt)
+
+
+def _cot_recorded(cot_flag, prompt_template) -> bool:
+    """The record says whether the evaluation used chain-of-thought, yes or no."""
+    return str(cot_flag).strip().lower() in ("false", "0") or _is_cot(cot_flag, prompt_template)
 
 
 # --------------------------------------------------------------------------- #
@@ -109,7 +115,9 @@ def dataset_numbers(rows: list[dict]) -> dict:
 
 
 def coverage_numbers(rows: list[dict]) -> dict:
-    fields = ["shots", "harness", "prompt_template", "temperature", "chain_of_thought"]
+    # chain_of_thought: the status is recorded, as yes or as no (a record with 0 shots
+    # counts for shots in the same way). cot_true: the records that say yes.
+    fields = ["shots", "harness", "prompt_template", "temperature", "chain_of_thought", "cot_true"]
 
     def cover(subset):
         n = len(subset)
@@ -122,7 +130,8 @@ def coverage_numbers(rows: list[dict]) -> dict:
             c["harness"] += _present(r.get("eval_library", r.get("harness")))
             c["prompt_template"] += _prompt_present(r.get("prompt_template"))
             c["temperature"] += _present(r.get("temperature"))
-            c["chain_of_thought"] += _is_cot(r.get("chain_of_thought"), r.get("prompt_template"))
+            c["chain_of_thought"] += _cot_recorded(r.get("chain_of_thought"), r.get("prompt_template"))
+            c["cot_true"] += _is_cot(r.get("chain_of_thought"), r.get("prompt_template"))
         return {f: round(100 * c[f] / n, 1) for f in fields}
 
     subset = [r for r in rows if r["source"] in LEADERBOARD_SOURCES]

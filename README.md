@@ -64,7 +64,7 @@ Share of records with a documented value for each field:
 |---|---|---|
 | n-shot | 80.5% | 98.0% |
 | harness | 63.2% | 93.2% † |
-| chain-of-thought | 50.0% | 77.7% |
+| chain-of-thought | 50.0% | 77.6% |
 | prompt template | 14.1% | 0.0% |
 | temperature | 3.1% | 0.0% |
 

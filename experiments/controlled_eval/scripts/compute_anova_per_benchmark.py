@@ -37,9 +37,12 @@ GPQA_PATH   = os.path.join(RESULTS_DIR, "gpqa_results.jsonl")
 GEN_PATH    = os.path.join(RESULTS_DIR, "generalization_hf.jsonl")
 OUT_PATH    = os.path.join(RESULTS_DIR, "anova_per_benchmark.json")
 
-# Benchmarks analysed for the per-format ANOVA (5-shot) and the n_shot factor.
+# Benchmarks analysed for the per-format ANOVA and the n_shot factor.
+# BBH ran the full grid of 144 cells with 0 and 3 shots, so its format and
+# temperature ANOVAs use the 3-shot runs (SHOT_STRATUM). Its 0-shot scores are near 0.
 BENCHMARKS  = ("gsm8k", "mmlu", "gpqa",
-               "ARC-Challenge", "WinoGrande", "OpenBookQA")
+               "ARC-Challenge", "WinoGrande", "OpenBookQA", "bbh")
+SHOT_STRATUM = {"bbh": 3}
 
 
 def load_rows(path):
@@ -196,7 +199,7 @@ def main():
 
     results = {}
     for benchmark in BENCHMARKS:
-        n_shot = 5
+        n_shot = SHOT_STRATUM.get(benchmark, 5)
         block  = compute_for_benchmark(rows, benchmark, n_shot)
         results[benchmark] = block
 

@@ -10,7 +10,7 @@ in [`../README.md`](../README.md).
 | `cross_extractor_results.csv` | The GSM8K outputs re-scored with other answer-extraction rules |
 | `results/` | Raw records of the runs, one line per cell: the 312 grid runs, GPQA, the log-likelihood benchmarks and the `hf` backend control. `anova_per_benchmark.json` and `factorial_figure_stats.json` are written by the two scripts below |
 | `scripts/compute_anova_per_benchmark.py` | One-way ANOVA per benchmark on prompt format, temperature and shot count (Tables 20 and 21) |
-| `scripts/compute_factorial_figure_stats.py` | The numbers of Figures 3 and 4: bootstrap intervals and the mean score change when one setting differs. Run it after the script above |
+| `scripts/compute_factorial_figure_stats.py` | The numbers of Figures 3 and 4: bootstrap intervals and the mean score change when one setting differs. Run it after the script above. `figures/scripts/factorial.py` draws the two figures from its output |
 | `scripts/rm_anova_loglik.py`, `scripts/analyze_powered_loglik.py` | Repeated-measures ANOVA and Friedman test on the five log-likelihood benchmarks |
 | `scripts/rerun_*.py` | The log-likelihood benchmark cells on the `hf` backend (MMLU, GPQA, ARC-Challenge, WinoGrande, OpenBookQA) |
 | `scripts/gsm8k_hf_control.py`, `scripts/gsm8k_hf_backend_check.py`, `scripts/analyze_gsm8k_hf_control.py` | GSM8K on the `hf` backend, to check the format effect is not specific to vLLM |

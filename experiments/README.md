@@ -62,6 +62,7 @@ python scripts/reproduce_paper.py        # grid ANOVAs, Exp1, Exp2, Exp3, 4-judg
 # factorial grid: Tables 20 and 21, the bootstrap interval, Figures 3 and 4
 python experiments/controlled_eval/scripts/compute_anova_per_benchmark.py
 python experiments/controlled_eval/scripts/compute_factorial_figure_stats.py
+python figures/scripts/factorial.py     # draws Figures 3 and 4 from the numbers of the script above
 # prompt format on the five log-likelihood benchmarks
 python experiments/controlled_eval/scripts/rm_anova_loglik.py
 # GSM8K on the hf backend

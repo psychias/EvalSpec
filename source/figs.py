@@ -139,7 +139,7 @@ def rescale():
 def coverage():
     L = ['All 12 sources, 46,559 records', '10 leaderboard sources, 28,755 records', '9 leaderboards without Open LLM Leaderboard v2, 1,965 records']
     rows = [('Shot count', [(80.5, 0), (98.0, 0), (71.0, 0)]), ('Harness', [(63.2, 57.5), (93.2, 93.2), (0, 0)]),
-            ('Chain-of-thought status', [(50.0, 0), (77.7, 0), (0, 0)]), ('Prompt template', [(14.1, 0), (0, 0), (0, 0)]),
+            ('Chain-of-thought status', [(50.0, 0), (77.6, 0), (0, 0)]), ('Prompt template', [(14.1, 0), (0, 0), (0, 0)]),
             ('Temperature', [(3.1, 0), (0, 0), (0, 0)])]
 
     def cell(label, v, att):
@@ -157,7 +157,7 @@ def coverage():
 
 def grid():
     cols = ['Shot count', 'Harness', 'Chain-of-thought status', 'Prompt template', 'Temperature']
-    src = [('Open LLM Leaderboard v2', '26,790', [100, ('att', 100), 83.4, 0, 0]), ('AlpacaEval 2', '446', [100, 0, 0, 0, 0]),
+    src = [('Open LLM Leaderboard v2', '26,790', [100, ('att', 100), 83.3, 0, 0]), ('AlpacaEval 2', '446', [100, 0, 0, 0, 0]),
            ('BFCL', '327', [100, 0, 0, 0, 0]), ('BigCodeBench', '280', [100, 0, 0, 0, 0]), ('Chatbot Arena', '218', [0, 0, 0, 0, 0]),
            ('EvalPlus', '214', [100, 0, 0, 0, 0]), ('Hugging Face model cards', '207', [5.8, 0, 0, 0, 0]), ('WildBench', '122', [0, 0, 0, 0, 0]),
            ('SWE-Bench', '117', [100, 0, 0, 0, 0]), ('MT-Bench', '34', [0, 0, 0, 0, 0])]

@@ -10,7 +10,7 @@
   "datastore": {
     "_comment": "The Hugging Face dataset that holds every record. When the dataset is renamed, change hf_repo only; every link and command on the site is derived from it.",
     "name": "EvalSpec",
-    "hf_repo": "Hermeneia/EvalSpec_Dataset",
+    "hf_repo": "Psychias/EvalSpec_Dataset",
     "revision": "main",
     "data_dir": "data"
   },
@@ -47,7 +47,7 @@
   },
 
   "licences": {
-    "data": {"name": "MIT", "url": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset/blob/main/LICENSE"},
+    "data": {"name": "MIT", "url": "https://huggingface.co/datasets/Psychias/EvalSpec_Dataset/blob/main/LICENSE"},
     "code": {"name": "MIT", "url": "https://github.com/psychias/EvalSpec/blob/main/LICENSE"}
   }
 }

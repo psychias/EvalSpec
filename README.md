@@ -41,14 +41,13 @@ write identical files). Optional:
 `jsonschema` for the schema tests, `node` for the tests that compare the browser validator
 with the Python one, `huggingface_hub` for the download.
 
-The pages in this branch are built from the full datastore, `Hermeneia/EvalSpec_Dataset` on
+The pages in this branch are built from the full datastore, `Psychias/EvalSpec_Dataset` on
 Hugging Face: 12 files with one record per line, 46,559 results. The registry shows 45,705
 of them; the other 854 are results read from arXiv papers that carry no numeric score, and
 the build leaves those out. Without `--datastore` the build reads the bundled sample of 122
 records instead and says so on its pages (see `datastore/README.md`).
 
-The dataset is gated: downloading it needs a Hugging Face account that has accepted its
-terms (`huggingface-cli login`).
+The dataset is public; downloading it needs no account.
 
 ## Settings: `config.json`
 

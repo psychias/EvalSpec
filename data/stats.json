@@ -2,11 +2,11 @@
   "built": "2026-11-20",
   "datastore": {
     "name": "EvalSpec",
-    "hf_repo": "Hermeneia/EvalSpec_Dataset",
+    "hf_repo": "Psychias/EvalSpec_Dataset",
     "revision": "main",
     "data_dir": "data",
-    "url": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset",
-    "file_base": "https://huggingface.co/datasets/Hermeneia/EvalSpec_Dataset/blob/main/"
+    "url": "https://huggingface.co/datasets/Psychias/EvalSpec_Dataset",
+    "file_base": "https://huggingface.co/datasets/Psychias/EvalSpec_Dataset/blob/main/"
   },
   "snapshot": {
     "kind": "full",

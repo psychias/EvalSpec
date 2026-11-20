@@ -323,7 +323,7 @@
         <span class="dot kraw" style="left:43.62%"></span><span class="val below" style="left:43.62%">43.62</span>
         <span class="dot k" style="left:55.1%"></span><span class="val" style="left:55.1%">55.10</span>
       </div>
-      <div class="why"><p>The leaderboard ranks answer choices by likelihood and rescales. The papers generate chain-of-thought answers. Other model papers give 55.10 and 57.40 for this model, and a further 59.60 appears under a differently named benchmark entry.</p><p class="rec">In the published records: visible only indirectly, through the metric name (<span class="mono">acc_norm</span>, a normalized accuracy, against <span class="mono">exact_match</span>) and a chain-of-thought flag.</p></div>
+      <div class="why"><p>The leaderboard ranks answer choices by likelihood and rescales. The papers generate chain-of-thought answers. Other model papers give 55.10 and 57.40 for this model, and a further 59.60 appears under a differently named benchmark entry.</p><p class="rec">In the published records: visible only indirectly and only on the leaderboard's side, through its metric name (<span class="mono">acc_norm</span>, a normalized accuracy) and a chain-of-thought flag set to false. The papers' records state no protocol.</p></div>
     </div>
     <div class="lrow">
       <div class="who"><b>Gemma-2-2B on BBH</b><span>Leaderboard and a model paper</span></div>
@@ -366,7 +366,7 @@
         <span class="dot k" style="left:26.3%"></span><span class="val" style="left:26.3%">26.30</span>
         <span class="dot k" style="left:57.04%"></span><span class="val" style="left:57.04%">57.04</span>
       </div>
-      <div class="why"><p>26.30 is zero-shot with a fine-tuned Llama-2-7B as judge. 57.04 is six-shot with a GPT-3-based judge. Both things change at once, so the gap cannot be divided between them.</p><p class="rec">In the published records: the judge model has no field.</p></div>
+      <div class="why"><p>Both scores are six-shot. 26.30 was judged by a fine-tuned Llama-2-7B and 57.04 by a GPT-3-based judge, so the judge is what separates them.</p><p class="rec">In the published records: the judge model has no field.</p></div>
     </div>
     <div class="lrow">
       <div class="who"><b>Gemma-7B on HellaSwag</b><span>Phi-3 report and Gemma report</span></div>

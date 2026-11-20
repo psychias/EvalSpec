@@ -126,7 +126,7 @@ def main():
     print(f"  scoring mode missing among disagreements: {p['scoring_mode_missing']}/{d} "
           f"({100*p['scoring_mode_missing']/max(d,1):.0f}%)")
 
-    print("\nOLv2 (lighteval) vs other-source gap, per benchmark:")
+    print("\nOLv2 against the other sources, per benchmark (median of the others minus OLv2, one comparison per model):")
     for b, gs in sorted(olv2_gaps(cells).items(), key=lambda x: -len(x[1])):
         if len(gs) >= 2:
             print(f"  {b:14} n={len(gs):3}  median={statistics.median(gs):+.1f}pp  "

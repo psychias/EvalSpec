@@ -52,6 +52,18 @@ N_BOOT = 10_000
 SEED = 12345
 
 
+
+def stable(value):
+    """Floats rounded to 12 significant digits, so the file is the same on every machine:
+    the last digits of a p-value depend on the platform's maths library."""
+    if isinstance(value, float):
+        return float(f"{value:.12g}")
+    if isinstance(value, dict):
+        return {k: stable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [stable(v) for v in value]
+    return value
+
 def load_jsonl(name):
     path = os.path.join(RESULTS, name)
     rows = []
@@ -254,7 +266,7 @@ def main():
     }
     out_path = os.path.join(RESULTS, "factorial_figure_stats.json")
     with open(out_path, "w", encoding="utf-8") as fh:
-        json.dump(out, fh, indent=2)
+        json.dump(stable(out), fh, indent=2)
     print(f"Wrote {os.path.normpath(out_path)}")
     print(f"GSM8K format eta 27.4, bootstrap CI {gsm_ci}")
     for bench in BENCHMARKS:

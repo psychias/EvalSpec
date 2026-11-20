@@ -45,6 +45,18 @@ BENCHMARKS  = ("gsm8k", "mmlu", "gpqa",
 SHOT_STRATUM = {"bbh": 3}
 
 
+
+def stable(value):
+    """Floats rounded to 12 significant digits, so the file is the same on every machine:
+    the last digits of a p-value depend on the platform's maths library."""
+    if isinstance(value, float):
+        return float(f"{value:.12g}")
+    if isinstance(value, dict):
+        return {k: stable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [stable(v) for v in value]
+    return value
+
 def load_rows(path):
     if not os.path.exists(path):
         raise SystemExit(f"{os.path.normpath(path)} is not in the repository. See experiments/README.md for the run that writes it.")
@@ -249,7 +261,7 @@ def main():
     # write JSON
     os.makedirs(RESULTS_DIR, exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
+        json.dump(stable(results), f, indent=2)
     print(f"Wrote {OUT_PATH}")
 
 

@@ -218,7 +218,8 @@ def aggregate():
         out("(scipy not available; skipped Spearman)")
 
     out("")
-    out(f"Rows scored: {len(rows)}  |  written {os.path.relpath(JUDGE_PATH, SCRIPT_DIR)}")
+    written = os.path.relpath(JUDGE_PATH, SCRIPT_DIR).replace(os.sep, "/")      # the same on every platform
+    out(f"Rows scored: {len(rows)}  |  written {written}")
     os.makedirs(os.path.dirname(REPORT_PATH), exist_ok=True)
     with open(REPORT_PATH, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")

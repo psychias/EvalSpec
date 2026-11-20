@@ -1,10 +1,15 @@
 """
-Metadata-coverage horizontal bar chart — §4.3 (replaces tab:coverage in body).
+Metadata-coverage bar chart of Section 3.3 (Figure 2).
 
-Output: figures/coverage_bars.pdf
+    python scripts/reproduce_paper.py
+    python figures/scripts/coverage_bars.py
 
-Visual takeaway: harness, prompt_template, and temperature have zero valid
-coverage in the 10-source leaderboard subset (bars flush at 0).
+Reads   analysis_output/paper_numbers.json
+Writes  figures/coverage_bars.pdf, .png   share of records with a value for each field,
+                                          for the full dataset and the 10 leaderboard sources
+
+The script draws the coverage numbers of reproduce_paper.py and computes nothing itself,
+so the figure always shows the values of the coverage table.
 """
 
 import json
@@ -13,99 +18,94 @@ import os
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUT_DIR    = os.path.join(SCRIPT_DIR, "..")
-OUT_PATH   = os.path.join(OUT_DIR, "coverage_bars.pdf")
-# Single source of truth: regenerate via `python reproduce_paper.py`.
-PAPER_NUMBERS = os.path.join(SCRIPT_DIR, "..", "..",
-                             "analysis_output", "paper_numbers.json")
+OUT_DIR = os.path.join(SCRIPT_DIR, "..")
+PAPER_NUMBERS = os.path.join(SCRIPT_DIR, "..", "..", "analysis_output", "paper_numbers.json")
 
-BLUE_HDR   = "#4A90D9"
-BLUE_LIGHT = "#A8C8EC"
-ORNG_HDR   = "#E89A4F"
-DGREY      = "#444444"
-MGREY      = "#CCCCCC"
-WHITE      = "#FFFFFF"
-BLACK      = "#111111"
-SANS       = "DejaVu Sans"
-MONO       = "DejaVu Sans Mono"
+BLUE, BLUE_EDGE = "#A8C8EC", "#4A90D9"
+ORANGE, ORANGE_EDGE = "#F8D2A8", "#C06A1C"
+DGREY, MGREY = "#444444", "#CCCCCC"
 
-# (field, full_dataset_%, leaderboard_subset_%) — ordered bottom-to-top.
-# Loaded from analysis_output/paper_numbers.json so the figure always matches
-# the paper's coverage table (regenerate both via `python reproduce_paper.py`).
-with open(PAPER_NUMBERS, encoding="utf-8") as _fh:
-    _PN = json.load(_fh)
-_COV = _PN["coverage"]
-_DS = _PN["dataset"]
+plt.rcParams.update({
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "Times", "Nimbus Roman", "STIXGeneral", "DejaVu Serif"],
+    "mathtext.fontset": "stix",
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
+    "hatch.linewidth": 0.8,
+})
+
+# field in paper_numbers.json -> label, from the top of the chart down
 FIELDS = [
-    (name, _COV["full_dataset"][name], _COV["leaderboard_subset"][name])
-    for name in ("temperature", "prompt_template", "chain_of_thought", "harness", "shots")
+    ("shots", "Shots"),
+    ("harness", "Harness"),
+    ("chain_of_thought", "CoT"),
+    ("prompt_template", "Prompt\ntemplate"),
+    ("temperature", "Tempr."),
 ]
-TOTAL_RECORDS = _DS["total_records"]
-SUBSET_RECORDS = _DS["leaderboard_subtotal"]["records"]
-N_SOURCES = len(_DS["per_source"])
+BAR, GAP = 0.36, 0.02
 
-fig, ax = plt.subplots(figsize=(6.5, 3.4), facecolor=WHITE)
 
-y_pos      = list(range(len(FIELDS)))
-bar_height = 0.36
-gap        = 0.02
+def save(fig, name):
+    for ext in ("pdf", "png"):
+        fig.savefig(os.path.join(OUT_DIR, f"{name}.{ext}"), dpi=200, bbox_inches="tight", pad_inches=0.03)
+    plt.close(fig)
+    print(f"Saved figures/{name}.pdf and .png")
 
-full_vals   = [v for _, v, _ in FIELDS]
-subset_vals = [v for _, _, v in FIELDS]
-labels      = [f for f, _, _ in FIELDS]
 
-ax.barh([y + (bar_height + gap) / 2 for y in y_pos], full_vals,
-        height=bar_height, color=BLUE_LIGHT, edgecolor=BLUE_HDR, linewidth=0.8,
-        zorder=3)
-ax.barh([y - (bar_height + gap) / 2 for y in y_pos], subset_vals,
-        height=bar_height, color=ORNG_HDR, edgecolor=ORNG_HDR, linewidth=0.8,
-        zorder=3)
-
-# Value labels
-for y, v in zip(y_pos, full_vals):
-    ax.text(v + 1.2, y + (bar_height + gap) / 2, f"{v:.1f}%",
-            va="center", ha="left",
-            fontsize=7.2, fontfamily=SANS, color=DGREY, zorder=4)
-for y, v in zip(y_pos, subset_vals):
-    label = f"{v:.1f}%"
-    if v == 0:
-        ax.text(1.2, y - (bar_height + gap) / 2, label,
-                va="center", ha="left",
-                fontsize=7.5, fontfamily=SANS, color=ORNG_HDR,
-                fontweight="bold", zorder=4)
+def value_label(ax, value, y, edge):
+    """The percentage beside a bar; a zero is set in bold in the colour of its series."""
+    if value == 0:
+        ax.text(1.6, y, "0.0%", va="center", ha="left", fontsize=8, color=edge, fontweight="bold", zorder=4)
     else:
-        ax.text(v + 1.2, y - (bar_height + gap) / 2, label,
-                va="center", ha="left",
-                fontsize=7.2, fontfamily=SANS, color=DGREY, zorder=4)
+        ax.text(value + 1.4, y, f"{value:.1f}%", va="center", ha="left", fontsize=7.5, color=DGREY, zorder=4)
 
-ax.set_yticks(y_pos)
-ax.set_yticklabels(labels, fontsize=8.5, fontfamily=MONO, color=BLACK)
-ax.set_xlim(0, 110)
-ax.set_xlabel('Coverage (% of records with non-null, non-"unknown" value)',
-              fontsize=8, fontfamily=SANS, color=DGREY)
-ax.tick_params(axis="x", labelsize=7.5, colors=DGREY)
-ax.tick_params(axis="y", length=0)
 
-for spine in ("top", "right"):
-    ax.spines[spine].set_visible(False)
-ax.spines["bottom"].set_color(MGREY)
-ax.spines["left"].set_color(MGREY)
-ax.grid(axis="x", linestyle=":", color=MGREY, linewidth=0.5, zorder=1)
-ax.set_axisbelow(True)
+def draw(numbers):
+    coverage, dataset = numbers["coverage"], numbers["dataset"]
+    full, subset = coverage["full_dataset"], coverage["leaderboard_subset"]
+    fig, ax = plt.subplots(figsize=(3.3, 2.2))
+    rows = list(reversed(FIELDS))                       # barh counts from the bottom
+    for y, (key, _) in enumerate(rows):
+        upper, lower = y + (BAR + GAP) / 2, y - (BAR + GAP) / 2
+        ax.barh(upper, full[key], height=BAR, color=BLUE, edgecolor=BLUE_EDGE, hatch="//", linewidth=0.8, zorder=3)
+        ax.barh(lower, subset[key], height=BAR, color=ORANGE, edgecolor=ORANGE_EDGE, hatch="..", linewidth=0.8, zorder=3)
+        value_label(ax, full[key], upper, BLUE_EDGE)
+        value_label(ax, subset[key], lower, ORANGE_EDGE)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([label for _, label in rows], fontsize=8)
+    ax.set_ylim(-1.75, len(rows) - 0.45)                # room for the legend under the bars
+    ax.set_xlim(0, 112)
+    ax.set_xticks(range(0, 101, 20))
+    ax.set_xlabel("Coverage (%)", fontsize=8, color=DGREY)
+    ax.tick_params(axis="x", labelsize=8, colors=DGREY, length=2.5)
+    ax.tick_params(axis="y", length=0)
+    ax.xaxis.grid(True, linestyle=":", linewidth=0.5, color=MGREY, zorder=0)
+    ax.set_axisbelow(True)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color(MGREY)
+    handles = [
+        Patch(facecolor=BLUE, edgecolor=BLUE_EDGE, hatch="//", linewidth=0.8,
+              label=f"Full dataset ({dataset['total_records']:,})"),
+        Patch(facecolor=ORANGE, edgecolor=ORANGE_EDGE, hatch="..", linewidth=0.8,
+              label=f"Leaderboard subset ({dataset['leaderboard_subtotal']['records']:,})"),
+    ]
+    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.0), fontsize=7.5, frameon=False,
+              handlelength=1.6, labelspacing=0.3, prop={"family": "DejaVu Sans", "size": 7.5})
+    save(fig, "coverage_bars")
 
-legend_full = mpatches.Patch(facecolor=BLUE_LIGHT, edgecolor=BLUE_HDR,
-                             label=f"Full dataset ({TOTAL_RECORDS:,} records, {N_SOURCES} sources)")
-legend_sub  = mpatches.Patch(facecolor=ORNG_HDR, edgecolor=ORNG_HDR,
-                             label=f"10-source leaderboard subset ({SUBSET_RECORDS:,} records)")
-ax.legend(handles=[legend_full, legend_sub],
-          loc="lower right", fontsize=7.5, frameon=False,
-          handlelength=1.2, handleheight=0.9, borderpad=0.4)
 
-plt.tight_layout()
-plt.savefig(OUT_PATH, format="pdf", bbox_inches="tight", dpi=300)
-plt.savefig(OUT_PATH.replace(".pdf", ".png"), format="png", bbox_inches="tight", dpi=200)
-print(f"Saved: {OUT_PATH}")
+def main():
+    if not os.path.exists(PAPER_NUMBERS):
+        raise SystemExit(f"{os.path.normpath(PAPER_NUMBERS)} is missing. Run scripts/reproduce_paper.py first.")
+    with open(PAPER_NUMBERS, encoding="utf-8") as fh:
+        draw(json.load(fh))
+
+
+if __name__ == "__main__":
+    main()

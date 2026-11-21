@@ -26,9 +26,10 @@ import json
 import sys
 from pathlib import Path
 
+import dataset_access as ds
+
 ROOT = Path(__file__).resolve().parent.parent
 ROWS = ROOT / "experiments" / "bbh_protocol" / "olv2_leaderboard_rows.json"
-CSV = ROOT / "data" / "aggregated" / "all_results.csv"
 
 REPO = "open-llm-leaderboard/contents"
 REVISION = "9c09a7cae43334062a82cb164f2ef255013dafa2"
@@ -87,10 +88,10 @@ def dataset_scores() -> dict[tuple[str, str], float]:
     A few leaderboard records of the dataset have no organisation ("unknown/MAmmoTH2-7B-Plus").
     They are also filed under the model name alone, when only one model has that name.
     """
-    if not CSV.exists():
+    if not ds.AGGREGATE_CSV.exists():
         return {}
     out, by_name = {}, {}
-    with open(CSV, encoding="utf-8", newline="") as fh:
+    with open(ds.AGGREGATE_CSV, encoding="utf-8", newline="") as fh:
         for r in csv.DictReader(fh):
             if r["source"] == "open_llm_leaderboard_v2":
                 model = r["model_id"].lower()
@@ -131,7 +132,9 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Check the leaderboard scores the paper quotes from the leaderboard's table.")
     ap.add_argument("--fetch", action="store_true",
                     help="download the table at the fixed revision, compare the saved rows with it and rewrite them")
+    ds.add_data_option(ap)
     args = ap.parse_args(argv)
+    ds.apply_data_option(args)
     if args.fetch:
         rows = download()
         same = ROWS.exists() and saved() == rows

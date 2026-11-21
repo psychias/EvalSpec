@@ -17,7 +17,7 @@ pip install -e ".[dev]"
 
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 124 tests
+pytest                       # 129 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
@@ -135,6 +135,7 @@ src/emission_hooks/      writes EvalSpec records at the end of an lm-evaluation-
 eval.schema.json         the EEE JSON Schema, v0.2.1
 
 scripts/                 fetch the dataset, recompute the paper's numbers
+  dataset_access.py      where the dataset is on disk; the one place that knows the folder
 experiments/             the controlled experiments, one folder each, with their records
 configs/                 paper lists for the extraction, experiment settings
 figures/                 the figures, and in figures/scripts/ the scripts that draw them
@@ -217,6 +218,58 @@ make figures      # redraws every file in figures/ from the data and the experim
 
 [`experiments/README.md`](experiments/README.md) lists the command that recomputes each
 experiment's numbers and the result file it reads.
+
+## Reusing and extending the code
+
+The analysis is written as functions that take their data as arguments, with the
+settings of the paper as defaults. The tables below say where each kind of change goes.
+
+### Running the analysis on other data
+
+Every reproduction script reads the dataset from one folder, `data/` by default. Another
+copy, a later release or your own records in the same layout are used in one of three ways:
+
+```bash
+python scripts/fetch_data.py --data ~/evalspec-2027            # download into another folder
+python scripts/reproduce_paper.py --data ~/evalspec-2027       # one run
+export EVALSPEC_DATA=~/evalspec-2027                           # every script, and make
+```
+
+From Python, the same functions run on any list of rows with the columns of
+`all_results.csv`:
+
+```python
+import sys; sys.path.insert(0, "scripts")
+import reproduce_paper as rp, collision_prevalence as cp
+
+rows = rp.load_aggregate(path="my_results.csv")
+rp.coverage_numbers(rows, leaderboards={"my_leaderboard"})     # coverage for another set of sources
+_, cells = cp.load_cells("my_results.csv")
+cp.prevalence(cells, small=2, large=10)                        # other disagreement thresholds
+cp.reference_gaps(cells, reference="my_leaderboard")           # another source against the rest
+```
+
+`python scripts/reproduce_paper.py --list` names the sections of the report, and
+`--only coverage,collisions_3_3` computes some of them.
+
+### Where a change goes
+
+| To add | Edit |
+|---|---|
+| A metadata field to the coverage table | One entry in `COVERAGE_FIELDS` in `scripts/reproduce_paper.py`: the name and a test on a row. Add the name to `COVERAGE_REPORT` to print it, and to `FIELDS` in `figures/scripts/coverage_bars.py` to draw it |
+| A source to the leaderboard subset | `LEADERBOARD_SOURCES` in `scripts/reproduce_paper.py` |
+| An analysis to the report | A function that returns a dict, a function that returns its report lines, and one `Section(...)` entry in `SECTIONS` at the end of `scripts/reproduce_paper.py` |
+| A column to `all_results.csv` | One key in the dict of `iter_rows` in `src/eee_eval/analysis/aggregate_results.py` |
+| An alias of a benchmark name | `_BENCHMARK_FIXUP` in the same file |
+| A leaderboard to the collection | A subclass of `LiveLeaderboardFetcher` in `src/eee_eval/extraction/add_leaderboard_records.py` that sets the `SOURCE_*` names and returns `FetchedRow` objects from `_fetch_rows`, added to `ALL_FETCHERS` |
+| A converter for another evaluation harness | A subclass of `BaseEvaluationAdapter` in `src/eee_eval/converters/common/adapter.py`, next to the three in `src/eee_eval/converters/` |
+| Papers to the arXiv extraction | A list of arXiv ids like `configs/papers/general_llm_papers.txt`, passed with `--paper-list` |
+| An experiment | A folder in `experiments/` with its run script, its result file and a row in `experiments/README.md`. Helpers shared by the experiments are in `experiments/common/` |
+
+The scripts in `experiments/` that need a GPU are kept as they were run, with the models,
+seeds and settings of each run as constants at the top of the file. To run another model
+or seed, change those constants; the analysis scripts read whatever rows the result file
+holds.
 
 ## Using the pipeline
 

@@ -15,28 +15,74 @@ The case-study scripts were written against the second layout and name single
 record files. ``RecordPath`` lets that code run unchanged on the first layout: it
 behaves like the ``pathlib.Path`` of a record file, and when the file is not on
 disk it finds the same record in the JSONL file by paper, model and benchmark.
+
+The dataset folder is ``data/`` in the repository unless another one is named, in
+one of three ways (the later wins):
+
+* the environment variable ``EVALSPEC_DATA``,
+* the ``--data FOLDER`` option that every reproduction script accepts,
+* a call to ``use_data_dir(folder)`` from Python.
+
+Scripts read the paths below as ``ds.AGGREGATE_CSV``, ``ds.RECORDS`` and so on at the
+time they need them, so that a change of folder reaches all of them.
 """
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DATA = ROOT / "data"
-AGGREGATE_CSV = DATA / "aggregated" / "all_results.csv"
-RECORDS = DATA / "records"
-FETCH_HINT = "The dataset is not in data/. Run: python scripts/fetch_data.py"
+DATA_ENV = "EVALSPEC_DATA"
 
-# record source -> (per-record tree used by the pipeline, JSONL file of the published dataset)
-_SOURCES = {
-    "arxiv": ([DATA / "archiv_paper_extraction" / "llm", DATA / "arxiv_extraction_general" / "llm"],
-              RECORDS / "arxiv_extraction.jsonl"),
-    "olv2": ([DATA / "open_llm_leaderboard_v2"], RECORDS / "open_llm_leaderboard.jsonl"),
-}
-_ANNOTATION_DIRS = [DATA / "annotations", DATA / "archiv_paper_extraction" / "samples",
-                    DATA / "arxiv_extraction_general" / "samples"]
+# Set by use_data_dir().
+DATA: pathlib.Path
+AGGREGATE_CSV: pathlib.Path          # one row per result
+RECORDS: pathlib.Path                # <source>.jsonl, one record per line
+CARD: pathlib.Path                   # the dataset card
+FETCH_HINT: str                      # what to tell the user when the dataset is not there
+# record source -> (per-record trees used by the pipeline, JSONL file of the published dataset)
+_SOURCES: dict[str, tuple[list[pathlib.Path], pathlib.Path]]
+_ANNOTATION_DIRS: list[pathlib.Path]
 _cache: dict[pathlib.Path, list[dict]] = {}
+
+
+def use_data_dir(folder: str | os.PathLike | None = None) -> pathlib.Path:
+    """Point every path of this module at `folder` and return it.
+
+    Without an argument the folder is $EVALSPEC_DATA, or data/ in the repository.
+    """
+    global DATA, AGGREGATE_CSV, RECORDS, CARD, FETCH_HINT, _SOURCES, _ANNOTATION_DIRS
+    DATA = pathlib.Path(folder or os.environ.get(DATA_ENV) or ROOT / "data").expanduser().resolve()
+    AGGREGATE_CSV = DATA / "aggregated" / "all_results.csv"
+    RECORDS = DATA / "records"
+    CARD = DATA / "DATASET_CARD.md"
+    _SOURCES = {
+        "arxiv": ([DATA / "archiv_paper_extraction" / "llm", DATA / "arxiv_extraction_general" / "llm"],
+                  RECORDS / "arxiv_extraction.jsonl"),
+        "olv2": ([DATA / "open_llm_leaderboard_v2"], RECORDS / "open_llm_leaderboard.jsonl"),
+    }
+    _ANNOTATION_DIRS = [DATA / "annotations", DATA / "archiv_paper_extraction" / "samples",
+                        DATA / "arxiv_extraction_general" / "samples"]
+    default = DATA == (ROOT / "data").resolve()
+    FETCH_HINT = (f"The dataset is not in {shown(DATA)}/. Run: python scripts/fetch_data.py"
+                  + ("" if default else f" --data {DATA}"))
+    _cache.clear()
+    return DATA
+
+
+
+def add_data_option(parser) -> None:
+    """Give an argparse parser the --data option shared by the reproduction scripts."""
+    parser.add_argument("--data", metavar="FOLDER", type=pathlib.Path,
+                        help=f"the dataset folder (default: ${DATA_ENV}, else data/ in the repository)")
+
+
+def apply_data_option(args) -> None:
+    """Switch to the folder given with --data, if one was given."""
+    if getattr(args, "data", None):
+        use_data_dir(args.data)
 
 
 def flat(text) -> str:
@@ -97,10 +143,10 @@ def arxiv_records() -> list[dict]:
     return read_jsonl(jsonl)
 
 
-def _shown(path: pathlib.Path) -> str:
-    """The path relative to the repository, where it is inside it."""
+def shown(path: pathlib.Path) -> str:
+    """The path as the scripts print it: relative to the repository, where it is inside it."""
     try:
-        return str(path.relative_to(ROOT))
+        return pathlib.Path(path).relative_to(ROOT).as_posix()
     except ValueError:
         return str(path)
 
@@ -178,12 +224,15 @@ class RecordPath:
     def __str__(self) -> str:
         real = self._real()
         if real is not None:
-            return _shown(real)
+            return shown(real)
         doc = self._doc if self._doc is not None else self._find()
         if doc:
-            return f"{_shown(_SOURCES[self.source][1])} :: {doc.get('evaluation_id')}"
-        return _shown(_SOURCES[self.source][0][0].joinpath(*self.parts))
+            return f"{shown(_SOURCES[self.source][1])} :: {doc.get('evaluation_id')}"
+        return shown(_SOURCES[self.source][0][0].joinpath(*self.parts))
 
 
 ARXIV_DIR = RecordPath("arxiv")
 OLV2_DIR = RecordPath("olv2")
+
+
+use_data_dir()

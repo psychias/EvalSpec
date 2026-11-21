@@ -5,6 +5,11 @@ Checks what fraction of evaluation_results records have each methodology
 field populated: n_shot, harness (non-"unknown"), prompt_template, temperature,
 top_k, reasoning_mode.
 
+    python -m eee_eval.analysis.coverage_audit
+
+`audit_source(folder)` returns the row of one source and `audit(data_dir, out_dir)`
+runs it over every source folder, so both can be used on another record tree.
+
 Output: analysis_output/coverage_stats.csv
 Columns: source, n_records, pct_n_shot, pct_harness, pct_prompt_template,
          pct_temperature, pct_top_k, pct_reasoning_mode
@@ -124,21 +129,22 @@ def audit_source(source_dir: Path) -> dict:
     }
 
 
+def audit(data_dir: Path = DATA_DIR, out_dir: Path | None = OUT_DIR) -> pd.DataFrame:
+    """One row per source folder of `data_dir`, largest first; written to `out_dir`
+    as coverage_stats.csv unless `out_dir` is None."""
+    rows = [audit_source(source_dir) for source_dir in sorted(Path(data_dir).iterdir()) if source_dir.is_dir()]
+    df = pd.DataFrame(rows).sort_values("n_records", ascending=False)
+    if out_dir is not None:
+        Path(out_dir).mkdir(parents=True, exist_ok=True)
+        out_path = Path(out_dir) / "coverage_stats.csv"
+        df.to_csv(out_path, index=False)
+        print(f"Coverage audit saved -> {out_path}")
+        print()
+    return df
+
+
 def main():
-    OUT_DIR.mkdir(exist_ok=True)
-    rows = []
-    for source_dir in sorted(DATA_DIR.iterdir()):
-        if source_dir.is_dir():
-            rows.append(audit_source(source_dir))
-
-    df = pd.DataFrame(rows)
-    df = df.sort_values("n_records", ascending=False)
-
-    out_path = OUT_DIR / "coverage_stats.csv"
-    df.to_csv(out_path, index=False)
-    print(f"Coverage audit saved -> {out_path}")
-    print()
-    print(df.to_string(index=False))
+    print(audit().to_string(index=False))
 
 
 if __name__ == "__main__":

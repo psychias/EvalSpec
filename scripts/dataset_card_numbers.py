@@ -25,8 +25,6 @@ from collections import Counter, defaultdict
 import dataset_access as ds
 import reproduce_paper as rp
 
-CARD = ds.DATA / "DATASET_CARD.md"
-
 # source key in all_results.csv -> file in data/ on the hub
 SOURCE_FILES = {
     "open_llm_leaderboard_v2": "open_llm_leaderboard.jsonl", "arxiv_html_llm": "arxiv_extraction.jsonl",
@@ -111,7 +109,7 @@ def _is_number(value) -> bool:
 def coverage(rows: list[dict]) -> tuple[list[str], list[str]]:
     cov = rp.coverage_numbers(rows)
     lines, expect = ["field: all sources / 10 leaderboard sources"], []
-    for field in ("shots", "harness", "chain_of_thought", "prompt_template", "temperature"):
+    for field in rp.COVERAGE_REPORT:
         full, subset = cov["full_dataset"][field], cov["leaderboard_subset"][field]
         lines.append(f"  {field:18s} {full}% / {subset}%")
         expect.append(f"| `{field}` | {full}% | {subset}% |")
@@ -207,7 +205,9 @@ def collection_dates(rows: list[dict]) -> tuple[list[str], list[str]]:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Recompute every number on the dataset card.")
     ap.add_argument("--check", action="store_true", help="compare the numbers with data/DATASET_CARD.md")
+    ds.add_data_option(ap)
     args = ap.parse_args(argv)
+    ds.apply_data_option(args)
     rows = rp.load_aggregate(rebuild=False)
 
     sections = [("Files and size", files_and_size(rows)), ("Columns of all_results.csv", columns(rows)),
@@ -221,12 +221,12 @@ def main(argv=None) -> int:
     if not args.check:
         return 0
 
-    if not CARD.exists():
-        sys.exit(f"{CARD.relative_to(ds.ROOT)} is missing. Run: python scripts/fetch_data.py")
-    card = " ".join(CARD.read_text(encoding="utf-8").split())        # the card wraps its lines
+    if not ds.CARD.exists():
+        sys.exit(f"{ds.shown(ds.CARD)} is missing. Run: python scripts/fetch_data.py")
+    card = " ".join(ds.CARD.read_text(encoding="utf-8").split())        # the card wraps its lines
     missing = [(title, value) for title, (_, expect) in sections for value in expect if " ".join(value.split()) not in card]
     checked = sum(len(expect) for _, (_, expect) in sections)
-    print(f"\n== Check against {CARD.relative_to(ds.ROOT)}")
+    print(f"\n== Check against {ds.shown(ds.CARD)}")
     for title, value in missing:
         print(f"  not on the card ({title}): {value}")
     print(f"{checked - len(missing)} of {checked} computed values are on the card")

@@ -10,8 +10,14 @@ Writes  figures/coverage_bars.pdf, .png   share of records with a value for each
 
 The script draws the coverage numbers of reproduce_paper.py and computes nothing itself,
 so the figure always shows the values of the coverage table.
+
+    python figures/scripts/coverage_bars.py --numbers other_numbers.json --out-dir /tmp/figs
+
+draws the same chart for another numbers file. The rows of the chart are the entries of
+FIELDS: a field that reproduce_paper.py computes is added to the chart by adding it there.
 """
 
+import argparse
 import json
 import os
 
@@ -49,11 +55,12 @@ FIELDS = [
 BAR, GAP = 0.36, 0.02
 
 
-def save(fig, name):
+def save(fig, name, out_dir=OUT_DIR):
     for ext in ("pdf", "png"):
-        fig.savefig(os.path.join(OUT_DIR, f"{name}.{ext}"), dpi=200, bbox_inches="tight", pad_inches=0.03)
+        fig.savefig(os.path.join(out_dir, f"{name}.{ext}"), dpi=200, bbox_inches="tight", pad_inches=0.03)
     plt.close(fig)
-    print(f"Saved figures/{name}.pdf and .png")
+    where = "figures" if out_dir == OUT_DIR else os.path.normpath(out_dir)
+    print(f"Saved {where}/{name}.pdf and .png")
 
 
 def value_label(ax, value, y, edge):
@@ -64,11 +71,12 @@ def value_label(ax, value, y, edge):
         ax.text(value + 1.4, y, f"{value:.1f}%", va="center", ha="left", fontsize=7.5, color=DGREY, zorder=4)
 
 
-def draw(numbers):
+def draw(numbers, out_dir=OUT_DIR, fields=FIELDS):
+    """Draw the chart for the `coverage` and `dataset` sections of a paper_numbers.json."""
     coverage, dataset = numbers["coverage"], numbers["dataset"]
     full, subset = coverage["full_dataset"], coverage["leaderboard_subset"]
     fig, ax = plt.subplots(figsize=(3.3, 2.2))
-    rows = list(reversed(FIELDS))                       # barh counts from the bottom
+    rows = list(reversed(fields))                       # barh counts from the bottom
     for y, (key, _) in enumerate(rows):
         upper, lower = y + (BAR + GAP) / 2, y - (BAR + GAP) / 2
         ax.barh(upper, full[key], height=BAR, color=BLUE, edgecolor=BLUE_EDGE, hatch="//", linewidth=0.8, zorder=3)
@@ -97,14 +105,19 @@ def draw(numbers):
     ]
     ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.0), fontsize=7.5, frameon=False,
               handlelength=1.6, labelspacing=0.3, prop={"family": "DejaVu Sans", "size": 7.5})
-    save(fig, "coverage_bars")
+    save(fig, "coverage_bars", out_dir)
 
 
-def main():
-    if not os.path.exists(PAPER_NUMBERS):
-        raise SystemExit(f"{os.path.normpath(PAPER_NUMBERS)} is missing. Run scripts/reproduce_paper.py first.")
-    with open(PAPER_NUMBERS, encoding="utf-8") as fh:
-        draw(json.load(fh))
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Draw the metadata-coverage bar chart (Figure 2).")
+    ap.add_argument("--numbers", default=PAPER_NUMBERS, help="numbers file (default: analysis_output/paper_numbers.json)")
+    ap.add_argument("--out-dir", default=OUT_DIR, help="folder for the figure (default: figures/)")
+    args = ap.parse_args(argv)
+    if not os.path.exists(args.numbers):
+        raise SystemExit(f"{os.path.normpath(args.numbers)} is missing. Run scripts/reproduce_paper.py first.")
+    os.makedirs(args.out_dir, exist_ok=True)
+    with open(args.numbers, encoding="utf-8") as fh:
+        draw(json.load(fh), args.out_dir)
 
 
 if __name__ == "__main__":

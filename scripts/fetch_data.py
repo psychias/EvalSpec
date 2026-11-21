@@ -3,6 +3,7 @@
 
     python scripts/fetch_data.py                  # from the Hugging Face hub
     python scripts/fetch_data.py --from PATH      # from a local copy of the dataset
+    python scripts/fetch_data.py --data FOLDER    # into another folder than data/
 
 Writes:
 
@@ -22,8 +23,8 @@ import pathlib
 import shutil
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-DATA = ROOT / "data"
+import dataset_access as ds
+
 REPO = "Psychias/EvalSpec_Dataset"
 
 
@@ -41,6 +42,7 @@ def download(repo: str, revision: str) -> pathlib.Path:
 
 def lay_out(source: pathlib.Path) -> dict[str, int]:
     """Copy the files of the dataset to the places the scripts expect."""
+    DATA = ds.DATA
     if not (source / "all_results.csv").exists():
         sys.exit(f"{source} does not look like the dataset: all_results.csv is missing")
     plan = [(source / "all_results.csv", DATA / "aggregated" / "all_results.csv")]
@@ -62,14 +64,17 @@ def main(argv=None) -> int:
     ap.add_argument("--from", dest="source", type=pathlib.Path, help="a local copy of the dataset, instead of downloading it")
     ap.add_argument("--repo", default=REPO, help=f"Hugging Face dataset (default: {REPO})")
     ap.add_argument("--revision", default="main")
+    ds.add_data_option(ap)
     args = ap.parse_args(argv)
+    ds.apply_data_option(args)
     source = args.source.resolve() if args.source else download(args.repo, args.revision)
     done = lay_out(source)
-    with open(DATA / "aggregated" / "all_results.csv", encoding="utf-8", newline="") as fh:
+    with open(ds.AGGREGATE_CSV, encoding="utf-8", newline="") as fh:
         rows = sum(1 for _ in csv.reader(fh)) - 1
-    print(f"data/aggregated/all_results.csv: {rows:,} rows\n"
-          f"data/records/: {done['records']} source files\n"
-          f"data/annotations/: {done['annotations']} audit files\n"
+    where = ds.shown(ds.DATA)
+    print(f"{where}/aggregated/all_results.csv: {rows:,} rows\n"
+          f"{where}/records/: {done['records']} source files\n"
+          f"{where}/annotations/: {done['annotations']} audit files\n"
           "Next: python scripts/reproduce_paper.py")
     return 0
 

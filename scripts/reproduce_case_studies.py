@@ -21,10 +21,10 @@ import sys
 import pandas as pd
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DATA_CSV = ROOT / "data" / "aggregated" / "all_results.csv"
 # Record files of the pipeline tree, or the same records in data/records/*.jsonl
 # when only the published dataset is on disk (see dataset_access.py).
-from dataset_access import ARXIV_DIR, FETCH_HINT, OLV2_DIR
+import dataset_access as ds
+from dataset_access import ARXIV_DIR, OLV2_DIR
 
 CONTROLLED_RESULTS = ROOT / "experiments" / "controlled_eval" / "results" / "controlled_eval_results.jsonl"
 SCORING_MODE_RESULTS = ROOT / "experiments" / "scoring_mode_eval" / "scoring_mode_results.jsonl"
@@ -153,11 +153,12 @@ def fetch_olv2_api(model_id: str, benchmark_key: str = "bbh") -> float | None:
 
 def main(live_api: bool = False) -> None:
     print("reproduce_case_studies.py — EEE paper Section 5 verification")
+    DATA_CSV = ds.AGGREGATE_CSV
     print(f"Dataset : {DATA_CSV}")
     print("Date    : 2026-05-20")
 
     if not DATA_CSV.exists():
-        sys.exit(f"ERROR: dataset not found at {DATA_CSV}\n{FETCH_HINT}")
+        sys.exit(f"ERROR: dataset not found at {DATA_CSV}\n{ds.FETCH_HINT}")
 
     df = pd.read_csv(DATA_CSV, low_memory=False)
     df_olv2 = df[df["source"] == "open_llm_leaderboard_v2"]
@@ -584,5 +585,7 @@ if __name__ == "__main__":
         "--live-api", action="store_true",
         help="Also query the live HF leaderboard API to cross-check OLv2 scores",
     )
+    ds.add_data_option(parser)
     args = parser.parse_args()
+    ds.apply_data_option(args)
     main(live_api=args.live_api)

@@ -9,9 +9,13 @@ Reads   experiments/controlled_eval/results/factorial_figure_stats.json
 Writes  figures/factorial_eta.pdf, .png        share of score variance explained by each setting
         figures/factorial_mismatch.pdf, .png   mean score change when one setting differs
 
-The script draws what the statistics file holds and computes nothing itself.
+The script draws what the statistics file holds and computes nothing itself. The
+benchmarks, their order and their names come from that file, and the settings from
+FACTORS and COLUMN_LABELS below, so a grid with other benchmarks or settings is drawn
+by pointing --stats at its statistics file.
 """
 
+import argparse
 import json
 import os
 
@@ -57,14 +61,15 @@ COLUMN_LABELS = {
 }
 
 
-def save(fig, name):
+def save(fig, name, out_dir=OUT_DIR):
     for ext in ("pdf", "png"):
-        fig.savefig(os.path.join(OUT_DIR, f"{name}.{ext}"), dpi=200, bbox_inches="tight", pad_inches=0.03)
+        fig.savefig(os.path.join(out_dir, f"{name}.{ext}"), dpi=200, bbox_inches="tight", pad_inches=0.03)
     plt.close(fig)
-    print(f"Saved figures/{name}.pdf and .png")
+    where = "figures" if out_dir == OUT_DIR else os.path.normpath(out_dir)
+    print(f"Saved {where}/{name}.pdf and .png")
 
 
-def draw_eta(stats):
+def draw_eta(stats, out_dir=OUT_DIR):
     """Grouped bars: variance explained per benchmark, with bootstrap intervals."""
     order, names = stats["benchmark_order"], stats["display_names"]
     fig, ax = plt.subplots(figsize=(3.3, 2.55))
@@ -98,10 +103,10 @@ def draw_eta(stats):
                for _, label, fill, edge, hatch in FACTORS]
     ax.legend(handles=handles, loc="upper right", bbox_to_anchor=(1.02, 1.04), fontsize=6.5,
               frameon=False, handlelength=1.6, labelspacing=0.25)
-    save(fig, "factorial_eta")
+    save(fig, "factorial_eta", out_dir)
 
 
-def draw_mismatch(stats):
+def draw_mismatch(stats, out_dir=OUT_DIR):
     """Heat map: mean absolute score change (pp) when exactly one setting differs."""
     order, names, columns = stats["benchmark_order"], stats["display_names"], stats["mismatch_columns"]
     cells = stats["mismatch"]
@@ -129,17 +134,22 @@ def draw_mismatch(stats):
     ax.tick_params(length=0)
     for spine in ax.spines.values():
         spine.set_visible(False)
-    save(fig, "factorial_mismatch")
+    save(fig, "factorial_mismatch", out_dir)
 
 
-def main():
-    if not os.path.exists(STATS):
-        raise SystemExit(f"{os.path.normpath(STATS)} is missing. Run "
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Draw the two factorial-grid figures of Section 4.")
+    ap.add_argument("--stats", default=STATS, help="statistics file (default: the one in experiments/controlled_eval/results/)")
+    ap.add_argument("--out-dir", default=OUT_DIR, help="folder for the figures (default: figures/)")
+    args = ap.parse_args(argv)
+    if not os.path.exists(args.stats):
+        raise SystemExit(f"{os.path.normpath(args.stats)} is missing. Run "
                          "experiments/controlled_eval/scripts/compute_factorial_figure_stats.py first.")
-    with open(STATS, encoding="utf-8") as fh:
+    os.makedirs(args.out_dir, exist_ok=True)
+    with open(args.stats, encoding="utf-8") as fh:
         stats = json.load(fh)
-    draw_eta(stats)
-    draw_mismatch(stats)
+    draw_eta(stats, args.out_dir)
+    draw_mismatch(stats, args.out_dir)
 
 
 if __name__ == "__main__":

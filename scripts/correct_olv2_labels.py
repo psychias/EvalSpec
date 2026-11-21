@@ -30,14 +30,16 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import collision_prevalence as cp  # noqa: E402
+import dataset_access as ds  # noqa: E402
 import reproduce_paper as rp  # noqa: E402
+
 from eee_eval.extraction.add_leaderboard_records import OpenLLMLeaderboardV2Fetcher  # noqa: E402
 
-DATA = ROOT / "data"
-OUT = DATA / "corrected"
+DATA = ds.DATA                       # the dataset as published
+OUT = DATA / "corrected"             # the corrected copy
 RECORDS = "records/open_llm_leaderboard.jsonl"
 CSV = "aggregated/all_results.csv"
-SOURCE = "open_llm_leaderboard_v2"
+SOURCE = cp.OLV2
 
 # benchmark name in the records -> (shots, metric, note, chain of thought)
 LABELS = {bench: (shots, metric, note, cot)
@@ -136,7 +138,7 @@ def main() -> int:
                  for k in out["before"] if k.startswith("coverage")
                  for f in ("shots", "harness", "prompt_template", "temperature"))
     print(f"\ncollision counts unchanged: {same}; other coverage fields unchanged: {others}")
-    print(f"written to {OUT.relative_to(ROOT)}")
+    print(f"written to {ds.shown(OUT)}")
     return 0
 
 

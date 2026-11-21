@@ -17,7 +17,7 @@ pip install -e ".[dev]"
 
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                       # 129 tests
+pytest                                # 129 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit

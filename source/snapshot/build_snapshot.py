@@ -8,6 +8,10 @@ and the authors' own controlled runs. Every file says where its numbers come fro
 (source_metadata.additional_details.sample_origin). Nothing here is invented.
 
 Run it again only to change the sample:  python source/snapshot/build_snapshot.py
+
+The address of the code repository, which the provenance links point into, is links.code
+in config.json. The sample itself is the three functions leaderboards(), papers() and
+controlled_runs(): a record is added to the sample by adding it to one of them.
 """
 import json
 import pathlib
@@ -17,7 +21,8 @@ import uuid
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUT = ROOT / "datastore"
 RETRIEVED = "1794873600"            # 2026-11-17T00:00:00Z, when the sample was assembled
-REPO = "https://github.com/psychias/EvalSpec/tree/main/"
+CODE = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))["links"]["code"].rstrip("/")
+REPO = CODE + "/tree/main/"
 
 
 def uid(key: str) -> str:
@@ -187,7 +192,7 @@ def papers():
 
 # ------------------------------------------------------------------ author-reported: the paper's own controlled runs
 
-RUNS = ("LLM Evaluation Discrepancies: controlled runs", "University of Zurich", "https://github.com/psychias/EvalSpec")
+RUNS = ("LLM Evaluation Discrepancies: controlled runs", "University of Zurich", CODE)
 HARNESS = ("lm-evaluation-harness", "0.4.11")
 TULU_GRID = [   # experiments/controlled_eval/collision_model_results.jsonl: benchmark, task, prompt format, shots, scoring mode, score
     ("gpqa_main", "gpqa_main_zeroshot", "plain", 0, "log-likelihood", 31.0), ("gpqa_main", "gpqa_main_n_shot", "plain", 5, "log-likelihood", 23.5),

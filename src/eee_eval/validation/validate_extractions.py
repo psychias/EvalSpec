@@ -28,9 +28,10 @@ from bs4 import BeautifulSoup
 
 log = logging.getLogger("eee_validate")
 
-ROOT = Path(__file__).resolve().parent.parent.parent.parent
-OUT_DIR = ROOT / "data" / "archiv_paper_extraction"
-HTML_CACHE_DIR = ROOT / "data" / "html_cache"
+from eee_eval.paths import DATA_DIR
+
+OUT_DIR = DATA_DIR / "archiv_paper_extraction"
+HTML_CACHE_DIR = DATA_DIR / "html_cache"
 
 
 # ── HTML fetching / caching ───────────────────────────────────────────

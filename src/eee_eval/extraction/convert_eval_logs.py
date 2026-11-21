@@ -22,9 +22,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-
 from eee_eval.converters.common.adapter import BaseEvaluationAdapter
 from eee_eval.converters.lm_eval.adapter import LMEvalAdapter
 

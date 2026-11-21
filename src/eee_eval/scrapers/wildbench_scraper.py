@@ -21,15 +21,9 @@ usage:
 
 from __future__ import annotations
 
-import sys
 import time
 from pathlib import Path
 from typing import Any
-
-# add repo root and utils/ to sys.path
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-sys.path.insert(0, str(_ROOT / "utils"))
 
 import requests
 

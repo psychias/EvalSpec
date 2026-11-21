@@ -82,3 +82,15 @@ def parse_rating(text: str) -> float | None:
         return None
     value = float(m.group(1))
     return value if 1 <= value <= 10 else None
+
+
+def run_options(description: str, argv=None):
+    """The command line of an experiment that calls models and then analyses the answers.
+
+    --analyze recomputes the statistics from the saved results, without any API call.
+    """
+    import argparse
+    ap = argparse.ArgumentParser(description=description, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--analyze", action="store_true",
+                    help="recompute the statistics from the saved results/, without calling any model")
+    return ap.parse_args(argv)

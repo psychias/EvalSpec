@@ -17,7 +17,7 @@ pip install -e ".[dev]"
 
 python scripts/fetch_data.py          # downloads the dataset into data/
 python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 129 tests
+pytest                                # 147 tests
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
@@ -130,6 +130,7 @@ src/eee_eval/            the pipeline, as a Python package
   converters/            lm-evaluation-harness, Inspect AI and HELM logs to EEE records
   analysis/              aggregate_results (all_results.csv) and coverage_audit
   validation/            schema validation and data-quality checks
+  paths.py               the repository, the data folder and the schema file, for every module
   eval_types.py          Pydantic models of the schema
 src/emission_hooks/      writes EvalSpec records at the end of an lm-evaluation-harness run
 eval.schema.json         the EEE JSON Schema, v0.2.1
@@ -265,11 +266,44 @@ cp.reference_gaps(cells, reference="my_leaderboard")           # another source 
 | A converter for another evaluation harness | A subclass of `BaseEvaluationAdapter` in `src/eee_eval/converters/common/adapter.py`, next to the three in `src/eee_eval/converters/` |
 | Papers to the arXiv extraction | A list of arXiv ids like `configs/papers/general_llm_papers.txt`, passed with `--paper-list` |
 | An experiment | A folder in `experiments/` with its run script, its result file and a row in `experiments/README.md`. Helpers shared by the experiments are in `experiments/common/` |
+| A benchmark to the format ANOVAs of the log-likelihood benchmarks | One entry in `DESIGNS` in `experiments/controlled_eval/scripts/oneway_anova_loglik.py` and `repeated_measures_anova_loglik.py` |
+| A cell to a fixed list of runs | One entry in `CELLS` (`experiments/scoring_mode_eval/rerun_missing_cells.py`) or `ARMS` (`experiments/bbh_protocol/sealion_provenance/rerun_gemma2_9b_bbh.py`) |
 
-The scripts in `experiments/` that need a GPU are kept as they were run, with the models,
-seeds and settings of each run as constants at the top of the file. To run another model
-or seed, change those constants; the analysis scripts read whatever rows the result file
-holds.
+### Running an experiment with other models or seeds
+
+No script in the repository starts work when it is imported: each has a `main`, and the
+settings of the published run are its defaults. The GPU runs take the models, seeds and
+prompt formats as options, and list their cells without loading anything:
+
+```bash
+python experiments/controlled_eval/scripts/rerun_gpqa_hf.py --dry-run
+python experiments/controlled_eval/scripts/rerun_gpqa_hf.py --model ORG/NAME@8 --seeds 1 2 3 --formats plain cot
+python experiments/controlled_eval/scripts/rerun_mmlu_hf.py --model MIRROR/NAME=ORG/NAME@4   # load a mirror, record the canonical id
+```
+
+Each run prints one `RESULT {json}` line per cell; the analysis scripts read whatever
+rows a result file holds. The scripts that call models through an API take `--analyze`
+to recompute their statistics from the saved answers.
+
+What the experiment scripts share is in `experiments/common/`:
+
+| Module | Holds |
+|---|---|
+| `lm_eval_runs.py` | The frame of a GPU run: the prompt formats, session set-up, the offline download step, one evaluation with retries, the result line, the command-line options |
+| `openrouter.py` | The chat client for the API experiments, the rating parser, JSONL helpers |
+| `stats.py` | Eta squared, one-way ANOVA, F and chi-square tail probabilities, the Friedman test, in plain Python |
+| `files.py` | Writing a statistics file that is byte-identical on every machine |
+
+A new GPU run is a list of cells and a `main` that walks it; the docstring of
+`lm_eval_runs.py` has a complete example.
+
+### The pipeline package
+
+`src/eee_eval/paths.py` is the one place in the package that knows the repository, the
+data folder and the schema file. Setting `EVALSPEC_DATA` points the fetchers, the
+validators and the aggregation at another record tree, as it does for the scripts. The
+extraction module can be imported, and its parsing functions used, without an API key;
+the key is asked for only when a paper is sent to the model.
 
 ## Using the pipeline
 

@@ -11,15 +11,9 @@ usage:
 
 from __future__ import annotations
 
-import sys
 import time
 from pathlib import Path
 from typing import Any
-
-# add repo root to sys.path so eval_types and utils.helpers are importable
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-sys.path.insert(0, str(_ROOT / "utils"))
 
 from eee_eval.converters import SCHEMA_VERSION as _SCHEMA_VERSION
 from eee_eval.eval_types import (

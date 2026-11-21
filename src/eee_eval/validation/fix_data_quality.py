@@ -17,9 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from eee_eval.extraction.constants import _BENCHMARK_CANONICAL
-
-_DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent / "data"
-
+from eee_eval.paths import DATA_DIR as _DATA_DIR
 
 # ─── Shared utilities ─────────────────────────────────────────────────────────
 

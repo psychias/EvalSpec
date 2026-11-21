@@ -20,6 +20,7 @@ REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 sys.path.insert(0, os.path.join(SCRIPT_DIR, ".."))
 from common import openrouter
 from common.openrouter import append_jsonl, parse_rating, read_jsonl
+from common.stats import friedman
 
 
 def chat(model, messages, max_tokens=800):
@@ -116,25 +117,6 @@ def run_judges():
             print(f"[judges] parsed {sum(ex.map(work, todo))}/{len(todo)} ratings", flush=True)
 
 
-def friedman(matrix):
-    n, k = len(matrix), len(matrix[0])
-    Rj = [0.0] * k
-    for row in matrix:
-        order = sorted(range(k), key=lambda c: row[c])
-        ranks = [0.0] * k; i = 0
-        while i < k:
-            j = i
-            while j + 1 < k and row[order[j + 1]] == row[order[i]]:
-                j += 1
-            for t in range(i, j + 1):
-                ranks[order[t]] = (i + j) / 2 + 1
-            i = j + 1
-        for c in range(k):
-            Rj[c] += ranks[c]
-    stat = 12.0 / (n * k * (k + 1)) * sum(r * r for r in Rj) - 3 * n * (k + 1)
-    return stat, k - 1, stat / (n * (k - 1))
-
-
 def aggregate():
     rows = [j for j in read_jsonl(JUDGE_PATH) if j.get("rating") is not None and j["judge"] in JUDGES]
     bucket = defaultdict(list)
@@ -174,8 +156,8 @@ def aggregate():
     print(f"[wrote] {STATS_PATH}", flush=True)
 
 
-def main():
-    if "--analyze" in sys.argv:  # recompute the statistics from the saved results/, no API calls
+def main(argv=None):
+    if openrouter.run_options(__doc__, argv).analyze:
         aggregate()
         return
     generate_responses(load_prompts())

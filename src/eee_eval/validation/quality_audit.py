@@ -21,9 +21,8 @@ from typing import Any
 
 import jsonschema
 
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-_DATA_DIR = _ROOT / "data"
-_SCHEMA_PATH = _ROOT / "eval.schema.json"
+from eee_eval.paths import DATA_DIR as _DATA_DIR
+from eee_eval.paths import SCHEMA_PATH as _SCHEMA_PATH
 
 # Ground-truth shots per (source, benchmark) — from add_leaderboard_records.py
 _KNOWN_SHOTS: dict[tuple[str, str], int] = {

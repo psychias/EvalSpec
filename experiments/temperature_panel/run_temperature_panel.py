@@ -177,7 +177,11 @@ def score():
     print(f"[wrote] {STATS_PATH}", flush=True)
 
 
-if __name__ == "__main__":
-    if "--analyze" not in sys.argv:  # --analyze: statistics from the saved results/, no API calls
+def main(argv=None):
+    if not openrouter.run_options(__doc__, argv).analyze:
         generate()
     score()
+
+
+if __name__ == "__main__":
+    main()

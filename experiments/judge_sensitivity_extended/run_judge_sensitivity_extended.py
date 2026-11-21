@@ -35,7 +35,7 @@ REPO_ROOT   = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 
 # the OpenRouter client and the JSONL helpers are shared by the experiment scripts
 sys.path.insert(0, os.path.join(SCRIPT_DIR, ".."))
-from common.openrouter import append_jsonl, chat, parse_rating, read_jsonl
+from common.openrouter import append_jsonl, chat, parse_rating, read_jsonl, run_options
 
 RESULTS_DIR = os.path.join(SCRIPT_DIR, "results")
 os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -299,8 +299,8 @@ def aggregate():
     print(f"[wrote] {STATS_PATH}")
 
 
-def main():
-    if "--analyze" in sys.argv:  # recompute the statistics from the saved results/, no API calls
+def main(argv=None):
+    if run_options(__doc__, argv).analyze:
         aggregate()
         return
     seed_from_base()

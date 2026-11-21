@@ -19,6 +19,7 @@ from collections import defaultdict
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 from common.files import stable  # noqa: E402
+from common.stats import eta_squared as _eta_squared  # noqa: E402
 
 try:
     from scipy.stats import f_oneway  # noqa: F401  (parity with sibling script)
@@ -71,14 +72,8 @@ def load_jsonl(name):
 
 
 def eta_squared(groups):
-    all_scores = [s for g in groups for s in g]
-    n = len(all_scores)
-    grand = sum(all_scores) / n
-    ss_total = sum((s - grand) ** 2 for s in all_scores)
-    if ss_total == 0:
-        return 0.0
-    ss_between = sum(len(g) * ((sum(g) / len(g)) - grand) ** 2 for g in groups)
-    return ss_between / ss_total
+    """Eta squared of the groups; 0 when every score is the same."""
+    return _eta_squared(groups, when_constant=0.0)
 
 
 def bootstrap_ci(groups, rng):

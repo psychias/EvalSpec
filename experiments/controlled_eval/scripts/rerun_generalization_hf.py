@@ -14,43 +14,36 @@ Format applied via system_instruction + apply_chat_template; seed 42; limit=None
 Runs ONLINE (these datasets are small and stable, unlike the flaky cais/mmlu, so
 no offline-prefetch dance is needed); a retry wraps transient dataset fetches.
 One model per Colab session. Mistral is gated: set HF_TOKEN in the environment
-(injected for the run); Llama-3.1 uses the NousResearch mirror."""
+(injected for the run); Llama-3.1 uses the NousResearch mirror.
+
+    python rerun_generalization_hf.py                                   # the run as published
+    python rerun_generalization_hf.py --dry-run                         # list its cells, load nothing
+    python rerun_generalization_hf.py --model ORG/NAME@8 --seeds 1 2 3 --formats plain cot
+"""
 import os
-
-os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-_TOKEN = os.environ.get("HF_TOKEN", "")
-if _TOKEN:
-    os.environ["HF_TOKEN"] = _TOKEN
-    os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
-
-import json
-import subprocess
 import sys
-import time
-from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+from common import lm_eval_runs as runs  # noqa: E402
 
 MODELS = [("Qwen/Qwen2.5-7B-Instruct", "Qwen/Qwen2.5-7B-Instruct", 16)]
+# (lm-eval task, benchmark name in the record)
 BENCHES = [("arc_challenge", "ARC-Challenge"),
            ("winogrande", "WinoGrande"),
            ("openbookqa", "OpenBookQA")]
-FORMAT_TEMPLATES = {
-    "plain": None,
-    "instruct": "You are an expert problem solver. Answer each question carefully and directly.",
-    "cot": "You are an expert problem solver. Before answering, think step by step and show your reasoning. Then state the final answer.",
-}
 N_SHOTS = [0, 5]
-SEED = 42
+SEEDS = [42]
 
-print("[setup] installing lm-eval==0.4.11 ...", flush=True)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
-import gc
-
-import lm_eval
-import torch
-from lm_eval import simple_evaluate
-from lm_eval.models.huggingface import HFLM
+def cells(models, formats, seeds, benches=BENCHES, n_shots=N_SHOTS):
+    """The cells of the run, in the order they are run."""
+    for eval_id, model_id, batch in models:
+        for task, label in benches:
+            for fmt in formats:
+                for n in n_shots:
+                    for seed in seeds:
+                        yield dict(eval_id=eval_id, model_id=model_id, batch_size=batch, task=task, benchmark=label,
+                                   prompt_format=fmt, n_shot=n, seed=seed)
 
 
 def extract(results, task):
@@ -59,39 +52,35 @@ def extract(results, task):
     return round(float(v) * 100.0, 4) if v is not None else None
 
 
-def run_cell(lm, task, n, sys_inst):
-    last = None
-    for attempt in range(4):
-        try:
-            return simple_evaluate(model=lm, tasks=[task], num_fewshot=n,
-                                   gen_kwargs=f"seed={SEED}", limit=None,
-                                   system_instruction=sys_inst, apply_chat_template=True,
-                                   fewshot_as_multiturn=False, random_seed=SEED,
-                                   numpy_random_seed=SEED, torch_random_seed=SEED,
-                                   write_out=False, log_samples=False, verbosity="ERROR")
-        except Exception as e:  # noqa: BLE001
-            last = e
-            print(f"  [retry {attempt}] {task} n{n}: {str(e)[:80]}", flush=True)
-            time.sleep(20)
-    raise last
+def setup():
+    runs.online_session(pass_token_as=("HF_TOKEN", "HUGGING_FACE_HUB_TOKEN"))
+    print("[setup] installing lm-eval==0.4.11 ...", flush=True)
+    runs.pip_install("lm-eval==0.4.11", "accelerate")
 
 
-for eval_id, canon_id, bs in MODELS:
-    lm = HFLM(pretrained=eval_id, dtype="bfloat16", batch_size=bs)
-    for task, label in BENCHES:
-        for fmt, sys_inst in FORMAT_TEMPLATES.items():
-            for n in N_SHOTS:
-                rec = dict(model_id=canon_id, benchmark=label, task_name=task,
-                           temperature=0.0, prompt_format=fmt, n_shot=n, random_seed=SEED,
-                           score=None, timestamp=datetime.now(timezone.utc).isoformat(),
-                           eval_library_version=lm_eval.__version__, limit=None, backend="hf")
-                try:
-                    r = run_cell(lm, task, n, sys_inst)
-                    rec["score"] = extract(r, task); rec["status"] = "ok"
-                    print("RESULT " + json.dumps(rec), flush=True)
-                except Exception as exc:  # noqa: BLE001
-                    rec["status"] = "error"; rec["reason"] = str(exc)[:200]
-                    print("RESULT " + json.dumps(rec), flush=True)
-                    print(f"[cell-error] {canon_id} {label} {fmt} n{n}: {str(exc)[:100]}", flush=True)
-    del lm; gc.collect(); torch.cuda.empty_cache()
-print("[done] session complete", flush=True)
+def main(argv=None):
+    args = runs.parse(runs.grid_parser(__doc__, MODELS, seeds=SEEDS), argv)
+    plan = list(cells(args.models, args.formats, args.seeds))
+    if args.dry_run:
+        return runs.dry_run(plan)
+    setup()
+    for (eval_id, model_id, batch), model_cells in runs.by_model(plan):
+        lm = runs.load_hf_model(pretrained=eval_id, dtype="bfloat16", batch_size=batch)
+        for c in model_cells:
+            task, label, fmt, n, seed = c["task"], c["benchmark"], c["prompt_format"], c["n_shot"], c["seed"]
+            rec = dict(model_id=model_id, benchmark=label, task_name=task,
+                       temperature=0.0, prompt_format=fmt, n_shot=n, random_seed=seed,
+                       score=None, timestamp=runs.timestamp(),
+                       eval_library_version=runs.lm_eval_version(), limit=None, backend="hf")
+            runs.run_cell(rec, lambda: runs.evaluate(
+                lm, attempts=4, wait=20, note=f"{task} n{n}",
+                tasks=[task], num_fewshot=n, gen_kwargs=f"seed={seed}", limit=None,
+                system_instruction=runs.FORMAT_TEMPLATES[fmt], apply_chat_template=True,
+                fewshot_as_multiturn=False, **runs.seeded(seed), **runs.QUIET),
+                lambda r: extract(r, task), note=f"{model_id} {label} {fmt} n{n}")
+        runs.release(lm)
+    print("[done] session complete", flush=True)
+
+
+if __name__ == "__main__":
+    main()

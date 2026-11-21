@@ -9,27 +9,21 @@ so we snapshot every config online first, then run lm-eval with HF_HUB_OFFLINE=1
 GPQA (Idavidrein/gpqa) is gated; we attempt it online with the token and report
 cleanly if access is denied rather than aborting the MMLU run.
 
-One model per Colab session (swap MODELS). Mistral gated -> set HF_TOKEN."""
+One model per Colab session (swap MODELS). Mistral gated -> set HF_TOKEN.
+
+    python rerun_mmlu_gpqa_multiseed.py                                   # the run as published
+    python rerun_mmlu_gpqa_multiseed.py --dry-run                         # list its cells, load nothing
+    python rerun_mmlu_gpqa_multiseed.py --model ORG/NAME@8 --seeds 1 2 3 --formats plain cot
+"""
 import os
-
-os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "120"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-_TOKEN = os.environ.get("HF_TOKEN", "")
-if _TOKEN:
-    os.environ["HUGGING_FACE_HUB_TOKEN"] = _TOKEN
-
-import json
-import subprocess
 import sys
-import time
-from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+import time  # noqa: E402
+
+from common import lm_eval_runs as runs  # noqa: E402
 
 MODELS = [("Qwen/Qwen2.5-7B-Instruct", "Qwen/Qwen2.5-7B-Instruct", 16)]
-FORMAT_TEMPLATES = {
-    "plain": None,
-    "instruct": "You are an expert problem solver. Answer each question carefully and directly.",
-    "cot": "You are an expert problem solver. Before answering, think step by step and show your reasoning. Then state the final answer.",
-}
 # MMLU/GPQA are deterministic under fixed-dev few-shot (seed changes nothing), so we
 # power the format ANOVA across MODELS instead: 8 diverse models, single seed, gives
 # n=8 per format. (Random-few-shot benchmarks like ARC/WinoGrande/OpenBookQA are
@@ -42,9 +36,19 @@ N_SHOT = 5
 # subject (~2100 items total, stratified across all subjects), ~7 min/cell. The
 # multi-seed design (n=12/format) is what actually powers the format ANOVA.
 MMLU_LIMIT = 0.15
+# (lm-eval task, benchmark name in the record)
+BENCHES = [("mmlu", "MMLU"), ("gpqa_main_zeroshot", "GPQA")]
 
-print("[setup] installing lm-eval==0.4.11 ...", flush=True)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
+
+def cells(models, formats, seeds, benches=BENCHES):
+    """The cells of the run, in the order they are run. MMLU is read from the local cache."""
+    for eval_id, model_id, batch in models:
+        for task, label in benches:
+            for fmt in formats:
+                for seed in seeds:
+                    yield dict(eval_id=eval_id, model_id=model_id, batch_size=batch, task=task, benchmark=label,
+                               prompt_format=fmt, n_shot=N_SHOT, seed=seed,
+                               limit=MMLU_LIMIT if label == "MMLU" else None, offline=label == "MMLU")
 
 
 def prefetch_mmlu():
@@ -74,77 +78,62 @@ def gpqa_available():
         return False
 
 
-prefetch_mmlu()
-HAVE_GPQA = gpqa_available()
-
-import gc
-
-import lm_eval
-import torch
-from lm_eval import simple_evaluate
-from lm_eval.models.huggingface import HFLM
-
-# (lm-eval task, EvalSpec label, metric-key preference)
-BENCHES = [("mmlu", "MMLU"), ("gpqa_main_zeroshot", "GPQA")]
-
-
 def extract(results, task):
     m = results["results"].get(task, {})
-    for key in ("acc_norm,none", "acc,none", "exact_match,none"):
-        if key in m:
-            return round(float(m[key]) * 100.0, 4)
-    v = m.get("acc")
-    return round(float(v) * 100.0, 4) if v is not None else None
+    score = runs.percent(m, "acc_norm,none", "acc,none", "exact_match,none")
+    return score if score is not None else runs.percent(m, "acc")
 
 
-def run_cell(lm, task, sys_inst, seed, offline, limit):
+def evaluate_cell(lm, cell):
+    """One evaluation, offline for the cells that ask for it; the environment is put back afterwards."""
+    seed = cell["seed"]
     env_bak = dict(os.environ)
-    if offline:
-        os.environ["HF_HUB_OFFLINE"] = "1"; os.environ["HF_DATASETS_OFFLINE"] = "1"
+    if cell["offline"]:
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["HF_DATASETS_OFFLINE"] = "1"
     try:
-        last = None
-        for attempt in range(3):
-            try:
-                return simple_evaluate(model=lm, tasks=[task], num_fewshot=N_SHOT,
-                                       gen_kwargs=f"seed={seed}", limit=limit,
-                                       system_instruction=sys_inst, apply_chat_template=True,
-                                       fewshot_as_multiturn=False, random_seed=seed,
-                                       numpy_random_seed=seed, torch_random_seed=seed,
-                                       fewshot_random_seed=seed,
-                                       write_out=False, log_samples=False, verbosity="ERROR")
-            except Exception as e:  # noqa: BLE001
-                last = e
-                print(f"  [retry {attempt}] {task} seed{seed}: {str(e)[:80]}", flush=True)
-                time.sleep(15)
-        raise last
+        return runs.evaluate(
+            lm, attempts=3, wait=15, note=f"{cell['task']} seed{seed}",
+            tasks=[cell["task"]], num_fewshot=cell["n_shot"], gen_kwargs=f"seed={seed}", limit=cell["limit"],
+            system_instruction=runs.FORMAT_TEMPLATES[cell["prompt_format"]], apply_chat_template=True,
+            fewshot_as_multiturn=False, **runs.seeded(seed, fewshot=True), **runs.QUIET)
     finally:
-        os.environ.clear(); os.environ.update(env_bak)
+        os.environ.clear()
+        os.environ.update(env_bak)
 
 
-for eval_id, canon_id, bs in MODELS:
-    # full-set MMLU with 5-shot chat-template contexts OOMs at large fixed batch;
-    # "auto" finds the largest batch that fits.
-    lm = HFLM(pretrained=eval_id, dtype="bfloat16", batch_size="auto",
-              max_batch_size=bs, trust_remote_code=True)
-    for task, label in BENCHES:
-        if label == "GPQA" and not HAVE_GPQA:
-            print(f"[skip] GPQA unavailable for {canon_id}", flush=True)
-            continue
-        offline = (label == "MMLU")
-        limit = MMLU_LIMIT if label == "MMLU" else None
-        for fmt, sys_inst in FORMAT_TEMPLATES.items():
-            for seed in SEEDS:
-                rec = dict(model_id=canon_id, benchmark=label, task_name=task,
-                           temperature=0.0, prompt_format=fmt, n_shot=N_SHOT, random_seed=seed,
-                           score=None, timestamp=datetime.now(timezone.utc).isoformat(),
-                           eval_library_version=lm_eval.__version__, limit=limit, backend="hf")
-                try:
-                    r = run_cell(lm, task, sys_inst, seed, offline, limit)
-                    rec["score"] = extract(r, task); rec["status"] = "ok"
-                    print("RESULT " + json.dumps(rec), flush=True)
-                except Exception as exc:  # noqa: BLE001
-                    rec["status"] = "error"; rec["reason"] = str(exc)[:200]
-                    print("RESULT " + json.dumps(rec), flush=True)
-                    print(f"[cell-error] {canon_id} {label} {fmt} seed{seed}: {str(exc)[:100]}", flush=True)
-    del lm; gc.collect(); torch.cuda.empty_cache()
-print("[done] session complete", flush=True)
+def main(argv=None):
+    args = runs.parse(runs.grid_parser(__doc__, MODELS, seeds=SEEDS), argv)
+    plan = list(cells(args.models, args.formats, args.seeds))
+    if args.dry_run:
+        return runs.dry_run(plan)
+    runs.online_session()
+    print("[setup] installing lm-eval==0.4.11 ...", flush=True)
+    runs.pip_install("lm-eval==0.4.11", "accelerate")
+    prefetch_mmlu()
+    have_gpqa = gpqa_available()
+    for (eval_id, model_id, batch), model_cells in runs.by_model(plan):
+        # full-set MMLU with 5-shot chat-template contexts OOMs at large fixed batch;
+        # "auto" finds the largest batch that fits.
+        lm = runs.load_hf_model(pretrained=eval_id, dtype="bfloat16", batch_size="auto",
+                                max_batch_size=batch, trust_remote_code=True)
+        skipped = False
+        for c in model_cells:
+            task, label, fmt, seed = c["task"], c["benchmark"], c["prompt_format"], c["seed"]
+            if label == "GPQA" and not have_gpqa:
+                if not skipped:
+                    print(f"[skip] GPQA unavailable for {model_id}", flush=True)
+                    skipped = True
+                continue
+            rec = dict(model_id=model_id, benchmark=label, task_name=task,
+                       temperature=0.0, prompt_format=fmt, n_shot=N_SHOT, random_seed=seed,
+                       score=None, timestamp=runs.timestamp(),
+                       eval_library_version=runs.lm_eval_version(), limit=c["limit"], backend="hf")
+            runs.run_cell(rec, lambda: evaluate_cell(lm, c), lambda r: extract(r, task),
+                          note=f"{model_id} {label} {fmt} seed{seed}")
+        runs.release(lm)
+    print("[done] session complete", flush=True)
+
+
+if __name__ == "__main__":
+    main()

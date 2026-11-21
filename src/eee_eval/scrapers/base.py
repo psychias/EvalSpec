@@ -17,8 +17,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
-# project root — used to locate eval.schema.json for pre-write validation
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+from eee_eval.paths import SCHEMA_PATH
 
 # lazily initialised once; None means the schema/jsonschema is unavailable
 _schema_validator: Any = None
@@ -37,7 +36,7 @@ def _get_schema_validator() -> Any:
         return _schema_validator
     _schema_validator_loaded = True
 
-    schema_path = _ROOT / "eval.schema.json"
+    schema_path = SCHEMA_PATH
     if not schema_path.exists():
         print(
             f"  [validation] eval.schema.json not found at {schema_path} "

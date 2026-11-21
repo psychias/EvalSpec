@@ -34,7 +34,6 @@ import json
 import os
 import pathlib
 import re
-import sys
 import time
 import uuid
 from dataclasses import dataclass
@@ -47,12 +46,9 @@ try:
 except ImportError:
     _openai = None  # type: ignore[assignment]
 
-_ROOT     = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-
 from eee_eval.extraction.constants import infer_developer
+from eee_eval.paths import DATA_DIR
 
-DATA_DIR  = _ROOT / "data"
 CACHE_DIR = pathlib.Path(".cache/pwc")
 CACHE_TTL = 7 * 24 * 3600  # 7 days — PWC archive updates rarely
 

@@ -13,7 +13,15 @@ Four conditions:
   A' (lm-eval):   direct-answer generation, no CoT, 18 tasks → shows lm-eval's "non-CoT"
   B  (lm-eval):   CoT generation, 23 tasks        → reproduces literature ~55pp
   C  (lm-eval):   CoT generation, 18 tasks        → controls for task coverage
+
+    python build_bbh_protocol_notebook.py                 # writes bbh_protocol_experiment.ipynb here
+    python build_bbh_protocol_notebook.py --out other.ipynb
+
+The notebook is the list `cells`, built below with md(...) and code(...): a condition
+is added or changed by editing those cells. Importing this module builds the list and
+writes nothing.
 """
+import argparse
 import json
 from pathlib import Path
 
@@ -901,8 +909,17 @@ notebook = {
     "nbformat_minor": 4
 }
 
-out_path = Path(__file__).parent / "E1_bbh_controlled_experiment.ipynb"
-with open(out_path, "w", encoding="utf-8") as f:
-    json.dump(notebook, f, indent=1, ensure_ascii=False)
+DEFAULT_OUT = Path(__file__).parent / "bbh_protocol_experiment.ipynb"
 
-print(f"Written {out_path} ({len(cells)} cells)")
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Write the notebook that runs BBH under four protocols.")
+    ap.add_argument("--out", type=Path, default=DEFAULT_OUT, help=f"notebook to write (default: {DEFAULT_OUT.name})")
+    args = ap.parse_args(argv)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(notebook, f, indent=1, ensure_ascii=False)
+    print(f"Written {args.out} ({len(cells)} cells)")
+
+
+if __name__ == "__main__":
+    main()

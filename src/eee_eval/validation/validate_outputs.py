@@ -4,8 +4,8 @@ DEPRECATED: Use `python -m eee_eval.validation.schema` instead.
 Kept for backward compatibility with existing task runners.
 """
 import sys
-from pathlib import Path
 
+from eee_eval.paths import DATA_DIR
 from eee_eval.validation.schema import (
     AutoFixer,
     BatchValidator,
@@ -13,15 +13,13 @@ from eee_eval.validation.schema import (
     SchemaValidator,
 )
 
-ROOT = Path(__file__).resolve().parent.parent.parent.parent
-
 
 def main() -> None:
     sv = SchemaValidator()
     fixer = AutoFixer()
     fv = FileValidator(sv, fixer, fix_mode=False)
     bv = BatchValidator(fv)
-    report = bv.run(ROOT / "data", quiet=True)
+    report = bv.run(DATA_DIR, quiet=True)
 
     passed = report["valid"] + report.get("fixed", 0)
     failed = report.get("invalid", 0)

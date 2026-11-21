@@ -23,7 +23,6 @@ import re
 import shutil
 
 # ── Inline validation import ──────────────────────────────────────────
-import sys as _sys
 import time
 import uuid as _uuid
 from datetime import date as _date
@@ -40,7 +39,7 @@ from tenacity import (
     wait_exponential,
 )
 
-_sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent))
+from eee_eval import paths
 from eee_eval.validation.validate_extractions import validate_record
 
 # ── Logging ────────────────────────────────────────────────────────────
@@ -50,50 +49,34 @@ log = logging.getLogger("eee_extract")
 PAPER_DELAY: float = 0.5
 
 # ── Paths ──────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent.parent.parent
-PAPER_LIST = ROOT / "general_llm_papers.txt"
-OUT_DIR = ROOT / "data" / "archiv_paper_extraction"
+ROOT = paths.ROOT
+PAPER_LIST = ROOT / "configs" / "papers" / "general_llm_papers.txt"
+OUT_DIR = paths.DATA_DIR / "archiv_paper_extraction"
 
 # ── OpenRouter config ──────────────────────────────────────────────────
 # API key must be set via OPENROUTER_API_KEY env var (or in .env).
 # To override the CA bundle, set REQUESTS_CA_BUNDLE=/path/to/cert.pem
 def _load_dotenv() -> None:
     """Load .env into os.environ if OPENROUTER_API_KEY is not already set."""
-    if os.environ.get("OPENROUTER_API_KEY"):
-        return
-    env_path = ROOT / ".env"
-    if not env_path.exists():
-        return
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(dotenv_path=str(env_path), override=False)
-        if os.environ.get("OPENROUTER_API_KEY"):
-            return
-    except ImportError:
-        pass  # fall through to manual parse
-    # Manual .env parser — KEY=value / KEY="value", skips blanks and # comments.
-    try:
-        for line in env_path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, _, raw_val = line.partition("=")
-            key, raw_val = key.strip(), raw_val.strip()
-            if len(raw_val) >= 2 and raw_val[0] in ('"', "'") and raw_val[0] == raw_val[-1]:
-                raw_val = raw_val[1:-1]
-            if key and key not in os.environ:
-                os.environ[key] = raw_val
-    except Exception as exc:
-        log.warning("could not parse %s: %s", env_path, exc)
+    paths.load_dotenv("OPENROUTER_API_KEY")
 
 
 _load_dotenv()
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY", "")
-if not OPENROUTER_KEY:
-    raise RuntimeError(
-        "OPENROUTER_API_KEY env var is not set. "
-        "See .env.example for required configuration."
-    )
+
+
+def _api_key() -> str:
+    """The OpenRouter key. It is needed only when a paper is sent to the model, so the
+    module can be imported, and its parsing functions used, without one."""
+    key = OPENROUTER_KEY or os.environ.get("OPENROUTER_API_KEY", "")
+    if not key:
+        raise RuntimeError(
+            "OPENROUTER_API_KEY env var is not set. "
+            "See .env.example for required configuration."
+        )
+    return key
+
+
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 HAIKU_MODEL = "anthropic/claude-haiku-4.5"
 
@@ -806,7 +789,7 @@ def _llm_call(text: str, arxiv_id: str, own_model: str = "unknown") -> dict | No
     resp = requests.post(
         OPENROUTER_URL,
         headers={
-            "Authorization": f"Bearer {OPENROUTER_KEY}",
+            "Authorization": f"Bearer {_api_key()}",
             "Content-Type": "application/json",
         },
         json={
@@ -1110,7 +1093,7 @@ def save_records(paper: dict, llm_result: dict | None, naive_result: dict | None
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract eval metadata from arxiv HTML papers.")
-    parser.add_argument("--paper-list", type=str, default=None, help="Path to paper list file (default: general_llm_papers.txt)")
+    parser.add_argument("--paper-list", type=str, default=None, help="Path to paper list file (default: configs/papers/general_llm_papers.txt)")
     parser.add_argument("--clean", action="store_true", help="Remove existing output directory before running")
     parser.add_argument("--yes", "-y", action="store_true", help="Skip confirmation prompts")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable DEBUG-level logging")

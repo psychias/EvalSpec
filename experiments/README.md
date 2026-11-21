@@ -31,8 +31,22 @@ session. Gated models (Mistral, Gemma, the GPQA dataset) need `HF_TOKEN` set to 
 with access. The judge and temperature experiments need no GPU: they call models through
 OpenRouter and read `OPENROUTER_API_KEY` from the environment or from `.env`.
 
-The OpenRouter client and the JSONL helpers these scripts share are in
-[`common/openrouter.py`](common/openrouter.py).
+What the scripts share is in [`common/`](common/): the frame of a GPU run
+([`lm_eval_runs.py`](common/lm_eval_runs.py)), the OpenRouter client and the JSONL helpers
+([`openrouter.py`](common/openrouter.py)), the statistics ([`stats.py`](common/stats.py))
+and the writing of statistics files ([`files.py`](common/files.py)).
+
+No script starts work when it is imported. The GPU runs default to the models, seeds and
+prompt formats of the published run and take others as options; `--dry-run` lists the
+cells of a run without installing or loading anything:
+
+```bash
+python experiments/controlled_eval/scripts/rerun_gpqa_hf.py --dry-run
+python experiments/controlled_eval/scripts/rerun_gpqa_hf.py --model ORG/NAME@8 --seeds 1 2 3 --formats plain cot
+```
+
+`--model` is `EVAL_ID[=RECORDED_ID][@BATCH]`: the repository to load, the model id written
+to the record when the weights come from a mirror, and the batch size.
 
 Each script writes its raw records to a `results/` folder next to it and caches there, so
 a second run only fills gaps. Analysis scripts read from the same folder.

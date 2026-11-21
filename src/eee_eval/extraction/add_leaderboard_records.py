@@ -55,70 +55,19 @@ from typing import Any
 
 import requests
 
-_ROOT     = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-
+from eee_eval import paths
 from eee_eval.extraction.constants import infer_developer
+from eee_eval.paths import DATA_DIR
 
-DATA_DIR  = _ROOT / "data"
 CACHE_DIR = pathlib.Path(".cache/leaderboards")
 CACHE_TTL = 24 * 3600
 _TIMEOUT  = 30
 
-# ---------------------------------------------------------------------------
-# .env loader — reads HF_TOKEN from a .env file when not already set in the
-# environment.  Tries python-dotenv first (cleaner), then falls back to a
-# minimal manual parser so there is no hard dependency.
-#
-# Search order for .env:
-#   1. repo root  (_ROOT / ".env")
-#   2. directory containing this script
-# ---------------------------------------------------------------------------
-
+# .env: HF_TOKEN is read from the .env file at the repository root (or next to this
+# module) when it is not already in the environment.
 def _load_dotenv() -> None:
-    """Load .env into os.environ if HF_TOKEN is not already set."""
-    if os.environ.get("HF_TOKEN"):
-        return  # already present — nothing to do
-
-    candidates = [
-        _ROOT / ".env",
-        pathlib.Path(__file__).resolve().parent / ".env",
-    ]
-
-    for env_path in candidates:
-        if not env_path.exists():
-            continue
-
-        # Try python-dotenv first
-        try:
-            from dotenv import load_dotenv
-            load_dotenv(dotenv_path=str(env_path), override=False)
-            if os.environ.get("HF_TOKEN"):
-                print(f"  [env] HF_TOKEN loaded via python-dotenv from {env_path}")
-                return
-        except ImportError:
-            pass  # python-dotenv not installed — fall through to manual parse
-
-        # Manual .env parser — handles KEY=value and KEY="value" lines,
-        # skips blank lines and # comments, does not expand variables.
-        try:
-            for line in env_path.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                key, _, raw_val = line.partition("=")
-                key     = key.strip()
-                raw_val = raw_val.strip()
-                # Strip optional surrounding quotes  "value" or 'value'
-                if len(raw_val) >= 2 and raw_val[0] in ('"', "'") and raw_val[0] == raw_val[-1]:
-                    raw_val = raw_val[1:-1]
-                if key and key not in os.environ:
-                    os.environ[key] = raw_val
-            if os.environ.get("HF_TOKEN"):
-                print(f"  [env] HF_TOKEN loaded from {env_path}")
-                return
-        except Exception as exc:
-            print(f"  [env] could not parse {env_path}: {exc}", file=sys.stderr)
+    paths.load_dotenv("HF_TOKEN", extra_files=(pathlib.Path(__file__).resolve().parent / ".env",),
+                      announce=lambda message: print(f"  [env] {message}"))
 
 
 _load_dotenv()
@@ -1512,7 +1461,7 @@ def main() -> None:
                 print(f"  +{counts.get(k, 0):4d}  {k}")
         print(f"\nTotal new records: {sum(counts.values())}")
 
-    data  = pathlib.Path(__file__).resolve().parent.parent.parent.parent / "data"
+    data  = DATA_DIR
     total = sum(1 for _ in data.rglob("*.json"))
     print(f"Grand total records: {total}")
     print("\nPer-source record counts:")

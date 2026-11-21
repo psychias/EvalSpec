@@ -42,34 +42,29 @@ from __future__ import annotations
 import json
 import math
 import pathlib
-import sys
 import time
 from dataclasses import dataclass
 
-_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
+from eee_eval.paths import DATA_DIR
+from eee_eval.paths import ROOT as _ROOT
 
-DATA_DIR    = _ROOT / "data"
 REPORTS_DIR = _ROOT / "reports"
 
 # ---------------------------------------------------------------------------
 # Import the two fetcher modules
 # ---------------------------------------------------------------------------
 
-# Add scripts dir to path so we can import the sibling modules
-_SCRIPTS = pathlib.Path(__file__).resolve().parent
-sys.path.insert(0, str(_SCRIPTS))
 
-from add_leaderboard_records import run_all as _run_leaderboards
-from hf_model_card_fetcher import (
+from eee_eval.extraction.add_leaderboard_records import run_all as _run_leaderboards
+from eee_eval.extraction.hf_model_card_fetcher import (
     HFModelCardFetcher,
     models_from_leaderboards,
     write_model_card_record,
 )
-from hf_model_card_fetcher import (
+from eee_eval.extraction.hf_model_card_fetcher import (
     _already_exists as _card_exists,
 )
-from pwc_fetcher import run_pwc as _run_pwc
+from eee_eval.extraction.pwc_fetcher import run_pwc as _run_pwc
 
 # ---------------------------------------------------------------------------
 # Conflict detection

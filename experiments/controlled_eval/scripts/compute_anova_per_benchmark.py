@@ -21,6 +21,7 @@ from collections import defaultdict
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 from common.files import stable  # noqa: E402
+from common.stats import eta_squared  # noqa: E402
 
 try:
     from scipy.stats import f_oneway
@@ -64,21 +65,6 @@ def load_all_rows():
             rows.extend(extra)
             print(f"Loaded {len(extra)} {label} rows from {path}")
     return rows
-
-
-def eta_squared(groups):
-    """One-way eta-squared: SS_between / SS_total."""
-    all_vals = [v for g in groups for v in g]
-    n = len(all_vals)
-    if n == 0:
-        return float("nan")
-    grand_mean = sum(all_vals) / n
-    ss_total = sum((v - grand_mean) ** 2 for v in all_vals)
-    if ss_total == 0:
-        return float("nan")
-    ss_between = sum(len(g) * (sum(g) / len(g) - grand_mean) ** 2
-                     for g in groups if g)
-    return ss_between / ss_total
 
 
 def per_format_stats(rows, benchmark, n_shot, factor):

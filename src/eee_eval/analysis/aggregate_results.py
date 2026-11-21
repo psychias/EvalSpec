@@ -81,8 +81,8 @@ import csv
 import json
 import pathlib
 
-ROOT     = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-DATA_DIR = ROOT / "data"
+from eee_eval.paths import DATA_DIR, ROOT
+
 OUT_DIR  = DATA_DIR / "aggregated"
 
 # Settings whose documentation rate is tracked per benchmark (coverage_stats.json).

@@ -13,8 +13,9 @@ import csv
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-SAMPLES_DIR = ROOT / "data" / "archiv_paper_extraction" / "samples"
+from eee_eval.paths import DATA_DIR
+
+SAMPLES_DIR = DATA_DIR / "archiv_paper_extraction" / "samples"
 OUTPUT_CSV = SAMPLES_DIR / "human_annotation_sheet.csv"
 
 COLUMNS = [

@@ -10,80 +10,42 @@ One model per Colab session (each cell is ~8-35 min; 24 cells > one session). Se
 MODELS to the session's model(s). Results print as `RESULT {json}` lines (captured
 locally and appended to controlled_eval_results.jsonl). Same prefetch-then-offline
 pattern; gated Mistral needs HF_TOKEN injected; Llama uses the ungated NousResearch
-mirror but is recorded under its canonical meta-llama id."""
+mirror but is recorded under its canonical meta-llama id.
+
+    python rerun_mmlu_hf.py                                   # the run as published
+    python rerun_mmlu_hf.py --dry-run                         # list its cells, load nothing
+    python rerun_mmlu_hf.py --model ORG/NAME@8 --formats plain cot
+"""
 import os
-
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["HF_DATASETS_OFFLINE"] = "1"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-
-import json
-import subprocess
 import sys
-from datetime import datetime, timezone
 
-# (eval_id, canonical_id_for_record, batch_size) -- set to this session's model(s).
-# (eval_id, canonical_id_for_record, batch_size). Run ONE model per Colab session
-# (each cell is ~2-16 min; 24 cells exceed one session). The four grid models:
-#   ("mistralai/Mistral-7B-Instruct-v0.3", "mistralai/Mistral-7B-Instruct-v0.3", 8)  # gated: set HF_TOKEN
-#   ("Qwen/Qwen2.5-7B-Instruct",           "Qwen/Qwen2.5-7B-Instruct",           8)
-#   ("Qwen/Qwen2.5-14B-Instruct",          "Qwen/Qwen2.5-14B-Instruct",          4)  # 14B -> batch 4
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+from common import lm_eval_runs as runs  # noqa: E402
+
+# (repository to load, model id written to the record, batch size). Run ONE model per
+# Colab session (each cell is ~2-16 min; 24 cells exceed one session). The grid models:
+#   mistralai/Mistral-7B-Instruct-v0.3@8     gated: set HF_TOKEN
+#   Qwen/Qwen2.5-7B-Instruct@8
+#   Qwen/Qwen2.5-14B-Instruct@4              14B -> batch 4
 # Llama-3.1-8B is NOT re-scored here: apply_chat_template=True makes the score
 # depend on the chat template, and the only ungated weights (NousResearch mirror)
 # ship a different template (diverges up to ~13 pp), so Llama keeps its original
 # vLLM grid values (backend-independence holds for the other three: hf vs vLLM
 # agree within 0.5 pp, so the hf cells pool with the vLLM Llama cells unbiased).
-MODELS = [
-    ("Qwen/Qwen2.5-14B-Instruct", "Qwen/Qwen2.5-14B-Instruct", 4),
-]
-_TOKEN = os.environ.get("HF_TOKEN", "")  # only needed for gated Mistral
-
-FORMAT_TEMPLATES = {
-    "plain":    None,
-    "instruct": "You are an expert problem solver. Answer each question carefully and directly.",
-    "cot":      "You are an expert problem solver. Before answering, think step by step and show your reasoning. Then state the final answer.",
-}
+MODELS = [("Qwen/Qwen2.5-14B-Instruct", "Qwen/Qwen2.5-14B-Instruct", 4)]
 N_SHOTS = [0, 5]
 LIMIT = 200
 SEED = 42
 
-print("[setup] installing lm-eval==0.4.11 ...", flush=True)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-                "lm-eval==0.4.11", "accelerate"], check=True)
 
-SNIPPET = """
-import time
-from huggingface_hub import snapshot_download
-import datasets
-REPOS = %r
-def retry(fn, *a, **k):
-    for i in range(15):
-        try:
-            return fn(*a, **k)
-        except Exception as e:
-            print("retry", getattr(fn, "__name__", "fn"), i, str(e)[:80], flush=True)
-            time.sleep(20)
-    return None
-for repo in REPOS:
-    print("SNAP_OK" if retry(snapshot_download, repo) else "SNAP_FAIL", repo, flush=True)
-cfgs = [c for c in retry(datasets.get_dataset_config_names, "cais/mmlu")
-        if c not in ("all", "auxiliary_train")]
-for c in cfgs:
-    retry(datasets.load_dataset, "cais/mmlu", c)
-print("SNAP_OK mmlu", len(cfgs), "configs", flush=True)
-""" % ([e for e, _, _ in MODELS],)
-online_env = {**os.environ, "HF_HUB_OFFLINE": "0", "HF_DATASETS_OFFLINE": "0",
-              "HF_TOKEN": _TOKEN, "HUGGING_FACE_HUB_TOKEN": _TOKEN}
-print("[prefetch] caching models + cais/mmlu (online subprocess) ...", flush=True)
-subprocess.run([sys.executable, "-c", SNIPPET], env=online_env)
-print("[prefetch] done; running lm-eval OFFLINE", flush=True)
-
-import gc
-
-import lm_eval
-import torch
-from lm_eval import simple_evaluate
-from lm_eval.models.huggingface import HFLM
+def cells(models, formats, seeds, n_shots=N_SHOTS):
+    """The cells of the run, in the order they are run."""
+    for eval_id, model_id, batch in models:
+        for fmt in formats:
+            for n in n_shots:
+                for seed in seeds:
+                    yield dict(eval_id=eval_id, model_id=model_id, batch_size=batch, task="mmlu",
+                               prompt_format=fmt, n_shot=n, seed=seed)
 
 
 def extract(results):
@@ -92,34 +54,41 @@ def extract(results):
     return round(float(v) * 100.0, 4)
 
 
-for eval_id, canon_id, bs in MODELS:
-    lm = HFLM(pretrained=eval_id, dtype="bfloat16", batch_size=bs)
-    for fmt, sys_inst in FORMAT_TEMPLATES.items():
-        for n in N_SHOTS:
-            rec = dict(model_id=canon_id, benchmark="mmlu", temperature=0.0,
-                       prompt_format=fmt, n_shot=n, random_seed=SEED, score=None,
-                       timestamp=datetime.now(timezone.utc).isoformat(),
-                       eval_library_version=lm_eval.__version__, limit=LIMIT,
-                       backend="hf")
-            try:
-                results = simple_evaluate(
-                    model=lm, tasks=["mmlu"], num_fewshot=n,
-                    gen_kwargs=f"seed={SEED}", limit=LIMIT,
-                    system_instruction=sys_inst, apply_chat_template=True,
-                    fewshot_as_multiturn=False, random_seed=SEED,
-                    numpy_random_seed=SEED, torch_random_seed=SEED,
-                    write_out=False, log_samples=False, verbosity="ERROR",
-                )
-                rec["score"] = extract(results)
-                rec["status"] = "ok"
-                print("RESULT " + json.dumps(rec), flush=True)
-            except Exception as exc:  # noqa: BLE001
-                rec["status"] = "error"
-                rec["reason"] = str(exc)[:200]
-                print("RESULT " + json.dumps(rec), flush=True)
-                print(f"[cell-error] {canon_id} {fmt} n{n}: {str(exc)[:120]}", flush=True)
-    del lm
-    gc.collect()
-    torch.cuda.empty_cache()
+def setup(models):
+    token = runs.offline_session()             # only needed for gated Mistral
+    print("[setup] installing lm-eval==0.4.11 ...", flush=True)
+    runs.pip_install("lm-eval==0.4.11", "accelerate")
+    print("[prefetch] caching models + cais/mmlu (online subprocess) ...", flush=True)
+    runs.prefetch_online(runs.snapshot_lines(e for e, _, _ in models) + runs.MMLU_LINES
+                         + 'print("SNAP_OK mmlu", len(cfgs), "configs", flush=True)\n', token=token)
+    print("[prefetch] done; running lm-eval OFFLINE", flush=True)
 
-print("[done] session complete", flush=True)
+
+def main(argv=None):
+    ap = runs.grid_parser(__doc__, MODELS, seeds=[SEED])
+    ap.add_argument("--limit", type=int, default=LIMIT, help=f"questions per subject (default: {LIMIT})")
+    args = runs.parse(ap, argv)
+    plan = list(cells(args.models, args.formats, args.seeds))
+    if args.dry_run:
+        return runs.dry_run(plan)
+    setup(args.models)
+    for (eval_id, model_id, batch), model_cells in runs.by_model(plan):
+        lm = runs.load_hf_model(pretrained=eval_id, dtype="bfloat16", batch_size=batch)
+        for c in model_cells:
+            fmt, n, seed = c["prompt_format"], c["n_shot"], c["seed"]
+            rec = dict(model_id=model_id, benchmark="mmlu", temperature=0.0,
+                       prompt_format=fmt, n_shot=n, random_seed=seed, score=None,
+                       timestamp=runs.timestamp(),
+                       eval_library_version=runs.lm_eval_version(), limit=args.limit,
+                       backend="hf")
+            runs.run_cell(rec, lambda: runs.evaluate(
+                lm, tasks=["mmlu"], num_fewshot=n, gen_kwargs=f"seed={seed}", limit=args.limit,
+                system_instruction=runs.FORMAT_TEMPLATES[fmt], apply_chat_template=True,
+                fewshot_as_multiturn=False, **runs.seeded(seed), **runs.QUIET),
+                extract, note=f"{model_id} {fmt} n{n}", message_width=120)
+        runs.release(lm)
+    print("[done] session complete", flush=True)
+
+
+if __name__ == "__main__":
+    main()

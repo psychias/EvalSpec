@@ -29,11 +29,9 @@ import time
 from pathlib import Path
 from typing import Any
 
-# add repo root to sys.path
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
-
 from jsonschema.validators import validator_for
+
+from eee_eval.paths import ROOT as _ROOT
 
 # ---------------------------------------------------------------------------
 # constants

@@ -6,60 +6,35 @@ Mirrors the MMLU rerun (rerun_mmlu_hf.py): standard log-likelihood GPQA
 system_instruction + apply_chat_template, seeds {42,123,7}, limit=None. One model
 per Colab session. GPQA (Idavidrein/gpqa) is a GATED dataset, so the online
 prefetch authenticates with HF_TOKEN; the offline eval needs no token.
-Llama-3.1 uses the NousResearch mirror (see rerun_mmlu_hf.py caveat)."""
+Llama-3.1 uses the NousResearch mirror (see rerun_mmlu_hf.py caveat).
+
+    python rerun_gpqa_hf.py                                   # the run as published
+    python rerun_gpqa_hf.py --dry-run                         # list its cells, load nothing
+    python rerun_gpqa_hf.py --model ORG/NAME@8 --seeds 1 2 3 --formats plain cot
+"""
 import os
-
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["HF_DATASETS_OFFLINE"] = "1"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-
-import json
-import subprocess
 import sys
-from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+from common import lm_eval_runs as runs  # noqa: E402
 
 MODELS = [("Qwen/Qwen2.5-7B-Instruct", "Qwen/Qwen2.5-7B-Instruct", 16)]
-_TOKEN = os.environ.get("HF_TOKEN", "")  # gated GPQA dataset (and gated models)
-FORMAT_TEMPLATES = {
-    "plain": None,
-    "instruct": "You are an expert problem solver. Answer each question carefully and directly.",
-    "cot": "You are an expert problem solver. Before answering, think step by step and show your reasoning. Then state the final answer.",
-}
 N_SHOTS = [0, 5]
 SEEDS = [42, 123, 7]
 
-print("[setup] installing lm-eval==0.4.11 ...", flush=True)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lm-eval==0.4.11", "accelerate"], check=True)
 
-SNIPPET = """
-import time
-from huggingface_hub import snapshot_download
-import datasets
-REPOS = %r
-def retry(fn,*a,**k):
-    for i in range(15):
-        try: return fn(*a,**k)
-        except Exception as e:
-            print("retry",getattr(fn,"__name__","fn"),i,str(e)[:80],flush=True); time.sleep(20)
-    return None
-for repo in REPOS:
-    print("SNAP_OK" if retry(snapshot_download,repo) else "SNAP_FAIL",repo,flush=True)
-# GPQA main config (gated)
-retry(datasets.load_dataset,"Idavidrein/gpqa","gpqa_main")
-print("SNAP_OK gpqa",flush=True)
-""" % ([e for e, _, _ in MODELS],)
-online_env = {**os.environ, "HF_HUB_OFFLINE": "0", "HF_DATASETS_OFFLINE": "0",
-              "HF_TOKEN": _TOKEN, "HUGGING_FACE_HUB_TOKEN": _TOKEN}
-print("[prefetch] caching model + Idavidrein/gpqa (online) ...", flush=True)
-subprocess.run([sys.executable, "-c", SNIPPET], env=online_env)
-print("[prefetch] done; running lm-eval OFFLINE", flush=True)
+def task_for(n_shot):
+    return "gpqa_main_zeroshot" if n_shot == 0 else "gpqa_main_n_shot"
 
-import gc
 
-import lm_eval
-import torch
-from lm_eval import simple_evaluate
-from lm_eval.models.huggingface import HFLM
+def cells(models, formats, seeds, n_shots=N_SHOTS):
+    """The cells of the run, in the order they are run."""
+    for eval_id, model_id, batch in models:
+        for fmt in formats:
+            for n in n_shots:
+                for seed in seeds:
+                    yield dict(eval_id=eval_id, model_id=model_id, batch_size=batch, task=task_for(n),
+                               prompt_format=fmt, n_shot=n, seed=seed)
 
 
 def extract(results):
@@ -71,28 +46,40 @@ def extract(results):
     return None
 
 
-for eval_id, canon_id, bs in MODELS:
-    lm = HFLM(pretrained=eval_id, dtype="bfloat16", batch_size=bs)
-    for fmt, sys_inst in FORMAT_TEMPLATES.items():
-        for n in N_SHOTS:
-            task = "gpqa_main_zeroshot" if n == 0 else "gpqa_main_n_shot"
-            for seed in SEEDS:
-                rec = dict(model_id=canon_id, benchmark="gpqa_main", task_name=task,
-                           temperature=0.0, prompt_format=fmt, n_shot=n, random_seed=seed,
-                           score=None, timestamp=datetime.now(timezone.utc).isoformat(),
-                           eval_library_version=lm_eval.__version__, limit=None, backend="hf")
-                try:
-                    r = simple_evaluate(model=lm, tasks=[task], num_fewshot=n,
-                                        gen_kwargs=f"seed={seed}", limit=None,
-                                        system_instruction=sys_inst, apply_chat_template=True,
-                                        fewshot_as_multiturn=False, random_seed=seed,
-                                        numpy_random_seed=seed, torch_random_seed=seed,
-                                        write_out=False, log_samples=False, verbosity="ERROR")
-                    rec["score"] = extract(r); rec["status"] = "ok"
-                    print("RESULT " + json.dumps(rec), flush=True)
-                except Exception as exc:  # noqa: BLE001
-                    rec["status"] = "error"; rec["reason"] = str(exc)[:200]
-                    print("RESULT " + json.dumps(rec), flush=True)
-                    print(f"[cell-error] {canon_id} {fmt} n{n} s{seed}: {str(exc)[:100]}", flush=True)
-    del lm; gc.collect(); torch.cuda.empty_cache()
-print("[done] session complete", flush=True)
+def setup(models):
+    token = runs.offline_session()             # gated GPQA dataset (and gated models)
+    print("[setup] installing lm-eval==0.4.11 ...", flush=True)
+    runs.pip_install("lm-eval==0.4.11", "accelerate")
+    print("[prefetch] caching model + Idavidrein/gpqa (online) ...", flush=True)
+    runs.prefetch_online(runs.snapshot_lines(e for e, _, _ in models)
+                         + "# GPQA main config (gated)\n"
+                           'retry(datasets.load_dataset, "Idavidrein/gpqa", "gpqa_main")\n'
+                           'print("SNAP_OK gpqa", flush=True)\n', token=token)
+    print("[prefetch] done; running lm-eval OFFLINE", flush=True)
+
+
+def main(argv=None):
+    args = runs.parse(runs.grid_parser(__doc__, MODELS, seeds=SEEDS), argv)
+    plan = list(cells(args.models, args.formats, args.seeds))
+    if args.dry_run:
+        return runs.dry_run(plan)
+    setup(args.models)
+    for (eval_id, model_id, batch), model_cells in runs.by_model(plan):
+        lm = runs.load_hf_model(pretrained=eval_id, dtype="bfloat16", batch_size=batch)
+        for c in model_cells:
+            fmt, n, seed, task = c["prompt_format"], c["n_shot"], c["seed"], c["task"]
+            rec = dict(model_id=model_id, benchmark="gpqa_main", task_name=task,
+                       temperature=0.0, prompt_format=fmt, n_shot=n, random_seed=seed,
+                       score=None, timestamp=runs.timestamp(),
+                       eval_library_version=runs.lm_eval_version(), limit=None, backend="hf")
+            runs.run_cell(rec, lambda: runs.evaluate(
+                lm, tasks=[task], num_fewshot=n, gen_kwargs=f"seed={seed}", limit=None,
+                system_instruction=runs.FORMAT_TEMPLATES[fmt], apply_chat_template=True,
+                fewshot_as_multiturn=False, **runs.seeded(seed), **runs.QUIET),
+                extract, note=f"{model_id} {fmt} n{n} s{seed}")
+        runs.release(lm)
+    print("[done] session complete", flush=True)
+
+
+if __name__ == "__main__":
+    main()

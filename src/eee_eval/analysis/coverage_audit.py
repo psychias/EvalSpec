@@ -17,15 +17,13 @@ Columns: source, n_records, pct_n_shot, pct_harness, pct_prompt_template,
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import pandas as pd
 
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.insert(0, str(_ROOT))
+from eee_eval.paths import DATA_DIR
+from eee_eval.paths import ROOT as _ROOT
 
-DATA_DIR = _ROOT / "data"
 OUT_DIR = _ROOT / "analysis_output"
 
 

@@ -19,7 +19,8 @@ from typing import Any
 
 from jsonschema.validators import validator_for
 
-_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+from eee_eval.paths import SCHEMA_PATH
+
 _SCHEMA_VERSION = "0.2.1"
 
 
@@ -33,7 +34,7 @@ class SchemaValidator:
 
     def __init__(self, schema_path: Path | str | None = None):
         if schema_path is None:
-            schema_path = _ROOT / "eval.schema.json"
+            schema_path = SCHEMA_PATH
         schema_path = Path(schema_path)
         if not schema_path.exists():
             raise FileNotFoundError(f"Schema not found: {schema_path}")
@@ -353,7 +354,7 @@ def main() -> None:
         description="Validate all EEE JSON files; use --fix to write corrections"
     )
     parser.add_argument("--data-dir", default="data")
-    parser.add_argument("--schema", default=str(_ROOT / "eval.schema.json"))
+    parser.add_argument("--schema", default=str(SCHEMA_PATH))
     parser.add_argument("--report", default="VALIDATION_REPORT.json")
     parser.add_argument("--fix", action="store_true",
                         help="Apply auto-fixes and write back to disk")

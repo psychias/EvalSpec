@@ -152,7 +152,7 @@ Follow the [quick start](#quick-start) for the editable install and development 
 
 To install the dependency versions used for the paper, also run `python -m pip install -r requirements.txt`. With the environment active, `make install` performs both installs.
 
-## The dataset
+## Dataset
 
 `python scripts/fetch_data.py` downloads
 [Psychias/EvalSpec_Dataset](https://huggingface.co/datasets/Psychias/EvalSpec_Dataset)
@@ -172,7 +172,9 @@ card from these files and fails if one of them is not on the card.
 The download needs no account. With a copy already on disk, run
 `python scripts/fetch_data.py --from <folder>`.
 
-## Reproducing the paper's numbers
+## Reproducing numbers
+
+No API key needed.
 
 ```bash
 python scripts/reproduce_paper.py          # dataset totals, coverage, audits, experiment numbers
@@ -181,13 +183,12 @@ python scripts/collision_prevalence.py     # model and benchmark pairs reported 
 python scripts/generate_evidence_file.py   # writes section5_evidence.txt: the records behind each case
 ```
 
-None of these needs an API key. From the published dataset they reproduce the dataset
-totals (46,559 records, 7,398 models, 1,954 benchmarks), the coverage tables, the
-collision counts (41,999 pairs, 291 in two or more sources), the score audit (97.5%
-precision, 81.4% recall), the harness and metadata audits and the case-study scores.
+From the published dataset, the scripts reproduce the dataset totals (46,559 records, 7,398 models, 1,954 benchmarks), coverage tables,
+collision counts (41,999 pairs, 291 in two or more sources), score audit (97.5%
+precision, 81.4% recall), harness and metadata audits and case-study scores.
 
 ```bash
-make figures      # redraws every file in figures/ from the data and the experiment logs
+make figures      # run after reproduce_paper.py to regenerate the paper figures
 ```
 
 ### What reproduces from a clone
@@ -205,8 +206,7 @@ make figures      # redraws every file in figures/ from the data and the experim
 | BBH re-run | The score of the re-run is recorded in `experiments/bbh_protocol/`; its log was not kept |
 | Re-running the experiments | Scripts are in `experiments/`; they need a GPU or an OpenRouter key |
 
-[`experiments/README.md`](experiments/README.md) lists the command that recomputes each
-experiment's numbers and the result file it reads.
+See [experiment guide](experiments/README.md) for the commands for recomputing statistics from saved outputs, and the [script guide](scripts/README.md) for the dataset and case-study tools.
 
 ## Reusing and extending the code
 

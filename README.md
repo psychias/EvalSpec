@@ -24,7 +24,7 @@ pytest
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
 results, and writes everything to `analysis_output/paper_numbers.json`.
 
-## What the paper shows
+## Paper findings
 
 Differences in evaluation protocols can confound comparisons across models. Harnesses, shot counts, prompt formats, temperatures, and scoring modes can shift scores by more than the gap between two models on a leaderboard. The paper puts 46,559 published records into one schema, audits which settings the records document, and tests how those settings affect scores.
 
@@ -41,13 +41,13 @@ and an LLM-assisted extraction from 100 arXiv papers.
 | ArXiv extraction (100 papers) | 17,228 | 1,726 | 1,806 |
 | Papers With Code | 576 | 383 | 16 |
 
-### Few model–benchmark pairs appear in multiple sources
+### Overlap across sources
 
 Only 291 of 41,999 model–benchmark pairs appear in more than one source. Open LLM
 Leaderboard v2 (OLv2) contributes 26,790 records and shares few models with the
 other sources.
 
-### Prompt templates and temperature are rarely documented
+### Metadata coverage
 
 The table shows the share of records with a documented value for each field:
 
@@ -159,7 +159,7 @@ card from these files and fails if one of them is not on the card.
 The download needs no account. With a copy already on disk, run
 `python scripts/fetch_data.py --from <folder>`.
 
-## Reproducing the numbers
+## Reproducing the results
 
 ```bash
 python scripts/reproduce_paper.py          # dataset totals, coverage, audits, experiment numbers
@@ -174,7 +174,7 @@ These commands use the published dataset and saved experiment outputs and run wi
 make figures      # run after reproduce_paper.py to regenerate the paper figures
 ```
 
-### What reproduces from a clone
+### Data and results used for reproduction
 
 | Part | Status |
 |---|---|
@@ -196,7 +196,7 @@ See [experiment guide](experiments/README.md) for the commands for recomputing s
 The analysis is written as functions that take their data as arguments, with the
 settings of the paper as defaults. The tables below say where each kind of change goes.
 
-### Running the analysis on other data
+### Running the analysis on another dataset
 
 Every reproduction script reads the dataset from one folder, `data/` by default. Another
 copy, a later release or your own records in the same layout are used in one of three ways:
@@ -224,7 +224,7 @@ cp.reference_gaps(cells, reference="my_leaderboard")           # another source 
 `python scripts/reproduce_paper.py --list` names the sections of the report, and
 `--only coverage,collisions_3_3` computes some of them.
 
-### Where a change goes
+### Extension points
 
 | To add | Edit |
 |---|---|
@@ -240,7 +240,7 @@ cp.reference_gaps(cells, reference="my_leaderboard")           # another source 
 | A benchmark to the format ANOVAs of the log-likelihood benchmarks | One entry in `DESIGNS` in `experiments/controlled_eval/scripts/oneway_anova_loglik.py` and `repeated_measures_anova_loglik.py` |
 | A cell to a fixed list of runs | One entry in `CELLS` (`experiments/scoring_mode_eval/rerun_missing_cells.py`) or `ARMS` (`experiments/bbh_protocol/sealion_provenance/rerun_gemma2_9b_bbh.py`) |
 
-### Running an experiment with other models or seeds
+### Changing models and seeds
 
 No script in the repository starts work when it is imported: each has a `main`, and the
 settings of the published run are its defaults. The GPU runs take the models, seeds and
@@ -268,7 +268,7 @@ What the experiment scripts share is in `experiments/common/`:
 A new GPU run is a list of cells and a `main` that walks it; the docstring of
 `lm_eval_runs.py` has a complete example.
 
-### The pipeline package
+### Pipeline configuration
 
 `src/eee_eval/paths.py` is the one place in the package that knows the repository, the
 data folder and the schema file. Setting `EVALSPEC_DATA` points the fetchers, the
@@ -312,7 +312,7 @@ python -m eee_eval.converters.helm --log_path <run_dir/>
 
 Each converter lists its flags with `--help`.
 
-### Emitting EvalSpec records from a run
+### Exporting EvalSpec records
 
 ```python
 from lm_eval import simple_evaluate

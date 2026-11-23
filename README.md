@@ -24,17 +24,15 @@ pytest
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
 results, and writes everything to `analysis_output/paper_numbers.json`.
 
-The repository is built around Every Eval Ever (EEE), a JSON schema (v0.2.1) for
-LLM evaluation results, and a pipeline that collects published results into it.
-The collected dataset has 46,559 records from 12 sources, covering 7,398 models
-and 1,954 benchmarks. The sources are public leaderboards, HuggingFace model
-cards, Papers With Code, and results extracted by an LLM from 100 arXiv papers.
-
 ## What the paper shows
 
-A score such as "MMLU = 68" can be compared across models only if it was produced the same way each time, which is usually not the case. Differences in evaluation protocols can confound comparisons across models. Harnesses, shot counts, prompt formats, temperatures, and scoring modes can shift scores by more than the gap between two models on a leaderboard. The paper puts 46,559 published records into one schema, audits which settings the records document, and tests how those settings affect scores.
+Differences in evaluation protocols can confound comparisons across models. Harnesses, shot counts, prompt formats, temperatures, and scoring modes can shift scores by more than the gap between two models on a leaderboard. The paper puts 46,559 published records into one schema, audits which settings the records document, and tests how those settings affect scores.
 
 ### Dataset
+
+The collection uses the Every Eval Ever (EEE) JSON Schema (v0.2.1). It includes
+results from public leaderboards, Hugging Face model cards, Papers With Code,
+and an LLM-assisted extraction from 100 arXiv papers.
 
 | | Records | Models | Benchmarks |
 |---|---|---|---|
@@ -43,16 +41,15 @@ A score such as "MMLU = 68" can be compared across models only if it was produce
 | ArXiv extraction (100 papers) | 17,228 | 1,726 | 1,806 |
 | Papers With Code | 576 | 383 | 16 |
 
-### Sources rarely evaluate the same thing
+### Few model–benchmark pairs appear in multiple sources
 
-Sources cover almost entirely different model and benchmark pairs. Open LLM
-Leaderboard v2 (OLv2) alone has 26,790 records and shares almost no models with
-the other sources. Most leaderboards cannot be checked against each other
-because they do not measure the same pairs.
+Only 291 of 41,999 model–benchmark pairs appear in more than one source. Open LLM
+Leaderboard v2 (OLv2) contributes 26,790 records and shares few models with the
+other sources.
 
-### The settings that move scores are the ones least often recorded
+### Prompt templates and temperature are rarely documented
 
-Share of records with a documented value for each field:
+The table shows the share of records with a documented value for each field:
 
 | Field | Full dataset | Leaderboard subset |
 |---|---|---|
@@ -62,18 +59,14 @@ Share of records with a documented value for each field:
 | prompt template | 14.1% | 0.0% |
 | temperature | 3.1% | 0.0% |
 
-† No leaderboard API exposes the harness. The pipeline attaches it from each
-platform's documentation. Prompt template and temperature have no coverage at
-all in the leaderboard subset.
+† The pipeline fills in harness names from platform documentation.
 
-### Disagreements cannot be traced to a cause
+### Missing protocol details make score gaps hard to explain
 
-When several sources do report the same model on the same benchmark, the scores
-often disagree. Section 5 of the paper works through BBH, GSM8K, TruthfulQA,
-Belebele and HellaSwag. With the settings missing from the records, a reader
-cannot tell which setting produced the gap. Some agreements between sources
-that look independent are one pipeline reported twice: OLv2 and SEA-LION match
-to two decimals on Gemma-2-9B BBH.
+Section 5 examines cross-source scores on BBH, GSM8K, TruthfulQA, Belebele, and
+HellaSwag. Missing protocol details limit what these records can tell us about
+the causes of score gaps. Score agreement also needs context. For example, OLv2
+and SEA-LION report matching Gemma-2-9B scores on BBH to two decimal places.
 
 ### Extraction audit
 
@@ -90,28 +83,22 @@ The arXiv extraction was checked by hand against the source papers.
 
 ### EvalSpec
 
-EvalSpec is the reporting specification the paper proposes: 13 Required
-fields, 5 Recommended and 3 Full. A record that follows it either states the
-settings that drive score differences or shows that they were left out.
+EvalSpec is the paper's proposed reporting specification. It defines 13 Required,
+5 Recommended, and 3 Full fields so readers can see which evaluation settings
+are documented.
 
-The [EvalSpec site](https://psychias.github.io/EvalSpec/) holds the
-specification, a registry of the dataset's records with a page per model, a
-form that writes and checks a record for submission, and the interactive
-article. Its sources and build script are on the `gh-pages` branch of this
-repository.
+The [EvalSpec site](https://psychias.github.io/EvalSpec/) provides the specification, a model-by-model registry, a
+submission form that validates records, and the interactive article. Its source and build script are on the `gh-pages` branch.
 
 ## Experiments
 
-The controlled experiments measure how evaluation settings affect scores in the
-tested configurations.
-[`experiments/README.md`](experiments/README.md) has the design, results and
-commands for each one, and says which raw result files are in the repository.
+The [experiment guide](experiments/README.md) describes each design, saved results, and the commands to analyze or rerun it.
 
 | Experiment | Result |
 |---|---|
-| Factorial grid: 4 models, BBH, GSM8K and MMLU, 3 prompt formats, 2 temperatures, 2 shot counts, 312 runs | Prompt format explains about 27% of GSM8K score variance, temperature 0.25% |
-| Exp1: GSM8K under three prompt formats | 58.5% (plain), 57.0% (instruct) and 2.5% (chain-of-thought): The parser misses answers that omit the expected delimiter in the chain-of-though. |
-| Prompt format on five log-likelihood benchmarks | Significant on four of five, a few points in size |
+| Factorial grid across BBH, GSM8K, and MMLU (312 runs) | In the five-shot GSM8K analysis, prompt format accounted for about 27% of score variance and temperature for 0.25%. |
+| Exp1 · GSM8K under three [prompt formats](experiments/controlled_eval/prompt_templates.md) | Qwen2.5-14B-Instruct scored 58.5% (plain), 57.0% (instruct), and 2.5% (chain-of-thought) in the [factorial run records](experiments/controlled_eval/results/controlled_eval_results.jsonl#L220-L234). |
+| Prompt format on five log-likelihood benchmarks | Repeated-measures ANOVA found a prompt-format effect at p < 0.05 on four of five benchmarks. |
 | Exp2: MMLU by log-likelihood and by generation | At most 0.21 pp apart |
 | Exp3: lm-evaluation-harness 0.4.3 against 0.4.11 | At most 1.97 pp, below the spread between seeds (2.81 pp) |
 | Judge model: the same answers under 4 and 8 judges | Mean rating moves by up to 1.35 points of 10 and the ranking changes |
@@ -172,9 +159,7 @@ card from these files and fails if one of them is not on the card.
 The download needs no account. With a copy already on disk, run
 `python scripts/fetch_data.py --from <folder>`.
 
-## Reproducing numbers
-
-No API key needed.
+## Reproducing the numbers
 
 ```bash
 python scripts/reproduce_paper.py          # dataset totals, coverage, audits, experiment numbers
@@ -183,9 +168,7 @@ python scripts/collision_prevalence.py     # model and benchmark pairs reported 
 python scripts/generate_evidence_file.py   # writes section5_evidence.txt: the records behind each case
 ```
 
-From the published dataset, the scripts reproduce the dataset totals (46,559 records, 7,398 models, 1,954 benchmarks), coverage tables,
-collision counts (41,999 pairs, 291 in two or more sources), score audit (97.5%
-precision, 81.4% recall), harness and metadata audits and case-study scores.
+These commands use the published dataset and saved experiment outputs and run without an API key.
 
 ```bash
 make figures      # run after reproduce_paper.py to regenerate the paper figures

@@ -102,14 +102,15 @@ repository.
 
 ## Experiments
 
-The controlled experiments measure how far each unrecorded setting moves a score.
-[`experiments/README.md`](experiments/README.md) has the design, the results and the
+The controlled experiments measure how evaluation settings affect scores in the
+tested configurations.
+[`experiments/README.md`](experiments/README.md) has the design, results and
 commands for each one, and says which raw result files are in the repository.
 
 | Experiment | Result |
 |---|---|
 | Factorial grid: 4 models, BBH, GSM8K and MMLU, 3 prompt formats, 2 temperatures, 2 shot counts, 312 runs | Prompt format explains about 27% of GSM8K score variance, temperature 0.25% |
-| Exp1: GSM8K under three prompt formats | 58.5%, 57.0% and 2.5%: the answer parser fails on chain-of-thought output |
+| Exp1: GSM8K under three prompt formats | 58.5% (plain), 57.0% (instruct) and 2.5% (chain-of-thought): The parser misses answers that omit the expected delimiter in the chain-of-though. |
 | Prompt format on five log-likelihood benchmarks | Significant on four of five, a few points in size |
 | Exp2: MMLU by log-likelihood and by generation | At most 0.21 pp apart |
 | Exp3: lm-evaluation-harness 0.4.3 against 0.4.11 | At most 1.97 pp, below the spread between seeds (2.81 pp) |
@@ -146,18 +147,10 @@ built from the `gh-pages` branch, which has its own README.
 
 ## Installation
 
-Python 3.10 or newer; the code was tested on 3.10.
+Follow the [quick start](#quick-start) for the editable install and development tools. On Windows PowerShell, activate the environment with
+`.venv\Scripts\Activate.ps1`.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate          # Linux/macOS
-# .venv\Scripts\Activate.ps1       # Windows PowerShell
-pip install -e ".[dev]"            # the package, pytest and ruff
-pip install -r requirements.txt    # optional: the exact versions the paper was run with
-```
-
-With the environment active, `make install`, `make data`, `make repro`, `make figures`
-and `make test` run the same steps.
+To install the dependency versions used for the paper, also run `python -m pip install -r requirements.txt`. With the environment active, `make install` performs both installs.
 
 ## The dataset
 

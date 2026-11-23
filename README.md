@@ -9,6 +9,7 @@ Michail. Accepted to Findings of EACL 2027, to appear.
 - Dataset: https://huggingface.co/datasets/Psychias/EvalSpec_Dataset
 
 ## Quick start
+Requires Python 3.10 or newer. On Linux or macOS, run the following commands.
 
 ```bash
 git clone https://github.com/psychias/EvalSpec.git && cd EvalSpec
@@ -16,8 +17,8 @@ python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
 python scripts/fetch_data.py          # downloads the dataset into data/
-python scripts/reproduce_paper.py     # recomputes the paper's numbers
-pytest                                # 147 tests
+python scripts/reproduce_paper.py     # generates the paper-number reports
+pytest                               
 ```
 
 `reproduce_paper.py` prints the dataset totals, the metadata coverage and the audit
@@ -31,13 +32,7 @@ cards, Papers With Code, and results extracted by an LLM from 100 arXiv papers.
 
 ## What the paper shows
 
-A score such as "MMLU = 68" can be compared across models only if it was
-produced the same way each time. Usually it was not. The same model and
-benchmark get scored with different harnesses, shot counts, prompt formats,
-temperatures and scoring modes (log-likelihood or generation), and these choices
-can move a score by more than the gap between two models on a leaderboard. The
-paper puts 46,559 published records into one schema, checks which of these
-settings each record keeps, and measures how much the settings matter.
+A score such as "MMLU = 68" can be compared across models only if it was produced the same way each time, which is usually not the case. Differences in evaluation protocols can confound comparisons across models. Harnesses, shot counts, prompt formats, temperatures, and scoring modes can shift scores by more than the gap between two models on a leaderboard. The paper puts 46,559 published records into one schema, audits which settings the records document, and tests how those settings affect scores.
 
 ### Dataset
 
